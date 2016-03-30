@@ -42,7 +42,9 @@ namespace Guybrush101
         
         //GUI fields for information
         [KSPField(guiActive = true, guiActiveEditor = true, guiName = "Propellants")]
-        public string GUIpropellantNames = String.Empty;
+        private string GUIpropellantNames = String.Empty;
+        [KSPField]
+        public string iniGUIpropellantNames = string.Empty;
 
         //Availability of the functionality
         [KSPField]
@@ -299,15 +301,15 @@ namespace Guybrush101
                 //NOTICE: The original propellant nodes are overwritten, so we do not need to delete them
                 moduleEngine.Load(newPropNode);
 
-                Debug.Log("Start of curve editing");
+                //Debug.Log("Start of curve editing");
                 //Change the atmosphere curve (ISP)
                 if (!atmosphereCurveEmpty)
                 {
-                    Debug.Log("Setting atmosphere Curve (ISP) " + atmosphereCurveKeys);
+                    //Debug.Log("Setting atmosphere Curve (ISP) " + atmosphereCurveKeys);
                     moduleEngine.atmosphereCurve.Curve.keys =
                         MiscFx.KeyFrameFromString(
-                            propList[selectedPropellant].atmosphereCurve,
-                            moduleEngine.atmosphereCurve.Curve.keys
+                            inKeys: propList[selectedPropellant].atmosphereCurve,
+                            iniKeys: moduleEngine.atmosphereCurve.Curve.keys
                             );
                 }
                 //Change the Velocity curve
@@ -316,8 +318,8 @@ namespace Guybrush101
                     //Debug.Log("Setting Velocity Curve " + velCurveKeys);
                     moduleEngine.velCurve.Curve.keys =
                         MiscFx.KeyFrameFromString(
-                            propList[selectedPropellant].velCurve, 
-                            moduleEngine.velCurve.Curve.keys
+                            inKeys: propList[selectedPropellant].velCurve,
+                            iniKeys: moduleEngine.velCurve.Curve.keys
                             );
                 }
                 //Change the Atm curve
@@ -326,8 +328,8 @@ namespace Guybrush101
                     //Debug.Log("Setting Atm Curve: "+ atmCurveKeys);
                     moduleEngine.atmCurve.Curve.keys = 
                         MiscFx.KeyFrameFromString(
-                            propList[selectedPropellant].atmCurve, 
-                            moduleEngine.atmCurve.Curve.keys
+                            inKeys: propList[selectedPropellant].atmCurve,
+                            iniKeys: moduleEngine.atmCurve.Curve.keys
                             );
                 }
 
@@ -345,7 +347,7 @@ namespace Guybrush101
                     Density: propList[selectedPropellant].propDensity, 
                     ISP: maxISP
                     );
-                
+
                 //moduleEngine.maxThrust = 0;
 
 
@@ -353,7 +355,17 @@ namespace Guybrush101
                 //Debug.Log("End of curve editing");
 
                 //Write the propellant setup to the right click GUI
-                GUIpropellantNames = "[" + selectedPropellant + "] " + propList[selectedPropellant].Propellants.Replace(",", ", ");
+                if ( iniGUIpropellantNames == string.Empty )
+                {
+                    //Default naming if no user defined names are found
+                    GUIpropellantNames = "[" + selectedPropellant + "] " + propList[selectedPropellant].Propellants.Replace(",", ", ");
+                }
+                else
+                {
+                    //User defined names
+                    GUIpropellantNames = iniGUIpropellantNames.Trim().Split(';')[selectedPropellant];
+                }
+
 
                 //Restart engine if it was on before switching
                 //Debug.Log("engine restart");
@@ -492,8 +504,8 @@ namespace Guybrush101
             foreach (var moduleEngine in ModuleEngines)
             {
 
-                Debug.Log("CGF velCurveKeys: " + velCurveKeys);
-                Debug.Log("CGF atmCurveKeys: " + atmCurveKeys);
+                //Debug.Log("CGF velCurveKeys: " + velCurveKeys);
+                //Debug.Log("CGF atmCurveKeys: " + atmCurveKeys);
                 Debug.Log(
                     "requestedThrottle: " + moduleEngine.requestedThrottle * 100 + "%" +
                     "\nmaxThrust: " + moduleEngine.maxThrust +
@@ -504,10 +516,6 @@ namespace Guybrush101
                     "\nFuelRate (calc): " + Calc.calcFuelRateFromfuelFlow(moduleEngine.requestedMassFlow, Density) +
                     "\nWeighted Density of " + propList[selectedPropellant].Propellants + " is " + Density + "Kg/L"
                     );
-                //foreach (var curve in moduleEngine.atmosphereCurve.Curve)
-                //{
-
-                //}
                 
                 for (int j = 0; j < moduleEngine.atmosphereCurve.Curve.length; j++)
                 {
