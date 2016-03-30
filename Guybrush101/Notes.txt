@@ -1,0 +1,16 @@
+﻿to-do list
+implement
+- atmosphereCurve			[DONE]
+- heatProduction
+- EngineType
+- maxThrust --> fuelFlow	[DONE]
+- Engine Names
+- propellantIgnoreForIsp
+- propellantDrawGauge
+
+
+
+Should these be implemented?
+		atmChangeFlow = True
+		useVelCurve = True
+		useAtmCurve = True
