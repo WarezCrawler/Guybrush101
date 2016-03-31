@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using GTI.GenericFunctions;
+using Guybrush101.GenericFunctions;
 
 //####################################################################################################################################
 // Credits:
@@ -11,24 +11,16 @@ using GTI.GenericFunctions;
 
 
 
-namespace GTI
+namespace Guybrush101
 {
-    partial class GTI_EngineClassSwitch : PartModule
+    partial class EngineClassSwitch : PartModule
     {
         //Engine manipulation
         #region KSPFields and supporting settings
         [KSPField]
         public string engineID = string.Empty;                                                         //the engine to affect. Needed if multiple engines are present in the part.
-        //[KSPField]
-        //public string engineNames = string.Empty;                                                      //Names of the engine after switch, if empty, then not name switching occurs
-        //[KSPField]
-        //public string propellantIgnoreForIsp = string.Empty;
         [KSPField]
-        public string propellantDrawGauge = string.Empty;
-        [KSPField]
-        public string heatProduction = string.Empty;
-        [KSPField]
-        public string EngineTypes = string.Empty;
+        public string engineNames = string.Empty;                                                      //Names of the engine after switch, if empty, then not name switching occurs
         [KSPField]
         public string propellantNames = "LiquidFuel,Oxidizer;MonoPropellant";           //the list of propellant setups available to the switch.
         [KSPField]
@@ -47,13 +39,26 @@ namespace GTI
         private bool atmosphereCurveEmpty = true;
         private bool velCurveEmpty = true;
         private bool atmCurveEmpty = true;
+        
+        //GUI fields for information
+        [KSPField(guiActive = true, guiActiveEditor = true, guiName = "Propellants")]
+        private string GUIpropellantNames = String.Empty;
+        [KSPField]
+        public string iniGUIpropellantNames = string.Empty;
+
+        //Availability of the functionality
+        [KSPField]
+        public bool availableInFlight = false;
+        [KSPField]
+        public bool availableInEditor = true;
+
         #endregion
 
         #region Arrays and Lists
         //Arrays for data processing
         private string[] arrPropellantNames;    //for the split list of prop names
         private string[] arrPropellantRatios;   //for the split list of prop ratios
-        private string[] arrMaxThrust, arrPropDrawGauge, arrHeatProd, arrEngineTypes;       //arrPropIgnoreForISP, 
+        private string[] arrMaxThrust;
         private string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
 
         //Customtype for list of relevant settings
@@ -65,6 +70,9 @@ namespace GTI
 
         #region Other class level declarations
         private bool _settingsInitialized = false;
+
+        //private Part cPart;      //current part       //irrelevant here -> could be relevant in supporting class modules
+        //public ConfigNode ECSnode;
 
         #endregion
 
@@ -121,11 +129,6 @@ namespace GTI
                 arrPropellantNames = propellantNames.Trim().Split(';');        //arrPropellantNames should now have the propellant names and combinations
                 arrPropellantRatios = propellantRatios.Trim().Split(';');      //arrPropellantRatios should now have the propellant ratios and combinations
                 arrMaxThrust = maxThrust.Trim().Split(';');
-                //arrPropIgnoreForISP = propellantIgnoreForIsp.Trim().Split(';');
-                arrPropDrawGauge = propellantDrawGauge.Trim().Split(';');
-                arrHeatProd = heatProduction.Trim().Split(';');
-                arrEngineTypes = EngineTypes.Trim().Split(';');
-
 
                 atmosphereCurveEmpty = ((string.IsNullOrEmpty(atmosphereCurveKeys) || atmosphereCurveKeys.Trim().Length == 0));
                 velCurveEmpty = ((string.IsNullOrEmpty(velCurveKeys) || velCurveKeys.Trim().Length == 0));
@@ -166,11 +169,7 @@ namespace GTI
                         {
                             Propellants = arrPropellantNames[i],
                             PropRatios  = arrPropellantRatios[i],
-                            setMaxThrust = arrMaxThrust[i],
-                            //propIgnoreForISP = arrPropIgnoreForISP[i],
-                            propDrawGauge = arrPropDrawGauge[i],
-                            heatProduction = arrHeatProd[i],
-                            engineType = arrEngineTypes[i]
+                            setMaxThrust = arrMaxThrust[i]
                         });
                         if (!atmosphereCurveEmpty)
                         {
@@ -194,8 +193,8 @@ namespace GTI
                     foreach (var moduleEngine in ModuleEngines)
                     {
                         if (moduleEngine.engineID == engineID || string.IsNullOrEmpty(engineID) || engineID.Trim().Length == 0)       //"string.IsNullOrEmpty(engineID) || engineID.Trim().Length==0" is used instead of IsNullOrWhiteSpace()
-                        { 
-                            //do nothing 
+                        {
+                            //What to do if the engine is in scope???!!!
                         }
                         else
                         {
@@ -225,14 +224,18 @@ namespace GTI
         #region UpdatePart Engine Module
         private void updateEngineModule(bool calledByPlayer, string callingFunction = "player")
         {
-            string[] targetPropellants, targetRatios, targetIgnoreForISP, targetDrawGuage;
+            //string[] currentResource;
+            string[] targetPropellants;
+            string[] targetRatios;
             float targetRatio;
+
+            //int i = 0; //Integer for looping etc.
             float maxISP = 0;
-            float floatParseResult;
+            //float Density = 1;
 
             ConfigNode newPropNode = new ConfigNode();
-            CurveUtilities MiscFx = new CurveUtilities();
-            PhysicsUtilities EngineCalc = new PhysicsUtilities();
+            HelperFunctions MiscFx = new HelperFunctions();
+            EngineCalculations EngineCalc = new EngineCalculations();
             //PartResourceDefinitionList resourceID;
 
             foreach (var moduleEngine in this.ModuleEngines)
@@ -253,12 +256,10 @@ namespace GTI
                 //    "\nCalledby: "          + callingFunction
                 //    );
 
-                //Split cfg subsettings into arrays
+
                 targetPropellants = propList[selectedPropellant].Propellants.Split(',');
                 targetRatios = propList[selectedPropellant].PropRatios.Split(',');
-                //targetIgnoreForISP = propList[selectedPropellant].propIgnoreForISP.Split(',');
-                targetDrawGuage = propList[selectedPropellant].propDrawGauge.Split(',');
-
+                
                 //Create new propellent nodes by looping them in.
                 for (int i = 0; i < targetPropellants.Length; i++)
                 {
@@ -268,13 +269,13 @@ namespace GTI
                     ConfigNode propNode = newPropNode.AddNode("PROPELLANT");
                     propNode.AddValue("name", targetPropellants[i]);
                     propNode.AddValue("ratio", targetRatio);
-                    propNode.AddValue("ignoreForIsp", false);       //For now we assume all is counted for ISP           //targetIgnoreForISP[i]
-                    propNode.AddValue("DrawGauge", targetDrawGuage[i]);      //I think the gauge  should always be shown
+                    propNode.AddValue("ignoreForIsp", false);       //For now we assume all is counted for ISP
+                    propNode.AddValue("DrawGauge", true);      //I think the gauge  should always be shown
                 }
                 //Update the engine with new propellant configuration
                 //NOTICE: The original propellant nodes are overwritten, so we do not need to delete them
                 moduleEngine.Load(newPropNode);
-                
+
                 //Debug.Log("Start of curve editing");
                 //Change the atmosphere curve (ISP)
                 if (!atmosphereCurveEmpty)
@@ -307,7 +308,7 @@ namespace GTI
                             );
                 }
 
-                //Loop atmosphereCurve and extract ISP values. Return the maximum ISP as basis for fuelflow calculation
+                //Density = propList[selectedPropellant].propDensity;
                 foreach (Keyframe key in moduleEngine.atmosphereCurve.Curve.keys)
                 {
                     //Debug.Log("atmosphereKey[" + i + "]: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent);
@@ -321,40 +322,8 @@ namespace GTI
                     Density: propList[selectedPropellant].propDensity, 
                     ISP: maxISP
                     );
-                if (Single.TryParse(propList[selectedPropellant].heatProduction, out floatParseResult))
-                { moduleEngine.heatProduction = floatParseResult; }
-                
-                //Set the engine type
-                switch (propList[selectedPropellant].engineType)
-                {
-                    case "LiquidFuel":
-                        moduleEngine.engineType = EngineType.LiquidFuel;
-                        break;
-                    case "Nuclear":
-                        moduleEngine.engineType = EngineType.Nuclear;
-                        break;
-                    case "SolidBooster":
-                        moduleEngine.engineType = EngineType.SolidBooster;
-                        break;
-                    case "Turbine":
-                        moduleEngine.engineType = EngineType.Turbine;
-                        break;
-                    case "MonoProp":
-                        moduleEngine.engineType = EngineType.MonoProp;
-                        break;
-                    case "ScramJet":
-                        moduleEngine.engineType = EngineType.ScramJet;
-                        break;
-                    case "Electric":
-                        moduleEngine.engineType = EngineType.Electric;
-                        break;
-                    case "Generic":
-                        moduleEngine.engineType = EngineType.Generic;
-                        break;
-                    case "Piston":
-                        moduleEngine.engineType = EngineType.Piston;
-                        break;
-                }
+
+                //Debug.Log("End of curve editing");
 
                 //Write the propellant setup to the right click GUI
                 if ( iniGUIpropellantNames == string.Empty )
@@ -496,7 +465,7 @@ namespace GTI
         public void test()
         {
             InitializeSettings();
-            PhysicsUtilities Calc = new PhysicsUtilities();
+            EngineCalculations Calc = new EngineCalculations();
             float Density = propList[selectedPropellant].propDensity;
 
 

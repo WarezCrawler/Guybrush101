@@ -2,11 +2,11 @@
 implement
 - atmosphereCurve			[DONE]
 - maxThrust --> fuelFlow	[DONE]
-- Engine Names				--> Supposed to be change to the engine name. Does apparently not work well
-- propellantIgnoreForIsp	[DONE]
-- propellantDrawGauge		[postponed] --> Implemented but commented out pending decition about validity
-- heatProduction			[DONE]
-- EngineType				[DONE]
+- Engine Names
+- propellantIgnoreForIsp
+- propellantDrawGauge
+- heatProduction
+- EngineType
 
 
 Should these be implemented?

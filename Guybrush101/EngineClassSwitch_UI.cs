@@ -1,28 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using GTI.GenericFunctions;
+using Guybrush101.GenericFunctions;
 
-namespace GTI
+namespace Guybrush101
 {
-    partial class GTI_EngineClassSwitch : PartModule
+    partial class EngineClassSwitch : PartModule
     {
-        #region KSPFields and supporting settings
-            //GUI fields for information
-            //,UI_Toggle(affectSymCounterparts = UI_Scene.Editor, controlEnabled = true, disabledText = "Show Engine Switcher", enabledText = "Hide Engine Switcher")
-        [KSPField(guiActive = true, guiActiveEditor = true, guiName = "Propellants")]
-        private string GUIpropellantNames = String.Empty;
-        [KSPField]
-        public string iniGUIpropellantNames = string.Empty;
-
-        //Availability of the functionality
-        [KSPField]
-        public bool availableInFlight = false;
-        [KSPField]
-        public bool availableInEditor = true;
-
         private bool RightClickUI_onoff = false;
-        #endregion
+        private bool engineState = false;
 
         #region User_Interface
         //[UI_Toggle(controlEnabled = true, disabledText = "Close Engine Switcher", enabledText = "Open Engine Switcher")]
@@ -55,11 +41,12 @@ namespace GTI
             else
             {
                 var togglerightclickUI = Events["toggleRightClickUI"];
-                //togglerightclickUI.guiName = "Show Engine Switcher";
+                togglerightclickUI.guiName = "Show Engine Switcher";
 
                 var nextEvent = Events["nextPropellantEvent"];
                 nextEvent.guiActive = false;
                 nextEvent.guiActiveEditor = false;
+                //nextEvent.guiName = nextTankSetupText;
 
                 var previousEvent = Events["previousPropellantEvent"];
                 previousEvent.guiActive = false;
