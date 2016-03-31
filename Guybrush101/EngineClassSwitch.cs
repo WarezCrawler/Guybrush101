@@ -13,7 +13,7 @@ using Guybrush101.GenericFunctions;
 
 namespace Guybrush101
 {
-    class EngineClassSwitch : PartModule
+    partial class EngineClassSwitch : PartModule
     {
         //Engine manipulation
         #region KSPFields and supporting settings
@@ -109,14 +109,18 @@ namespace Guybrush101
                 //try
                 //{
                 #region GUI Update
+                var togglerightclickUI = Events["toggleRightClickUI"];
+                togglerightclickUI.guiActive = availableInFlight;
+                togglerightclickUI.guiActiveEditor = availableInEditor;
+
                 var nextEvent = Events["nextPropellantEvent"];
-                    nextEvent.guiActive = availableInFlight;
-                    nextEvent.guiActiveEditor = availableInEditor;
-                    //nextEvent.guiName = nextTankSetupText;
+                nextEvent.guiActive = false;
+                nextEvent.guiActiveEditor = false;
+                //nextEvent.guiName = nextTankSetupText;
 
                 var previousEvent = Events["previousPropellantEvent"];
-                    previousEvent.guiActive = availableInFlight;
-                    previousEvent.guiActiveEditor = availableInEditor;
+                previousEvent.guiActive = false;
+                previousEvent.guiActiveEditor = false;
                 //previousEvent.guiName = previousTankSetupText;
                 #endregion
 
@@ -215,36 +219,7 @@ namespace Guybrush101
         }
         #endregion
 
-        #region User_Interface
-        //START - Events for selection of propellants
-        //NEXT
-        [KSPEvent(guiActive = true, guiActiveEditor = true, guiName = "Next propellant setup")]
-        public void nextPropellantEvent()
-        {
-            //InitializeSettings();
-            selectedPropellant++;
-            if (selectedPropellant > arrPropellantNames.GetUpperBound(0))
-            {
-                //if we move from last propellant, then the next one is the first one - aka 0
-                selectedPropellant = 0;
-            }
-            updateEngineModule(true);
-        }
-      //PREVIOUS
-        [KSPEvent(guiActive = true, guiActiveEditor = true, guiName = "Previous propellant setup")]
-        public void previousPropellantEvent()
-        {
-            //InitializeSettings();
-            selectedPropellant--;
-            if (selectedPropellant < 0)
-            {
-                //if we move from the first propellant, then the previous is the last - aka the upperbound
-                selectedPropellant = arrPropellantNames.GetUpperBound(0);
-            }
-            updateEngineModule(true);
-        }
-        //END - Events for selection of propellants
-        #endregion
+
 
         #region UpdatePart Engine Module
         private void updateEngineModule(bool calledByPlayer, string callingFunction = "player")
@@ -347,10 +322,6 @@ namespace Guybrush101
                     Density: propList[selectedPropellant].propDensity, 
                     ISP: maxISP
                     );
-
-                //moduleEngine.maxThrust = 0;
-
-
 
                 //Debug.Log("End of curve editing");
 
@@ -489,7 +460,6 @@ namespace Guybrush101
         //    PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
         //    return resource.id;
         //}
-
         #region --------------------------------TESTING---------------------------------------
         [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "DEBUG")]
         public void test()
