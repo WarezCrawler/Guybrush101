@@ -1,13 +1,12 @@
 ﻿to-do list
 implement
 - atmosphereCurve			[DONE]
-- heatProduction
-- EngineType
 - maxThrust --> fuelFlow	[DONE]
 - Engine Names
 - propellantIgnoreForIsp
 - propellantDrawGauge
-
+- heatProduction
+- EngineType
 
 
 Should these be implemented?

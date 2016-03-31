@@ -131,8 +131,6 @@ namespace Guybrush101.GenericFunctions
 
     class HelperFunctions
     {
-
-
         //Function for creating correctly formatted KeyFrames from specifically formatted strings
         public Keyframe[] KeyFrameFromString(string inKeys, Keyframe[] iniKeys)
         {
