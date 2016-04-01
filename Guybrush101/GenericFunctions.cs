@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Guybrush101.GenericFunctions
+namespace GTI.GenericFunctions
 {
-    class EngineCalculations
+    class PhysicsUtilities
     {
         private float _Thrust, _Density, _ISP, _fuelRate, _fuelFlow, _weightedDensity;
         private float _gravity = 9.81f;
@@ -129,7 +129,7 @@ namespace Guybrush101.GenericFunctions
         }
     }
 
-    class HelperFunctions
+    class CurveUtilities
     {
         //Function for creating correctly formatted KeyFrames from specifically formatted strings
         public Keyframe[] KeyFrameFromString(string inKeys, Keyframe[] iniKeys)
