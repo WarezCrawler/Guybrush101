@@ -3,9 +3,9 @@
 //using System.Linq;
 //using System.Text;
 using UnityEngine;
-using Guybrush101.GenericFunctions;
+using GTI.GenericFunctions;
 
-namespace Guybrush101.CustomTypes
+namespace GTI.CustomTypes
 {
     public class PropellantList
     {
@@ -15,10 +15,17 @@ namespace Guybrush101.CustomTypes
         private string _propRatios;         //The propellant ratios
         private float _propDensity;
         private string _ignoreForIsp;
+        private string _drawGauge;
+
+        private string _heatProd;
+        private string _engineType;
+
+
         private string _atmosphereCurve;
         private string _velCurve;
         private string _atmCurve;
 
+        //arrPropIgnoreForISP, arrPropDrawGauge, arrHeatProd, arrEngineTypes;
 
         //find ISP Turbine = 1 atm, LiquidFuel = 0 atm and use the function for FuelFlow to ensure right flow rate
 
@@ -84,7 +91,7 @@ namespace Guybrush101.CustomTypes
             { 
                 if (arrInPropellants.Length == arrInRatios.Length)
                 {
-                    EngineCalculations fx = new EngineCalculations();
+                    PhysicsUtilities fx = new PhysicsUtilities();
                     Debug.Log("Running _propDensity = fx.calcWeightedDensity(_propellants, _propRatios)");
                     _propDensity = fx.calcWeightedDensity(_propellants, _propRatios);
                     if ( _propDensity > 0 ) { returnSuccessStatus = true; } else { returnSuccessStatus = false; }
@@ -124,6 +131,28 @@ namespace Guybrush101.CustomTypes
             get { return _ignoreForIsp; }
             set { _ignoreForIsp = value; }
         }
+        public string propDrawGauge
+        {
+            get { return _drawGauge; }
+            set { _drawGauge = value; }
+        }
+        public string heatProduction
+        {
+            get { return _heatProd; }
+            set { _heatProd = value; }
+        }
+        public string engineType
+        {
+            get { return _engineType; }
+            set { _engineType = value; }
+        }
+
+
+
+
+
+
+
         public int propAmount
         {
             get { return _propAmount; }
