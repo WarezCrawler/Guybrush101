@@ -7,8 +7,8 @@
     <ProjectGuid>{04D384F2-34D7-4C53-ACB4-4E8EE099C93C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Guybrush101</RootNamespace>
-    <AssemblyName>Guybrush101</AssemblyName>
+    <RootNamespace>GTI</RootNamespace>
+    <AssemblyName>MightyPirate</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
