@@ -5,9 +5,17 @@ The purpose is to introduce an alternative way to switch engine configuration (p
 
 Features:
 - Multiengine switch
+- Select which engine ID to affect
+- Availability (Flight, Editor)
+- Propellants, Ratios, IgnoreForISP, DrawGauge
+- Custom naming of Engine configuration
+	- Set Engine Type [LiquidFuel, Nuclear, SolidBooster, Turbine, MonoProp, ScramJet, Electric, Generic, Piston]
+- Thrust
+- Heat production
+- Curves: atmosphereCurve, velCurve, atmCurve
 
 
-CFG:
+CFG Example:
 	
 	MODULE
 	{
