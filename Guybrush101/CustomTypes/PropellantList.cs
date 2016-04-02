@@ -14,7 +14,7 @@ namespace GTI.CustomTypes
         private int _propAmount;
         private string _propRatios;         //The propellant ratios
         private float _propDensity;
-        private string _ignoreForIsp;
+        private string _ignoreForIsp = string.Empty;
         private string _drawGauge;
 
         private string _heatProd;
@@ -36,7 +36,7 @@ namespace GTI.CustomTypes
         public string Propellants
         {
             get { return _propellants; }
-            set { _propellants = value; CalcDensity(_propellants, _propRatios); }
+            set { _propellants = value; CalcDensity(_propellants, _propRatios, _ignoreForIsp); }
         }
 
         //For storing and retrieving propellant ratios
@@ -64,22 +64,34 @@ namespace GTI.CustomTypes
                     }
                 }
                 catch (Exception e) { Debug.LogError("CustomTypes.PropellantList -> Could not parse propellant ratio into integer.\n" + value + "\nError trown:\n" + e); }
-                CalcDensity(_propellants,_propRatios);
+                CalcDensity(_propellants,_propRatios, _ignoreForIsp);
             }
         }
         public float propDensity
         {
             get { return _propDensity; }
         }
-        private bool CalcDensity(string inPropellants, string inRatios)
+        private bool CalcDensity(string inPropellants, string inRatios, string inIgnoreForIsp)
         {
-            bool returnSuccessStatus = false;
-            string[] arrInPropellants, arrInRatios;
+            bool returnSuccessStatus = false, useIgnoreForISP = false, IgnoreForISP;
+            string[] arrInPropellants, arrInRatios, arrIgnoreForIsp;
+
             try
             {
                 arrInPropellants = inPropellants.Trim().Split(',');
                 arrInRatios = inRatios.Trim().Split(',');
+
                 if (arrInPropellants.Length != arrInRatios.Length) { return false; }
+
+                //Decide if ignoreForISP property should be used for density calculation
+                arrIgnoreForIsp = inIgnoreForIsp.Trim().Split(',');
+                if ((string.IsNullOrEmpty(inIgnoreForIsp) || inIgnoreForIsp.Trim().Length == 0))
+                { useIgnoreForISP = false; } 
+                else
+                { 
+                    //arrIgnoreForIsp = inIgnoreForIsp.Trim().Split(',');
+                    if ( arrIgnoreForIsp.Length == arrInPropellants.Length ) { useIgnoreForISP = true; }
+                }
             }
             catch
             {
@@ -89,14 +101,31 @@ namespace GTI.CustomTypes
 
             try
             { 
-                if (arrInPropellants.Length == arrInRatios.Length)
-                {
-                    PhysicsUtilities fx = new PhysicsUtilities();
-                    Debug.Log("Running _propDensity = fx.calcWeightedDensity(_propellants, _propRatios)");
-                    _propDensity = fx.calcWeightedDensity(_propellants, _propRatios);
-                    if ( _propDensity > 0 ) { returnSuccessStatus = true; } else { returnSuccessStatus = false; }
-                    Debug.Log("_propDensity = fx.calcWeightedDensity(_propellants, _propRatios) is successfull");
+                PhysicsUtilities fx = new PhysicsUtilities();
+                //Debug.Log("Running _propDensity = fx.calcWeightedDensity(_propellants, _propRatios)");
+
+                //Create strings for the calculation
+                if (useIgnoreForISP)                    //Is IgnoreForISP to be used
+                { 
+                    inPropellants = string.Empty;
+                    inRatios = string.Empty;
+                    //loop the arrays and recreate cleaned arrays
+                    for (int i = 0; i < arrInPropellants.Length; i++)
+                    {
+                        Debug.Log("if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)");
+                        if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)
+                        {
+                            inPropellants = inPropellants + "," + arrInPropellants[i];
+                            inRatios = inRatios + "," + arrInRatios[i];
+                        }
+                    }
                 }
+
+                //Calculate the weighted density of the propellants
+                _propDensity = fx.calcWeightedDensity(inPropellants, inRatios);
+                if ( _propDensity > 0 ) { returnSuccessStatus = true; } else { returnSuccessStatus = false; }
+
+                //Debug.Log("_propDensity = fx.calcWeightedDensity(_propellants, _propRatios) is successfull");
             }
             catch
             {

@@ -21,8 +21,8 @@ namespace GTI
         public string engineID = string.Empty;                                                         //the engine to affect. Needed if multiple engines are present in the part.
         //[KSPField]
         //public string engineNames = string.Empty;                                                      //Names of the engine after switch, if empty, then not name switching occurs
-        //[KSPField]
-        //public string propellantIgnoreForIsp = string.Empty;
+        [KSPField]
+        public string propellantIgnoreForIsp = string.Empty;
         [KSPField]
         public string propellantDrawGauge = string.Empty;
         [KSPField]
@@ -44,6 +44,11 @@ namespace GTI
         [KSPField]
         public string atmCurveKeys = string.Empty; //"0 0 0 0;1 1 0 0";
                                                    //(float time, float value, float inTangent, float outTangent)
+
+
+
+
+        private bool propellantIgnoreForIspEmpty = true;
         private bool atmosphereCurveEmpty = true;
         private bool velCurveEmpty = true;
         private bool atmCurveEmpty = true;
@@ -53,7 +58,7 @@ namespace GTI
         //Arrays for data processing
         private string[] arrPropellantNames;    //for the split list of prop names
         private string[] arrPropellantRatios;   //for the split list of prop ratios
-        private string[] arrMaxThrust, arrPropDrawGauge, arrHeatProd, arrEngineTypes;       //arrPropIgnoreForISP, 
+        private string[] arrMaxThrust, arrPropDrawGauge, arrHeatProd, arrEngineTypes, arrPropIgnoreForISP;
         private string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
 
         //Customtype for list of relevant settings
@@ -127,10 +132,16 @@ namespace GTI
                 arrEngineTypes = EngineTypes.Trim().Split(';');
 
 
+                propellantIgnoreForIspEmpty = ((string.IsNullOrEmpty(propellantIgnoreForIsp) || propellantIgnoreForIsp.Trim().Length == 0));
                 atmosphereCurveEmpty = ((string.IsNullOrEmpty(atmosphereCurveKeys) || atmosphereCurveKeys.Trim().Length == 0));
                 velCurveEmpty = ((string.IsNullOrEmpty(velCurveKeys) || velCurveKeys.Trim().Length == 0));
                 atmCurveEmpty = ((string.IsNullOrEmpty(atmCurveKeys) || velCurveKeys.Trim().Length == 0));
-                
+
+
+                if (!propellantIgnoreForIspEmpty)
+                {
+                    arrPropIgnoreForISP = propellantIgnoreForIsp.Trim().Split(';');
+                }
                 if (!atmosphereCurveEmpty)
                 {
                     //Debug.Log("arrAtmosphereCurve --> splitting the array based on\n" + atmosphereCurveKeys);
@@ -159,6 +170,7 @@ namespace GTI
                 #endregion
 
                 #region Populate Propellant List
+                try { 
                 //Populate the Propellant List (propList) from the array for more intuitive access to this information later
                 for (int i = 0; i < arrPropellantRatios.Length; i++)
                     {
@@ -172,6 +184,13 @@ namespace GTI
                             heatProduction = arrHeatProd[i],
                             engineType = arrEngineTypes[i]
                         });
+
+                    
+
+                        if (!propellantIgnoreForIspEmpty)
+                        {
+                            propList[i].propIgnoreForISP = arrPropIgnoreForISP[i];
+                        }
                         if (!atmosphereCurveEmpty)
                         {
                             propList[i].atmosphereCurve = arrAtmosphereCurve[i];
@@ -185,6 +204,12 @@ namespace GTI
                             propList[i].atmCurve = arrPropellantAtmCurve[i];
                         }
                     }
+                }
+                catch
+                {
+                    Debug.LogError("Populate Propellant List failed");
+                    throw;
+                }
                 #endregion
 
                 #region Identify ModuleEngines in Scope
@@ -225,8 +250,9 @@ namespace GTI
         #region UpdatePart Engine Module
         private void updateEngineModule(bool calledByPlayer, string callingFunction = "player")
         {
-            string[] targetPropellants, targetRatios, targetIgnoreForISP, targetDrawGuage;
+            string[] arrtargetPropellants, arrtargetRatios, arrtargetIgnoreForISP, arrtargetDrawGuage;
             float targetRatio;
+            bool targetIgnoreForISP;
             float maxISP = 0;
             float floatParseResult;
 
@@ -254,22 +280,31 @@ namespace GTI
                 //    );
 
                 //Split cfg subsettings into arrays
-                targetPropellants = propList[selectedPropellant].Propellants.Split(',');
-                targetRatios = propList[selectedPropellant].PropRatios.Split(',');
-                //targetIgnoreForISP = propList[selectedPropellant].propIgnoreForISP.Split(',');
-                targetDrawGuage = propList[selectedPropellant].propDrawGauge.Split(',');
+                arrtargetPropellants = propList[selectedPropellant].Propellants.Split(',');
+                arrtargetRatios = propList[selectedPropellant].PropRatios.Split(',');
+                arrtargetIgnoreForISP = propList[selectedPropellant].propIgnoreForISP.Split(',');
+                arrtargetDrawGuage = propList[selectedPropellant].propDrawGauge.Split(',');
 
                 //Create new propellent nodes by looping them in.
-                for (int i = 0; i < targetPropellants.Length; i++)
+                for (int i = 0; i < arrtargetPropellants.Length; i++)
                 {
                     //Get and convert ratios to floats. They should already have been verified in the CustomTypes.PropellantList class
-                    targetRatio = Convert.ToSingle(targetRatios[i]);
+                    targetRatio = Convert.ToSingle(arrtargetRatios[i]);
+                    
+                    //if ignoreForISP have been set wrong or not at all, then we config it to false
+                    if (arrtargetIgnoreForISP.Length == arrtargetPropellants.Length)
+                    {
+                        if (!bool.TryParse(arrtargetIgnoreForISP[i], out targetIgnoreForISP)) { targetIgnoreForISP = false; }
+                        //targetIgnoreForISP = arrtargetIgnoreForISP[i];
+                    } else { targetIgnoreForISP = false; }
+
+                    Debug.Log("!bool.TryParse(arrtargetIgnoreForISP[i], out targetIgnoreForISP)\ntargetIgnoreForISP: " + targetIgnoreForISP);
 
                     ConfigNode propNode = newPropNode.AddNode("PROPELLANT");
-                    propNode.AddValue("name", targetPropellants[i]);
+                    propNode.AddValue("name", arrtargetPropellants[i]);
                     propNode.AddValue("ratio", targetRatio);
-                    propNode.AddValue("ignoreForIsp", false);       //For now we assume all is counted for ISP           //targetIgnoreForISP[i]
-                    propNode.AddValue("DrawGauge", targetDrawGuage[i]);      //I think the gauge  should always be shown
+                    propNode.AddValue("ignoreForIsp", targetIgnoreForISP);       //For now we assume all is counted for ISP           //targetIgnoreForISP[i]
+                    propNode.AddValue("DrawGauge", arrtargetDrawGuage[i]);      //I think the gauge  should always be shown
                 }
                 //Update the engine with new propellant configuration
                 //NOTICE: The original propellant nodes are overwritten, so we do not need to delete them
@@ -391,48 +426,19 @@ namespace GTI
             try
             {
                 //we need to run the InitializeSettings here, because the OnStart does not run before this.
-                InitializeSettings();
+                //InitializeSettings();
 
                 //string strOutInfo = string.Empty;
                 System.Text.StringBuilder strOutInfo = new System.Text.StringBuilder();
                 //string[] _propellants, _propratios;
 
                 strOutInfo.AppendLine("Propellants available");
-                foreach (CustomTypes.PropellantList item in propList)
-                {
-                    strOutInfo.AppendLine(item.Propellants.Replace(",",", "));
-                }
-
-
-                    //Debug.Log(
-                    //    "selectedPropellant: " + selectedPropellant +
-                    //    "\nPropellants: " + propList[selectedPropellant].Propellants +
-                    //    "\nPropRatios: " + propList[selectedPropellant].PropRatios +
-                    //    "\nCalledby: " + "GetInfo"
-                    //    );
-
-                    //foreach (CustomTypes.PropellantList item in propList)
-                    //{
-                    //    _propellants = item.Propellants.Split(',');
-                    //    _propratios = item.PropRatios.Split(',');
-                    //    if (_propellants.Length > 1)
-                    //    {
-                    //        for (int i = 0; i < _propellants.Length; i++)
-                    //        {
-                    //            strOutInfo += _propellants[i];
-                    //            strOutInfo += " (" + _propratios[i] + ")";
-                    //            if (i < _propellants.Length - 1) { strOutInfo += ","; }
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        strOutInfo += _propellants;
-                    //    }
-                    //    strOutInfo += "; ";
-                    //}
-                    //strOutInfo = "Propellant configurations:\n" + strOutInfo.Substring(0, strOutInfo.Length - 1);
-
-                    return strOutInfo.ToString();
+                //foreach (CustomTypes.PropellantList item in propList)
+                //{
+                //    strOutInfo.AppendLine(item.Propellants.Replace(",",", "));
+                //}
+                strOutInfo.AppendLine(propellantNames.Replace(";", "; "));
+                return strOutInfo.ToString();
             }
             catch (Exception e)
             {
@@ -517,7 +523,16 @@ namespace GTI
                     "\nFuelRate (calc): " + Calc.calcFuelRateFromfuelFlow(moduleEngine.requestedMassFlow, Density) +
                     "\nWeighted Density of " + propList[selectedPropellant].Propellants + " is " + Density + "Kg/L"
                     );
+
+                foreach(var propellant in moduleEngine.propellants)
+                {
+                    Debug.Log(
+                        "foreach(var propellant in moduleEngine.propellants)" +
+                        "\nPropellant: " + propellant.name +
+                        "\nignoreForISP: " + propellant.ignoreForIsp);
+                }
                 
+
                 for (int j = 0; j < moduleEngine.atmosphereCurve.Curve.length; j++)
                 {
                     Debug.Log(moduleEngine.atmosphereCurve.Curve[j].time + ", " + moduleEngine.atmosphereCurve.Curve[j].value);

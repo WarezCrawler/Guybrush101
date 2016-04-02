@@ -13,3 +13,9 @@ Should these be implemented?
 		atmChangeFlow = True
 		useVelCurve = True
 		useAtmCurve = True
+		resourceFlowMode
+			STACK_PRIORITY_SEARCH
+			STAGE_STACK_FLOW_BALANCE
+			STAGE_PRIORITY_FLOW
+			NO_FLOW
+			ALL_VESSEL

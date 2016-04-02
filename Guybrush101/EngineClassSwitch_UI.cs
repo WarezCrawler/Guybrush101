@@ -55,7 +55,7 @@ namespace GTI
             else
             {
                 var togglerightclickUI = Events["toggleRightClickUI"];
-                //togglerightclickUI.guiName = "Show Engine Switcher";
+                togglerightclickUI.guiName = "Show Engine Switcher";
 
                 var nextEvent = Events["nextPropellantEvent"];
                 nextEvent.guiActive = false;
@@ -101,8 +101,16 @@ namespace GTI
         //END - Events for selection of propellants
         #endregion
 
-
-
+        [KSPAction("Next propellant")]
+        public void nextPropellantAction(KSPActionParam param)
+        {
+            nextPropellantEvent();
+        }
+        [KSPAction("Previous propellant")]
+        public void previousPropellantAction(KSPActionParam param)
+        {
+            previousPropellantEvent();
+        }
 
     }
 }
