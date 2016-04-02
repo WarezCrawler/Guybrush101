@@ -8,6 +8,7 @@ Features:
 
 
 CFG:
+	
 	MODULE
 	{
 		name = GTI_EngineClassSwitch
@@ -49,3 +50,4 @@ CFG:
 		velCurveKeys = 0 1|0 1|0 1
 		atmCurveKeys = 0 1;1 1|0 1;1 1|0 1;1 1
 	}
+	
