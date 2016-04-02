@@ -358,8 +358,9 @@ namespace GTI
                     );
                 if (Single.TryParse(propList[selectedPropellant].heatProduction, out floatParseResult))
                 { moduleEngine.heatProduction = floatParseResult; }
-                
+
                 //Set the engine type
+                //[LiquidFuel, Nuclear, SolidBooster, Turbine, MonoProp, ScramJet, Electric, Generic, Piston]
                 switch (propList[selectedPropellant].engineType)
                 {
                     case "LiquidFuel":
@@ -448,55 +449,6 @@ namespace GTI
         }
         #endregion
         
-        ////Function for creating correctly formatted KeyFrames from specifically formatted strings
-        //private Keyframe[] KeyFrameFromString(string inKeys, Keyframe[] iniKeys)
-        //{
-        //    //Format of inKey is
-        //    // "0 0 0 0;1 1 1 1;2 2 2 2"
-        //    // Where "white space" delimits individual parameters for the float curve (float time, float value, float inTangent, float outTangent)
-        //    // Where ";" delimits the keys in the curve (no spaces around ";" is allowed, since these are used as parameter delimiter. No trimming possible because of same fact)
-        //    // All keys in the string have to belong together
-
-        //    Keyframe[] outKeys;
-        //    int keyCount;
-        //    string[] keyArray, keyCurvePoints;
-
-        //    keyArray = inKeys.Split(';');
-        //    keyCount = keyArray.Length;
-
-        //    outKeys = new Keyframe[keyCount];
-
-        //    //Debug.Log("inKeys: " + inKeys);
-        //    //Debug.Log("keyCount: " + keyCount);
-        //    //Assign values to KeyFrames
-        //    for (int i = 0; i < keyCount; i++)      //keyCount = keyArray.Length;
-        //    {
-        //        keyCurvePoints = keyArray[i].Split(new char[0]);   //split by white space
-
-        //        //Debug.Log("keyCurvePoint.Length: " + keyCurvePoint.Length);
-        //        //Debug.Log("keyArray[i]: " + keyArray[i]);
-
-        //        if (keyCurvePoints.Length == 2)
-        //        { outKeys[i] = new Keyframe(Single.Parse(keyCurvePoints[0]), Single.Parse(keyCurvePoints[1])); }
-        //        else if (keyCurvePoints.Length == 4)
-        //        { outKeys[i] = new Keyframe(Single.Parse(keyCurvePoints[0]), Single.Parse(keyCurvePoints[1]), Single.Parse(keyCurvePoints[2]), Single.Parse(keyCurvePoints[3])); }
-        //        else
-        //        {
-        //            Debug.LogError(
-        //                "KeyFrameFromString: KeyCurve has wrong dimensions\n" + keyCurvePoints.Length +
-        //                "\ninKeys: " + inKeys);
-        //            return iniKeys;     //If iniconsistencies are found, return the initial value
-        //        }
-        //    }
-        //    return outKeys;
-        //}
-
-        ////gets the id of the named resource found in a part
-        //private static int GetResourceID(this Part part, string resourceName)
-        //{
-        //    PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
-        //    return resource.id;
-        //}
         #region --------------------------------TESTING---------------------------------------
         [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "DEBUG")]
         public void test()
