@@ -9,7 +9,7 @@ Features:
 - Availability (Flight, Editor)
 - Propellants, Ratios, IgnoreForISP, DrawGauge
 - Custom naming of Engine configuration
-	- Set Engine Type [LiquidFuel, Nuclear, SolidBooster, Turbine, MonoProp, ScramJet, Electric, Generic, Piston]
+- Set Engine Type [LiquidFuel, Nuclear, SolidBooster, Turbine, MonoProp, ScramJet, Electric, Generic, Piston]
 - Thrust
 - Heat production
 - Curves: atmosphereCurve, velCurve, atmCurve
