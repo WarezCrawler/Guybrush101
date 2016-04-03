@@ -19,3 +19,16 @@ Should these be implemented?
 			STAGE_PRIORITY_FLOW
 			NO_FLOW
 			ALL_VESSEL
+		incorporate are different for exhaust effects for every propellant
+
+
+
+Resources:
+Description of [UI_CHOOSEOPTION]
+http://forum.kerbalspaceprogram.com/index.php?/topic/135891-ui_chooseoption-oddities-when-displaying-long-names/
+
+Confignode
+https://anatid.github.io/XML-Documentation-for-the-KSP-API/class_config_node_1_1_config_node_list.html
+http://forum.kerbalspaceprogram.com/index.php?/topic/135917-confignode-editing/
+http://forum.kerbalspaceprogram.com/index.php?/topic/73852-proper-loading-of-confignodes-in-a-partmodule/#comment-1177623
+http://forum.kerbalspaceprogram.com/index.php?/topic/110914-for-each-confignode-dictionaryltint-stringgt/

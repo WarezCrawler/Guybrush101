@@ -36,8 +36,7 @@ namespace GTI
         public string machCurves = string.Empty;
 
 
-        [KSPField(isPersistant = true)]
-        public int selectedIntake = -1;
+
 
 
         #region Booleans for existence checks
@@ -51,24 +50,53 @@ namespace GTI
         private string[] arrIntakeNames;
 
         private List<ModuleResourceIntake> ModuleIntakes;
+        //private ConfigNode node;
 
         #endregion
 
         #region Events
         public override void OnStart(PartModule.StartState state)
         {
+            Debug.Log("Intake Switch OnStart()");
             InitializeSettings();
             if (selectedIntake == -1)
             {
                 selectedIntake = 0;
+                //_selectedIntakeOld = 0;
             }
+            //GameEvents.onVesselWasModified
+            //GameEvents.onEditorShipModified
+            //GameEvents.on
+            //http://forum.kerbalspaceprogram.com/index.php?/topic/135891-ui_chooseoption-oddities-when-displaying-long-names/
+
             updateIntake(false, "OnStart");
         }
+        /*
+        public override void OnLoad(ConfigNode inNode)
+        {
+            //base.OnLoad(node);
+            ConfigNode node = inNode;
+            //Debug.Log(node.);
 
+            foreach (var n in node.GetNodes())
+            {
+                Debug.Log("node.GetNodes():\n " + n);
+            }
+            foreach (var n in node.GetValues())
+            {
+                Debug.Log("node.GetValues():\n" + n);
+            }
+
+            //node.
+
+
+        }
+        */
         private void InitializeSettings()
         {
             if (!_settingsInitialized)
             {
+                Debug.Log("Loading Settings for Intake Switcher");
                 #region GUI Update
                 var nextEvent = Events["nextIntakeEvent"];
                 nextEvent.guiActive = availableInFlight;
@@ -108,9 +136,12 @@ namespace GTI
                 //foreach (PartModule moduleIntake in ModuleIntakes)
                 //{
                 //}
+                Debug.Log("InitializeSettings() --> ModuleIntakes[0].resourceName " + ModuleIntakes[0].resourceName);
+                //ModuleIntakes[1].
 
                 //set settings to initialized
                 _settingsInitialized = true;
+                Debug.Log("Intake Switcher settings loaded: " + _settingsInitialized);
 
             }
         }
@@ -119,14 +150,88 @@ namespace GTI
         #region UpdatePart Intake Module
         private void updateIntake(bool calledByPlayer, string callingFunction = "player")
         {
-            foreach (PartModule moduleIntake in ModuleIntakes)
+            ConfigNode newIntakeNode = new ConfigNode();
+
+            //foreach (PartModule moduleIntake in ModuleIntakes)
+            for (int i = 0; i < ModuleIntakes.Count; i++)
             {
                 //*****************************
+                Debug.Log("Update Resource Intake");
+                //moduleIntake.Fields.SetValue("resourceName", "IntakeAtm");
+
+                //ConfigNode IntakeNode = newIntakeNode.AddNode("PROPELLANT");
+
+                //Define the node object
+                ConfigNode IntakeNode = newIntakeNode;          //.GetNode("ModuleResourceIntake");
+
+                Debug.Log("Confignode defined");
+
+                //Set new setting values
+                IntakeNode.AddValue("resourceName", arrIntakeNames[selectedIntake]);
+
+                Debug.Log("Confignode value added");
+
+                //Load changes (nodeobject) into the moduleIntake
+                ModuleIntakes[i].Load(IntakeNode);
+
+                Debug.Log("Confignode Loaded");
+
+                //for (int i = 0; i < IntakeNode.GetNode("machCurve").GetValues().Length; i++)
+                //{
+                //    Debug.Log("MachCurve: [" + i + "] --> " + IntakeNode.GetNode("machCurve").GetValues().GetValue(i));
+                //    //IntakeNode.
+                //}
+                //Debug.Log("MachCurve: " + IntakeNode.GetNode("machCurve").GetValues().GetValue(0));
+                //Debug.Log("MachCurve: " + IntakeNode.GetNode("machCurve").);
+                string temp = string.Empty;
+                foreach (var key in ModuleIntakes[i].machCurve.Curve.keys)
+                {
+                    //ModuleIntakes[i].machCurve.Curve.
+                    //Debug.Log(
+                        temp = temp + "\nmachKeys: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent;
+                        //);
+                }
+                Debug.Log(temp);
+
+
             }
+            //ModuleIntakes[0].resourceName = arrIntakeNames[selectedIntake];
+            
+
+            //ConfigNode propNode = ModuleIntakes[0].GetComponents<>;
+            //propNode.AddValue("name", arrtargetPropellants[i]);
+
+            Debug.Log("Update GUI");
+            GUIResourceName = ModuleIntakes[0].resourceName;
+            Debug.Log("GUI Updated");
+
+            Debug.Log(
+                "IntakeAir id: "            + PartResourceLibrary.Instance.GetDefinition("IntakeAir").id +
+                "\nIntakeAir density: "     + PartResourceLibrary.Instance.GetDefinition("IntakeAir").density +
+                "\nIntakeAtm id: "          + PartResourceLibrary.Instance.GetDefinition("IntakeAtm").id +
+                "\nIntakeAtm density: "     + PartResourceLibrary.Instance.GetDefinition("IntakeAtm").density
+            );
+
+            Debug.Log(
+                "ModuleIntakes[0].resourceName: "   + ModuleIntakes[0].resourceName +
+                "\nresourceId: "                    + ModuleIntakes[0].resourceId +
+                "\nresourceDef: "                   + ModuleIntakes[0].resourceDef +
+                "\nres: "                           + ModuleIntakes[0].res +
+                "\nresourceUnits: "                 + ModuleIntakes[0].resourceUnits +
+                "\ncheckForOxygen: "                + ModuleIntakes[0].checkForOxygen +
+                "\narea: "                          + ModuleIntakes[0].area +
+                "\nairFlow: "                       + ModuleIntakes[0].airFlow +
+                "\nModuleIntakes.Count: "           + ModuleIntakes.Count
+                );
+            //ModuleIntakes[0].machCurve.
+            //ModuleIntakes.Count;
         }
         #endregion
 
-
+        public override string GetInfo()
+        {
+            return "AirIntake Switcher:\n" + resourceNames;
+        }
 
     }
 }
