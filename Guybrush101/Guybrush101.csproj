@@ -48,18 +48,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Afterburner.cs" />
-    <Compile Include="IntakeSwitch_UI.cs" />
-    <Compile Include="IntakeSwitch.cs" />
-    <Compile Include="EngineClassSwitch_UI.cs" />
-    <Compile Include="GenericFunctions.cs" />
+    <Compile Include="UI_Examples\UI_CHOOSEOPTION.cs" />
+    <Compile Include="Core\IntakeSwitch_UI.cs" />
+    <Compile Include="Core\IntakeSwitch.cs" />
+    <Compile Include="Core\EngineClassSwitch_UI.cs" />
+    <Compile Include="Utilities\GenericFunctions.cs" />
     <Compile Include="CustomTypes\PropellantList.cs" />
-    <Compile Include="EngineClassSwitch.cs" />
+    <Compile Include="Core\EngineClassSwitch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="G101.cs" />
-    <None Include="Notes.txt" />
+    <None Include="Other_NoCompile\G101.cs" />
+    <None Include="Other_NoCompile\Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
