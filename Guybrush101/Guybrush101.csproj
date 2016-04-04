@@ -53,7 +53,7 @@
     <Compile Include="Core\IntakeSwitch.cs" />
     <Compile Include="Core\EngineClassSwitch_UI.cs" />
     <Compile Include="Utilities\GenericFunctions.cs" />
-    <Compile Include="CustomTypes\PropellantList.cs" />
+    <Compile Include="Utilities_CustomTypes\PropellantList.cs" />
     <Compile Include="Core\EngineClassSwitch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
