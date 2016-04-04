@@ -12,10 +12,14 @@ namespace GTI
         [KSPField(guiActive = true, guiActiveEditor = true, guiName = "Intake Resource")]
         private string GUIResourceName = String.Empty;
 
-        [UI_ChooseOption(affectSymCounterparts = UI_Scene.Editor, controlEnabled = true, scene = UI_Scene.All,onFieldChanged = ]
+        //[UI_ChooseOption(affectSymCounterparts = UI_Scene.Editor, controlEnabled = true, scene = UI_Scene.All,onFieldChanged = ]
+
+
+
+
         [KSPField(isPersistant = true)]
         public int selectedIntake = -1;
-        private int _selectedIntakeOld = -1;
+        //private int _selectedIntakeOld = -1;
 
 
         //Availability of the functionality

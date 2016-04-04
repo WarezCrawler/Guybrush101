@@ -34,7 +34,8 @@ namespace GTI
         public string intakeTransformNames = string.Empty;       //"Intake, Intake";
         [KSPField]
         public string machCurves = string.Empty;
-
+        [KSPField]
+        public string resMaxAmount = string.Empty;
 
 
 
@@ -50,6 +51,7 @@ namespace GTI
         private string[] arrIntakeNames;
 
         private List<ModuleResourceIntake> ModuleIntakes;
+        
         //private ConfigNode node;
 
         #endregion
@@ -114,15 +116,14 @@ namespace GTI
 
                 #endregion
 
-                if (string.IsNullOrEmpty(resourceNames) || resourceNames.Trim().Length == 0)
+                #region Check Input existance etc.
+                resourceNamesEmpty = ((string.IsNullOrEmpty(resourceNames) || resourceNames.Trim().Length == 0));
+
+                if (resourceNamesEmpty)
                 {
                     Debug.LogError("GTI_IntakeSwitch is missing settings for intake names.");
                     return;
                 }
-
-
-                #region Check Input existance etc.
-                resourceNamesEmpty = ((string.IsNullOrEmpty(resourceNames) || resourceNames.Trim().Length == 0));
                 #endregion
 
                 #region Check and split into arrays
@@ -133,11 +134,6 @@ namespace GTI
                 #endregion
 
                 ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
-                //foreach (PartModule moduleIntake in ModuleIntakes)
-                //{
-                //}
-                Debug.Log("InitializeSettings() --> ModuleIntakes[0].resourceName " + ModuleIntakes[0].resourceName);
-                //ModuleIntakes[1].
 
                 //set settings to initialized
                 _settingsInitialized = true;
@@ -151,31 +147,55 @@ namespace GTI
         private void updateIntake(bool calledByPlayer, string callingFunction = "player")
         {
             ConfigNode newIntakeNode = new ConfigNode();
+            Part currentPart = this.part;
+
 
             //foreach (PartModule moduleIntake in ModuleIntakes)
+            //Apparently the foreach does not work properly with Intakes. Don't know why.
             for (int i = 0; i < ModuleIntakes.Count; i++)
             {
                 //*****************************
                 Debug.Log("Update Resource Intake");
-                //moduleIntake.Fields.SetValue("resourceName", "IntakeAtm");
-
-                //ConfigNode IntakeNode = newIntakeNode.AddNode("PROPELLANT");
 
                 //Define the node object
                 ConfigNode IntakeNode = newIntakeNode;          //.GetNode("ModuleResourceIntake");
+                ConfigNode IntakeResource = newIntakeNode;
 
-                Debug.Log("Confignode defined");
+                //Debug.Log("Confignode defined");
 
                 //Set new setting values
                 IntakeNode.AddValue("resourceName", arrIntakeNames[selectedIntake]);
 
-                Debug.Log("Confignode value added");
+                //Debug.Log("Confignode value added");
 
                 //Load changes (nodeobject) into the moduleIntake
                 ModuleIntakes[i].Load(IntakeNode);
 
-                Debug.Log("Confignode Loaded");
+                //Clean out any previous resources in the intake
+                currentPart.Resources.list.Clear();
+                PartResource[] partResources = currentPart.GetComponents<PartResource>();
+                foreach (PartResource resource in partResources)
+                {
+                    //currentPart.Resources.list.Remove(resource);
+                    DestroyImmediate(resource);
+                }
 
+                //Create Resource node
+                IntakeResource.AddNode("RESOURCE");
+                IntakeResource.AddValue("name", arrIntakeNames[selectedIntake]);
+                IntakeResource.AddValue("amount", 0f);
+                IntakeResource.AddValue("maxAmount", int.Parse(resMaxAmount));
+
+                //Add the resources
+                currentPart.AddResource(IntakeResource);
+
+                //Update the part resources
+                currentPart.Resources.UpdateList();
+
+                //Debug.Log("Confignode Loaded");
+
+                /*
+                //machCurves
                 //for (int i = 0; i < IntakeNode.GetNode("machCurve").GetValues().Length; i++)
                 //{
                 //    Debug.Log("MachCurve: [" + i + "] --> " + IntakeNode.GetNode("machCurve").GetValues().GetValue(i));
@@ -192,28 +212,26 @@ namespace GTI
                         //);
                 }
                 Debug.Log(temp);
-
+                */
 
             }
-            //ModuleIntakes[0].resourceName = arrIntakeNames[selectedIntake];
-            
 
-            //ConfigNode propNode = ModuleIntakes[0].GetComponents<>;
-            //propNode.AddValue("name", arrtargetPropellants[i]);
+            #region DEBUGGING
+            /* Debugging Area */
 
             Debug.Log("Update GUI");
             GUIResourceName = ModuleIntakes[0].resourceName;
             Debug.Log("GUI Updated");
 
             Debug.Log(
-                "IntakeAir id: "            + PartResourceLibrary.Instance.GetDefinition("IntakeAir").id +
+                "\nIntakeAir id: " + PartResourceLibrary.Instance.GetDefinition("IntakeAir").id +
                 "\nIntakeAir density: "     + PartResourceLibrary.Instance.GetDefinition("IntakeAir").density +
                 "\nIntakeAtm id: "          + PartResourceLibrary.Instance.GetDefinition("IntakeAtm").id +
                 "\nIntakeAtm density: "     + PartResourceLibrary.Instance.GetDefinition("IntakeAtm").density
             );
 
             Debug.Log(
-                "ModuleIntakes[0].resourceName: "   + ModuleIntakes[0].resourceName +
+                "\nModuleIntakes[0].resourceName: " + ModuleIntakes[0].resourceName +
                 "\nresourceId: "                    + ModuleIntakes[0].resourceId +
                 "\nresourceDef: "                   + ModuleIntakes[0].resourceDef +
                 "\nres: "                           + ModuleIntakes[0].res +
@@ -223,8 +241,17 @@ namespace GTI
                 "\nairFlow: "                       + ModuleIntakes[0].airFlow +
                 "\nModuleIntakes.Count: "           + ModuleIntakes.Count
                 );
-            //ModuleIntakes[0].machCurve.
-            //ModuleIntakes.Count;
+            
+            for (int i = 0;i < part.Resources.Count; i++)
+            {
+                Debug.Log(
+                    "\npart.Resources[0].resourceName: " + part.Resources[i].resourceName +
+                    "\npart.Resources[0].amount: " + part.Resources[i].amount +
+                    "\npart.Resources[0].maxAmount: " + part.Resources[i].maxAmount
+                    );
+            }
+            #endregion
+
         }
         #endregion
 
