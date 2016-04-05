@@ -129,7 +129,7 @@ namespace GTI.GenericFunctions
         }
     }
 
-    class CurveUtilities
+    class Utilities
     {
         //Function for creating correctly formatted KeyFrames from specifically formatted strings
         public Keyframe[] KeyFrameFromString(string inKeys, Keyframe[] iniKeys)
@@ -172,6 +172,25 @@ namespace GTI.GenericFunctions
                 }
             }
             return outKeys;
+        }
+
+        //Return if the input is empty and an output array if non-empty
+        public bool ArraySplitEvaluate(string _input, out string[] _outputArray, char _separator)
+        {
+            bool isEmpty;
+
+            //Check if the input is an empty or null string
+            isEmpty = ((string.IsNullOrEmpty(_input) || _input.Trim().Length == 0));
+
+            //If not empty or null string, split the array based on the specified separator
+            if (!isEmpty) { _outputArray = _input.Trim().Split(_separator); }
+            else
+            {
+                //Since it is required we return an array with a single empty string if there was no string
+                _outputArray = new string[] { string.Empty };
+            }
+            //Return of the input is an empty or null string
+            return isEmpty;
         }
     }
 }
