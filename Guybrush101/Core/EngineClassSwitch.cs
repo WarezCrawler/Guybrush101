@@ -47,8 +47,14 @@ namespace GTI
 
 
 
+        private bool MaxThrustEmpty = true;
+        private bool EngineTypesEmpty = true;
+
+        private bool heatProductionEmpty = true;
 
         private bool propellantIgnoreForIspEmpty = true;
+        private bool propellantDrawGaugeEmpty = true;
+
         private bool atmosphereCurveEmpty = true;
         private bool velCurveEmpty = true;
         private bool atmCurveEmpty = true;
@@ -103,6 +109,7 @@ namespace GTI
             //Debug.Log("EngineClassSwitch --> InitializeSettings");
             if (!_settingsInitialized)
             {
+                Utilities Util = new Utilities();
                 //try
                 //{
                 #region GUI Update
@@ -123,40 +130,23 @@ namespace GTI
 
                 #region Parse Arrays
                 //Parse the strings into arrays of information
+                //Propellant names and ratios are mandatory information
+
+                //Propellant level
                 arrPropellantNames = propellantNames.Trim().Split(';');        //arrPropellantNames should now have the propellant names and combinations
                 arrPropellantRatios = propellantRatios.Trim().Split(';');      //arrPropellantRatios should now have the propellant ratios and combinations
-                arrMaxThrust = maxThrust.Trim().Split(';');
-                //arrPropIgnoreForISP = propellantIgnoreForIsp.Trim().Split(';');
-                arrPropDrawGauge = propellantDrawGauge.Trim().Split(';');
-                arrHeatProd = heatProduction.Trim().Split(';');
-                arrEngineTypes = EngineTypes.Trim().Split(';');
+                propellantIgnoreForIspEmpty = Util.ArraySplitEvaluate(propellantIgnoreForIsp, out arrPropIgnoreForISP, ';');
+                propellantDrawGaugeEmpty = Util.ArraySplitEvaluate(propellantDrawGauge, out arrPropDrawGauge, ';');
 
+                //Engine level
+                MaxThrustEmpty              = Util.ArraySplitEvaluate(maxThrust, out arrMaxThrust, ';');
+                EngineTypesEmpty            = Util.ArraySplitEvaluate(EngineTypes, out arrEngineTypes, ';');
+                heatProductionEmpty         = Util.ArraySplitEvaluate(heatProduction, out arrHeatProd, ';');
 
-                propellantIgnoreForIspEmpty = ((string.IsNullOrEmpty(propellantIgnoreForIsp) || propellantIgnoreForIsp.Trim().Length == 0));
-                atmosphereCurveEmpty = ((string.IsNullOrEmpty(atmosphereCurveKeys) || atmosphereCurveKeys.Trim().Length == 0));
-                velCurveEmpty = ((string.IsNullOrEmpty(velCurveKeys) || velCurveKeys.Trim().Length == 0));
-                atmCurveEmpty = ((string.IsNullOrEmpty(atmCurveKeys) || velCurveKeys.Trim().Length == 0));
-
-
-                if (!propellantIgnoreForIspEmpty)
-                {
-                    arrPropIgnoreForISP = propellantIgnoreForIsp.Trim().Split(';');
-                }
-                if (!atmosphereCurveEmpty)
-                {
-                    //Debug.Log("arrAtmosphereCurve --> splitting the array based on\n" + atmosphereCurveKeys);
-                    arrAtmosphereCurve = atmosphereCurveKeys.Split('|');
-                }
-                if (!velCurveEmpty)
-                {
-                    //Debug.Log("arrPropellantVelCurve --> splitting the array based on\n" + velCurveKeys);
-                    arrPropellantVelCurve = velCurveKeys.Split('|');
-                }
-                if (!atmCurveEmpty)
-                {
-                    //Debug.Log("arrPropellantAtmCurve --> splitting the array based on\n" + atmCurveKeys);
-                    arrPropellantAtmCurve = atmCurveKeys.Split('|');
-                }
+                //Engine level curves
+                atmosphereCurveEmpty        = Util.ArraySplitEvaluate(atmosphereCurveKeys, out arrAtmosphereCurve,'|');
+                velCurveEmpty               = Util.ArraySplitEvaluate(velCurveKeys, out arrPropellantVelCurve, '|');
+                atmCurveEmpty               = Util.ArraySplitEvaluate(atmCurveKeys, out arrPropellantAtmCurve, '|');
 
                 //Test if the two arrays are compatible                 <------ This test should be extended!
                 if (arrPropellantNames.Length != arrPropellantRatios.Length)
@@ -181,16 +171,20 @@ namespace GTI
                             setMaxThrust = arrMaxThrust[i],
                             //propIgnoreForISP = arrPropIgnoreForISP[i],
                             propDrawGauge = arrPropDrawGauge[i],
-                            heatProduction = arrHeatProd[i],
+                            //heatProduction = arrHeatProd[i],
                             engineType = arrEngineTypes[i]
                         });
 
-                    
 
-                        if (!propellantIgnoreForIspEmpty)
-                        {
-                            propList[i].propIgnoreForISP = arrPropIgnoreForISP[i];
-                        }
+                        //Propellant level --> Propellant level is needed as the entire node is replaced.
+                        propList[i].propIgnoreForISP    = propellantIgnoreForIspEmpty  ? "false"   : arrPropIgnoreForISP[i];        //Has Default value "false"
+
+                        //Engine level
+                        propList[i].engineType          = EngineTypesEmpty             ? ""        : arrEngineTypes[i];
+                        propList[i].heatProduction      = heatProductionEmpty          ? "0"       : arrHeatProd[i];
+
+                        
+
                         if (!atmosphereCurveEmpty)
                         {
                             propList[i].atmosphereCurve = arrAtmosphereCurve[i];
@@ -257,7 +251,7 @@ namespace GTI
             float floatParseResult;
 
             ConfigNode newPropNode = new ConfigNode();
-            CurveUtilities MiscFx = new CurveUtilities();
+            Utilities MiscFx = new Utilities();
             PhysicsUtilities EngineCalc = new PhysicsUtilities();
             //PartResourceDefinitionList resourceID;
 
@@ -356,7 +350,7 @@ namespace GTI
                     Density: propList[selectedPropellant].propDensity, 
                     ISP: maxISP
                     );
-                if (Single.TryParse(propList[selectedPropellant].heatProduction, out floatParseResult))
+                if (Single.TryParse(propList[selectedPropellant].heatProduction, out floatParseResult) && !heatProductionEmpty)
                 { moduleEngine.heatProduction = floatParseResult; }
 
                 //Set the engine type
@@ -389,6 +383,9 @@ namespace GTI
                         break;
                     case "Piston":
                         moduleEngine.engineType = EngineType.Piston;
+                        break;
+                    default:
+                        moduleEngine.engineType = EngineType.LiquidFuel;
                         break;
                 }
 
