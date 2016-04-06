@@ -35,8 +35,7 @@ namespace GTI
         public string propellantRatios = "45,55;100";                                   //the propellant ratios to set. NOTE: It is the actual fuel flow that defines the thrust => fuel usage.
         [KSPField]
         public string maxThrust = string.Empty;
-        [KSPField(isPersistant = true)]
-        public int selectedPropellant = -1;                                             //holds the selected propellant setup.
+
         [KSPField]
         public string atmosphereCurveKeys = string.Empty;
         [KSPField]
@@ -110,23 +109,6 @@ namespace GTI
             if (!_settingsInitialized)
             {
                 Utilities Util = new Utilities();
-                //try
-                //{
-                #region GUI Update
-                var togglerightclickUI = Events["toggleRightClickUI"];
-                togglerightclickUI.guiActive = availableInFlight;
-                togglerightclickUI.guiActiveEditor = availableInEditor;
-
-                var nextEvent = Events["nextPropellantEvent"];
-                nextEvent.guiActive = false;
-                nextEvent.guiActiveEditor = false;
-                //nextEvent.guiName = nextTankSetupText;
-
-                var previousEvent = Events["previousPropellantEvent"];
-                previousEvent.guiActive = false;
-                previousEvent.guiActiveEditor = false;
-                //previousEvent.guiName = previousTankSetupText;
-                #endregion
 
                 #region Parse Arrays
                 //Parse the strings into arrays of information
@@ -228,13 +210,14 @@ namespace GTI
                 //Now ModulesEngines should have exactly the engine modules in scope
                 #endregion
 
+                #region GUI Update
+                Debug.Log("--> initializeGUI()");
+                initializeGUI();
+                Debug.Log("--> initializeGUI() is Done");
+                #endregion
+
                 //set settings to initialized
                 _settingsInitialized = true;
-                //}
-                //catch
-                //{
-                //    Debug.LogError("EngineClassSwitch: Error on InitializeSettings()");
-                //}
             }
         }
         #endregion
@@ -292,7 +275,7 @@ namespace GTI
                         //targetIgnoreForISP = arrtargetIgnoreForISP[i];
                     } else { targetIgnoreForISP = false; }
 
-                    Debug.Log("!bool.TryParse(arrtargetIgnoreForISP[i], out targetIgnoreForISP)\ntargetIgnoreForISP: " + targetIgnoreForISP);
+                    //Debug.Log("!bool.TryParse(arrtargetIgnoreForISP[i], out targetIgnoreForISP)\ntargetIgnoreForISP: " + targetIgnoreForISP);
 
                     ConfigNode propNode = newPropNode.AddNode("PROPELLANT");
                     propNode.AddValue("name", arrtargetPropellants[i]);
@@ -400,20 +383,10 @@ namespace GTI
                     //User defined names
                     GUIpropellantNames = iniGUIpropellantNames.Trim().Split(';')[selectedPropellant];
                 }
-
+                //chooseField.guiName = GUIpropellantNames;
 
                 //Restart engine if it was on before switching
-                //Debug.Log("engine restart");
                 if (engineState == true) { moduleEngine.Activate(); }
-                //Debug.Log("engine restarted");
-
-                //ConfigNode newPropNode = new ConfigNode();
-                //ConfigNode propNode = newPropNode.AddNode("PROPELLANT");
-                //propNode.AddValue("name", "LiquidFuel");
-                //propNode.AddValue("ratio", 0.9f);
-                //propNode = newPropNode.AddNode("PROPELLANT");
-                //propNode.AddValue("name", "Oxidizer");
-                //propNode.AddValue("ratio", 0.9f);
             }
         }
         #endregion
