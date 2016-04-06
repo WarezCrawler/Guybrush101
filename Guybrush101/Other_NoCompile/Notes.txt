@@ -1,4 +1,13 @@
-﻿to-do list
+﻿Changes
+- Implementation of UI_CHOOSEOPTION in engineSwitch (thanks to blowfish on doing a small guide)
+- Resource panel now refreshes when changing air intake
+
+
+
+
+
+
+to-do list
 implement
 - atmosphereCurve			[DONE]
 - maxThrust --> fuelFlow	[DONE]

@@ -37,9 +37,6 @@ namespace GTI
         [KSPField]
         public string resMaxAmount = string.Empty;
 
-
-
-
         #region Booleans for existence checks
         private bool resourceNamesEmpty = false;
 
@@ -51,8 +48,6 @@ namespace GTI
         private string[] arrIntakeNames;
 
         private List<ModuleResourceIntake> ModuleIntakes;
-        
-        //private ConfigNode node;
 
         #endregion
 
@@ -73,32 +68,15 @@ namespace GTI
 
             updateIntake(false, "OnStart");
         }
-        /*
-        public override void OnLoad(ConfigNode inNode)
-        {
-            //base.OnLoad(node);
-            ConfigNode node = inNode;
-            //Debug.Log(node.);
 
-            foreach (var n in node.GetNodes())
-            {
-                Debug.Log("node.GetNodes():\n " + n);
-            }
-            foreach (var n in node.GetValues())
-            {
-                Debug.Log("node.GetValues():\n" + n);
-            }
-
-            //node.
-
-
-        }
-        */
         private void InitializeSettings()
         {
             if (!_settingsInitialized)
             {
                 Debug.Log("Loading Settings for Intake Switcher");
+                Utilities Util = new Utilities();
+
+                /*
                 #region GUI Update
                 var nextEvent = Events["nextIntakeEvent"];
                 nextEvent.guiActive = availableInFlight;
@@ -108,29 +86,17 @@ namespace GTI
                 previousEvent.guiActive = availableInFlight;
                 previousEvent.guiActiveEditor = availableInEditor;
                 #endregion
+                */
+
 
                 #region Parse Arrays
-                arrIntakeNames = resourceNames.Trim().Split(';');
-
-
-
+                resourceNamesEmpty = Util.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
                 #endregion
 
-                #region Check Input existance etc.
-                resourceNamesEmpty = ((string.IsNullOrEmpty(resourceNames) || resourceNames.Trim().Length == 0));
-
-                if (resourceNamesEmpty)
-                {
-                    Debug.LogError("GTI_IntakeSwitch is missing settings for intake names.");
-                    return;
-                }
-                #endregion
-
-                #region Check and split into arrays
-                if (!resourceNamesEmpty)
-                {
-                    arrIntakeNames = resourceNames.Trim().Split(';');
-                }
+                #region GUI Update
+                if (!resourceNamesEmpty) { initializeGUI(); }
+                else
+                { Debug.LogError("GTI_IntakeSwitch is missing settings for intake names."); return; }
                 #endregion
 
                 ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
@@ -191,6 +157,7 @@ namespace GTI
 
                 //Update the part resources
                 currentPart.Resources.UpdateList();
+                KSP.UI.Screens.ResourceDisplay.Instance.Refresh();
 
                 //Debug.Log("Confignode Loaded");
 

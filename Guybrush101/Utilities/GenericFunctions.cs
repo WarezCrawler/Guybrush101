@@ -84,7 +84,7 @@ namespace GTI.GenericFunctions
             
             try
             {
-                Debug.Log("calcWeightedDensity: Sum ratios");
+                //Debug.Log("calcWeightedDensity: Sum ratios");
                 weightTotal = 0;
                 //Calculate total weight for deflation of ratios
                 foreach (string ratio in arrRatios)

@@ -12,15 +12,9 @@ namespace GTI
         [KSPField(guiActive = true, guiActiveEditor = true, guiName = "Intake Resource")]
         private string GUIResourceName = String.Empty;
 
-        //[UI_ChooseOption(affectSymCounterparts = UI_Scene.Editor, controlEnabled = true, scene = UI_Scene.All,onFieldChanged = ]
-
-
-
-
         [KSPField(isPersistant = true)]
         public int selectedIntake = -1;
         //private int _selectedIntakeOld = -1;
-
 
         //Availability of the functionality
         [KSPField]
@@ -30,6 +24,61 @@ namespace GTI
         #endregion
 
         #region User_Interface
+
+        [KSPField(guiActive = true, guiActiveEditor = true, isPersistant = true, guiName = "IntakeSwitcher")]
+        [UI_ChooseOption(affectSymCounterparts = UI_Scene.Editor, scene = UI_Scene.All, suppressEditorShipModified = false, options = new[] { "None" })]
+        public string ChooseOption = "0";
+        private string[] Options;
+        BaseField chooseField;
+
+        private void initializeGUI()
+        {
+            //Debug.Log("initializeGUI(): START");
+            chooseField = Fields[nameof(ChooseOption)];
+            chooseField.guiName = "Intake";     //Dummy name until updated
+            chooseField.guiActiveEditor = availableInEditor;
+            chooseField.guiActive = availableInFlight;
+
+            Debug.Log("initializeGUI() | arrPropellantNames.Length: " + arrIntakeNames.Length);
+
+            //Create array Options that are simple ref's to the propellant list
+            Options = new string[arrIntakeNames.Length];
+            for (int i = 0; i < arrIntakeNames.Length; i++)
+            {
+                Debug.Log(
+                    "\ni: " + i +
+                    "\n arrIntakeNames: " + arrIntakeNames[i]
+                    );
+                Options[i] = i.ToString();
+            }
+            //Set which function run's when changing selection, which options, and the text to display
+            var chooseOptionEditor = chooseField.uiControlEditor as UI_ChooseOption;
+            chooseOptionEditor.options = Options;
+            chooseOptionEditor.display = arrIntakeNames;        //Should be GUInames array
+            chooseOptionEditor.onFieldChanged = selectIntake;
+
+            var chooseOptionFlight = chooseField.uiControlFlight as UI_ChooseOption;
+            chooseOptionFlight.options = Options;
+            chooseOptionFlight.display = arrIntakeNames;
+            chooseOptionFlight.onFieldChanged = selectIntake;
+        }
+
+        //onFieldChanged action
+        private void selectIntake(BaseField field, object oldValueObj)
+        {
+            selectedIntake = int.Parse(ChooseOption);
+            updateIntake(true);
+        }
+
+
+
+
+
+
+
+
+
+        /*
         //START - Events for selection of propellants
 
         //UI_ChooseOption, UI_ScaleEdit, UI_FloatEdit
@@ -61,17 +110,18 @@ namespace GTI
             updateIntake(true);
         }
         //END - Events for selection of propellants
+        */
         #endregion
 
         [KSPAction("Next Intake")]
         public void nextIntakeAction(KSPActionParam param)
         {
-            nextIntakeEvent();
+            //nextIntakeEvent();
         }
         [KSPAction("Previous Intake")]
         public void previousIntakeAction(KSPActionParam param)
         {
-            previousIntakeEvent();
+            //previousIntakeEvent();
         }
     }
 }
