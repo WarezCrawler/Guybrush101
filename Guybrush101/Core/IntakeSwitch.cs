@@ -157,7 +157,8 @@ namespace GTI
 
                 //Update the part resources
                 currentPart.Resources.UpdateList();
-                KSP.UI.Screens.ResourceDisplay.Instance.Refresh();
+
+                if (HighLogic.LoadedSceneIsFlight) { KSP.UI.Screens.ResourceDisplay.Instance.Refresh(); }
 
                 //Debug.Log("Confignode Loaded");
 

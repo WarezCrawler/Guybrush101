@@ -52,15 +52,16 @@ namespace GTI
                 Options[i] = i.ToString();
             }
             //Set which function run's when changing selection, which options, and the text to display
-            var chooseOptionEditor = chooseField.uiControlEditor as UI_ChooseOption;
-            chooseOptionEditor.options = Options;
-            chooseOptionEditor.display = arrIntakeNames;        //Should be GUInames array
-            chooseOptionEditor.onFieldChanged = selectIntake;
+            //var chooseOption = chooseField.uiControlEditor as UI_ChooseOption;
+            UI_ChooseOption chooseOption = HighLogic.LoadedSceneIsFlight ? chooseField.uiControlFlight as UI_ChooseOption : chooseField.uiControlEditor as UI_ChooseOption;
+            chooseOption.options = Options;
+            chooseOption.display = arrIntakeNames;        //Should be GUInames array
+            chooseOption.onFieldChanged = selectIntake;
 
-            var chooseOptionFlight = chooseField.uiControlFlight as UI_ChooseOption;
-            chooseOptionFlight.options = Options;
-            chooseOptionFlight.display = arrIntakeNames;
-            chooseOptionFlight.onFieldChanged = selectIntake;
+            //var chooseOptionFlight = chooseField.uiControlFlight as UI_ChooseOption;
+            //chooseOptionFlight.options = Options;
+            //chooseOptionFlight.display = arrIntakeNames;
+            //chooseOptionFlight.onFieldChanged = selectIntake;
         }
 
         //onFieldChanged action

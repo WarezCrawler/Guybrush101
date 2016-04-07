@@ -154,7 +154,7 @@ namespace GTI
                             //propIgnoreForISP = arrPropIgnoreForISP[i],
                             propDrawGauge = arrPropDrawGauge[i],
                             //heatProduction = arrHeatProd[i],
-                            engineType = arrEngineTypes[i]
+                            //engineType = arrEngineTypes[i]
                         });
 
 
