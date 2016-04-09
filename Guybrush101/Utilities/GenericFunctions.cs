@@ -173,6 +173,40 @@ namespace GTI.GenericFunctions
             }
             return outKeys;
         }
+        public string KeyFrameGetToCFG(Keyframe[] inKeyFrameKeys, string Heading = "")
+        {
+            System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
+
+            BuildString.AppendLine("");
+            //Set heading if present
+            if (!StringEvaluate(Heading, out Heading))
+            {
+                BuildString.AppendLine(Heading);
+            }
+
+            //Write keys to string
+            foreach (Keyframe keys in inKeyFrameKeys)
+            {
+                BuildString.AppendLine("key = " + keys.time.ToString("0.#########") + " " + keys.value.ToString("0.#########") + " " + keys.inTangent.ToString("0.#########") + " " + keys.outTangent.ToString("0.#########"));
+            }
+
+            return BuildString.ToString();
+        }
+
+        public float KeyFrameGetMaxValue(Keyframe[] inKeyFrameKeys)
+        {
+            float MaxValue = 0;
+
+            foreach (Keyframe key in inKeyFrameKeys)
+            {
+                //Debug.Log("inKeyFrameKeys: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent);
+                if (MaxValue < key.value) { MaxValue = key.value; }
+            }
+
+            return MaxValue;
+        }
+
+
 
         //Return if the input is empty and an output array if non-empty
         public bool ArraySplitEvaluate(string _input, out string[] _outputArray, char _separator)
@@ -188,6 +222,24 @@ namespace GTI.GenericFunctions
             {
                 //Since it is required we return an array with a single empty string if there was no string
                 _outputArray = new string[] { string.Empty };
+            }
+            //Return of the input is an empty or null string
+            return isEmpty;
+        }
+        //Evaluates if a string is nothing, empty, null
+        public bool StringEvaluate(string _input, out string _output)
+        {
+            bool isEmpty;
+
+            //Check if the input is an empty or null string
+            isEmpty = ((string.IsNullOrEmpty(_input) || _input.Trim().Length == 0));
+
+            //If not empty or null string, split the array based on the specified separator
+            if (!isEmpty) { _output = _input; }
+            else
+            {
+                //Since it is required we return an array with a single empty string if there was no string
+                _output = string.Empty;
             }
             //Return of the input is an empty or null string
             return isEmpty;

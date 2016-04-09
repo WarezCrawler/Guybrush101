@@ -25,6 +25,10 @@ namespace GTI.CustomTypes
         private string _velCurve;
         private string _atmCurve;
 
+        private string _atmChangeFlow;
+        private string _useVelCurve;
+        private string _useAtmCurve;
+
         //arrPropIgnoreForISP, arrPropDrawGauge, arrHeatProd, arrEngineTypes;
 
         //find ISP Turbine = 1 atm, LiquidFuel = 0 atm and use the function for FuelFlow to ensure right flow rate
@@ -175,12 +179,22 @@ namespace GTI.CustomTypes
             get { return _engineType; }
             set { _engineType = value; }
         }
-
-
-
-
-
-
+        //NEW 9/4-2016
+        public string atmChangeFlow
+        {
+            get { return _atmChangeFlow; }
+            set { _atmChangeFlow = value; }
+        }
+        public string useVelCurve
+        {
+            get { return _useVelCurve; }
+            set { _useVelCurve = value; }
+        }
+        public string useAtmCurve
+        {
+            get { return _useAtmCurve; }
+            set { _useAtmCurve = value; }
+        }
 
         public int propAmount
         {

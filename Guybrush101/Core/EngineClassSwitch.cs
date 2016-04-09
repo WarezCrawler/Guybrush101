@@ -39,12 +39,16 @@ namespace GTI
         [KSPField]
         public string atmosphereCurveKeys = string.Empty;
         [KSPField]
+        public string atmChangeFlows = string.Empty;
+        [KSPField]
         public string velCurveKeys = string.Empty; //"0 0 0 0;1 1 1 1";                 //White space for parameters, ";" for keys and "|" for each setup linked to a propellant setup. Provide keys for all propellants or none, else wierd thing will happen
+        [KSPField]
+        public string useVelCurves = string.Empty;
         [KSPField]
         public string atmCurveKeys = string.Empty; //"0 0 0 0;1 1 0 0";
                                                    //(float time, float value, float inTangent, float outTangent)
-
-
+        [KSPField]
+        public string useAtmCurves = string.Empty;
 
         private bool MaxThrustEmpty = true;
         private bool EngineTypesEmpty = true;
@@ -57,13 +61,18 @@ namespace GTI
         private bool atmosphereCurveEmpty = true;
         private bool velCurveEmpty = true;
         private bool atmCurveEmpty = true;
+
+        private bool atmChangeFlowsEmpty = true;
+        private bool useVelCurvesEmpty = true;
+        private bool useAtmCurvesEmpty = true;
+
         #endregion
 
         #region Arrays and Lists
         //Arrays for data processing
         private string[] arrPropellantNames;    //for the split list of prop names
         private string[] arrPropellantRatios;   //for the split list of prop ratios
-        private string[] arrMaxThrust, arrPropDrawGauge, arrHeatProd, arrEngineTypes, arrPropIgnoreForISP;
+        private string[] arrMaxThrust, arrPropDrawGauge, arrHeatProd, arrEngineTypes, arrPropIgnoreForISP, arratmChangeFlows, arruseVelCurves, arruseAtmCurves;
         private string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
 
         //Customtype for list of relevant settings
@@ -82,11 +91,18 @@ namespace GTI
         #region Events
         public override void OnStart(PartModule.StartState state)
         {
+            Debug.Log("Tech start: " + ResearchAndDevelopment.GetTechnologyState("start").ToString());
+            Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry").ToString());
+            Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
+
+
+                
+
             //Debug.Log("EngineClassSwitch --> OnStart");
             //try
             //{
-                //Debug.Log("OnStart --> InitializeSettings");
-                InitializeSettings();
+            //Debug.Log("OnStart --> InitializeSettings");
+            InitializeSettings();
                 if (selectedPropellant == -1)
                 {
                     selectedPropellant = 0;
@@ -120,10 +136,14 @@ namespace GTI
                 propellantIgnoreForIspEmpty = Util.ArraySplitEvaluate(propellantIgnoreForIsp, out arrPropIgnoreForISP, ';');
                 propellantDrawGaugeEmpty = Util.ArraySplitEvaluate(propellantDrawGauge, out arrPropDrawGauge, ';');
 
+
                 //Engine level
                 MaxThrustEmpty              = Util.ArraySplitEvaluate(maxThrust, out arrMaxThrust, ';');
                 EngineTypesEmpty            = Util.ArraySplitEvaluate(EngineTypes, out arrEngineTypes, ';');
                 heatProductionEmpty         = Util.ArraySplitEvaluate(heatProduction, out arrHeatProd, ';');
+                atmChangeFlowsEmpty         = Util.ArraySplitEvaluate(atmChangeFlows, out arratmChangeFlows, ';');
+                useVelCurvesEmpty           = Util.ArraySplitEvaluate(useVelCurves, out arruseVelCurves, ';');
+                useAtmCurvesEmpty           = Util.ArraySplitEvaluate(useAtmCurves, out arruseAtmCurves, ';');
 
                 //Engine level curves
                 atmosphereCurveEmpty        = Util.ArraySplitEvaluate(atmosphereCurveKeys, out arrAtmosphereCurve,'|');
@@ -149,44 +169,50 @@ namespace GTI
                         propList.Add(new CustomTypes.PropellantList()
                         {
                             Propellants = arrPropellantNames[i],
-                            PropRatios  = arrPropellantRatios[i],
-                            setMaxThrust = arrMaxThrust[i],
+                            PropRatios  = arrPropellantRatios[i]
+                            //setMaxThrust = arrMaxThrust[i],
                             //propIgnoreForISP = arrPropIgnoreForISP[i],
-                            propDrawGauge = arrPropDrawGauge[i],
+                            //propDrawGauge = arrPropDrawGauge[i],
                             //heatProduction = arrHeatProd[i],
                             //engineType = arrEngineTypes[i]
                         });
 
 
                         //Propellant level --> Propellant level is needed as the entire node is replaced.
-                        propList[i].propIgnoreForISP    = propellantIgnoreForIspEmpty  ? "false"   : arrPropIgnoreForISP[i];        //Has Default value "false"
+                        propList[i].propIgnoreForISP    = propellantIgnoreForIspEmpty   ? "false"   : arrPropIgnoreForISP[i];       //Has Default value "false"
+                        propList[i].propDrawGauge       = propellantDrawGaugeEmpty      ? "true"    : arrPropDrawGauge[i];          //Has Default value "true"
 
                         //Engine level
-                        propList[i].engineType          = EngineTypesEmpty             ? ""        : arrEngineTypes[i];
-                        propList[i].heatProduction      = heatProductionEmpty          ? "0"       : arrHeatProd[i];
+                        propList[i].setMaxThrust        = MaxThrustEmpty                ? "ignore"  : arrMaxThrust[i];       //No default - Ignore when updating
+                        propList[i].engineType          = EngineTypesEmpty              ? ""        : arrEngineTypes[i];     //No default - Ignore when updating
+                        propList[i].heatProduction      = heatProductionEmpty           ? "0"       : arrHeatProd[i];        //No default - Ignore when updating
 
-                        
+                        propList[i].atmChangeFlow = atmChangeFlowsEmpty                 ? "true"    : arratmChangeFlows[i];
+                        propList[i].useVelCurve = useVelCurvesEmpty                     ? "true"    : arruseVelCurves[i];
+                        propList[i].useAtmCurve = useAtmCurvesEmpty                     ? "true"    : arruseAtmCurves[i];
 
-                        if (!atmosphereCurveEmpty)
+                        if (!atmosphereCurveEmpty)  //No default - Ignore when updating
                         {
                             propList[i].atmosphereCurve = arrAtmosphereCurve[i];
                         }
-                        if (!velCurveEmpty)
+                        if (!velCurveEmpty)         //No default - Ignore when updating
                         {
                             propList[i].velCurve = arrPropellantVelCurve[i];
                         }
-                        if (!atmCurveEmpty)
+                        if (!atmCurveEmpty)         //No default - Ignore when updating
                         {
                             propList[i].atmCurve = arrPropellantAtmCurve[i];
                         }
                     }
                 }
-                catch
+                catch(Exception e)
                 {
                     Debug.LogError("Populate Propellant List failed");
-                    throw;
+                    throw e;
                 }
                 #endregion
+
+                
 
                 #region Identify ModuleEngines in Scope
                 //Find modules which is to be manipulated
@@ -248,13 +274,6 @@ namespace GTI
                 //Debug.Log("engine shutdown");
                 moduleEngine.Shutdown();
                 //Debug.Log("engine shutdown completed");
-
-                //Debug.Log(
-                //    "selectedPropellant: "  + selectedPropellant +
-                //    "\nPropellants: "       + propList[selectedPropellant].Propellants +
-                //    "\nPropRatios: "        + propList[selectedPropellant].PropRatios +
-                //    "\nCalledby: "          + callingFunction
-                //    );
 
                 //Split cfg subsettings into arrays
                 arrtargetPropellants = propList[selectedPropellant].Propellants.Split(',');
@@ -318,21 +337,24 @@ namespace GTI
                             iniKeys: moduleEngine.atmCurve.Curve.keys
                             );
                 }
+               
+                //Set which curves to use
+                if (!atmChangeFlowsEmpty)   { moduleEngine.atmChangeFlow    = bool.Parse(propList[selectedPropellant].atmChangeFlow); }
+                if (!useVelCurvesEmpty)     { moduleEngine.useVelCurve      = bool.Parse(propList[selectedPropellant].useVelCurve); }
+                if (!useAtmCurvesEmpty)     { moduleEngine.useAtmCurve      = bool.Parse(propList[selectedPropellant].useAtmCurve); }
 
-                //Loop atmosphereCurve and extract ISP values. Return the maximum ISP as basis for fuelflow calculation
-                foreach (Keyframe key in moduleEngine.atmosphereCurve.Curve.keys)
-                {
-                    //Debug.Log("atmosphereKey[" + i + "]: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent);
-                    if ( maxISP < key.value ) { maxISP = key.value; }
-                    //i++;
-                }
+                //Get maxISP from the atmosphere curve
+                maxISP = MiscFx.KeyFrameGetMaxValue(moduleEngine.atmosphereCurve.Curve.keys);
+
                 //Set max Thrust and the corresponding fuelflow
-                moduleEngine.maxThrust = propList[selectedPropellant].maxThrust;
+                if (!MaxThrustEmpty)        { moduleEngine.maxThrust        = propList[selectedPropellant].maxThrust; }
+
                 moduleEngine.maxFuelFlow = EngineCalc.calcFuelFlow(
-                    Thrust: propList[selectedPropellant].maxThrust, 
+                    Thrust: moduleEngine.maxThrust,                             //Thrust: propList[selectedPropellant].maxThrust, 
                     Density: propList[selectedPropellant].propDensity, 
                     ISP: maxISP
                     );
+
                 if (Single.TryParse(propList[selectedPropellant].heatProduction, out floatParseResult) && !heatProductionEmpty)
                 { moduleEngine.heatProduction = floatParseResult; }
 
@@ -421,14 +443,14 @@ namespace GTI
         
         #region --------------------------------TESTING---------------------------------------
         [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "DEBUG")]
-        public void test()
+        public void DEBUG_ENGINESSWITCH()
         {
             InitializeSettings();
             PhysicsUtilities Calc = new PhysicsUtilities();
+            Utilities MiscFx = new Utilities();
+            System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
             float Density = propList[selectedPropellant].propDensity;
-
-
-
+            //int i = 0;
 
             foreach (var moduleEngine in ModuleEngines)
             {
@@ -451,43 +473,52 @@ namespace GTI
                     Debug.Log(
                         "foreach(var propellant in moduleEngine.propellants)" +
                         "\nPropellant: " + propellant.name +
+                        "\nratio: " + propellant.ratio +
+                        "\ndrawStackGauge: " + propellant.drawStackGauge +
                         "\nignoreForISP: " + propellant.ignoreForIsp);
                 }
                 
 
-                for (int j = 0; j < moduleEngine.atmosphereCurve.Curve.length; j++)
-                {
-                    Debug.Log(moduleEngine.atmosphereCurve.Curve[j].time + ", " + moduleEngine.atmosphereCurve.Curve[j].value);
-                }
+                //for (int j = 0; j < moduleEngine.atmosphereCurve.Curve.length; j++)
+                //{
+                //    Debug.Log(moduleEngine.atmosphereCurve.Curve[j].time + ", " + moduleEngine.atmosphereCurve.Curve[j].value);
+                //}
 
                 //DEBUG
-                int i = 0;
+                /*i = 0;
                 float CurveTimeValue = 0;
                 foreach (Keyframe key in moduleEngine.atmosphereCurve.Curve.keys)
                 {
                     Debug.Log("atmosphereKey[" + i + "]: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent);
                     if (CurveTimeValue < key.value) { CurveTimeValue = key.value;  }
                     i++;
-                }
-                Debug.Log(
+                }*/
+                Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.atmosphereCurve.Curve.keys, "atmosphereKeys --> "));
+                /*Debug.Log(
                     "ISP: " + CurveTimeValue +
                     "\nmaxFuelRate should be: " + Calc.calcFuelFlow(moduleEngine.maxThrust, Density, CurveTimeValue)
-                );
-                i = 0;
-                foreach (Keyframe key in moduleEngine.atmCurve.Curve.keys)
-                {
-                    Debug.Log("atmKey[" + i + "]: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent);
-                    i++;
-                }
-                i = 0;
-                foreach (Keyframe key in moduleEngine.velCurve.Curve.keys)
-                {
-                    Debug.Log("velKey[" + i + "]: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent);
-                    i++;
-                }
+                );*/
+                Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.atmCurve.Curve.keys, "atmCurveKeys --> "));
+                Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.velCurve.Curve.keys, "velCurveKeys --> "));
+            }
+            
+            foreach (var bodyItem in FlightGlobals.Bodies)
+            {
+                Debug.Log("Planet stats -->" +
+                    "\nBodyName: " + bodyItem.bodyName +
+                    "\nRadius: " + bodyItem.Radius +
+                    "\nsphereOfInfluence: " + bodyItem.sphereOfInfluence +
+                    "\nGetInstanceID: " + bodyItem.GetInstanceID() +
+                    "\natmospherePressureCurve:" + MiscFx.KeyFrameGetToCFG(bodyItem.atmospherePressureCurve.Curve.keys, "bodyItem.atmospherePressureCurve.Curve.keys --> ")
+                    );
+
+                //Clear string Builder
+                BuildString.Length = 0;
+                BuildString.Capacity = 16;
             }
         }
         #endregion
+
 
     } //class EngineClassSwitch : PartModule 
 } //namespace Guybrush101

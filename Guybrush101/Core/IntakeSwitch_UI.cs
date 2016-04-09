@@ -113,16 +113,33 @@ namespace GTI
         //END - Events for selection of propellants
         */
         #endregion
-
+        
         [KSPAction("Next Intake")]
         public void nextIntakeAction(KSPActionParam param)
         {
             //nextIntakeEvent();
+            selectedIntake++;
+            if (selectedIntake > arrIntakeNames.GetUpperBound(0))
+            {
+                //if we move from last propellant, then the next one is the first one - aka 0
+                selectedIntake = 0;
+            }
+            ChooseOption = selectedIntake.ToString();
+            updateIntake(true);
         }
         [KSPAction("Previous Intake")]
         public void previousIntakeAction(KSPActionParam param)
         {
             //previousIntakeEvent();
+            selectedIntake--;
+            if (selectedIntake < 0)
+            {
+                //if we move from the first propellant, then the previous is the last - aka the upperbound
+                selectedIntake = arrIntakeNames.GetUpperBound(0);
+            }
+            ChooseOption = selectedIntake.ToString();
+            updateIntake(true);
         }
+        
     }
 }

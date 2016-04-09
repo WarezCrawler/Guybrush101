@@ -39,6 +39,7 @@ namespace GTI
 
         #region Booleans for existence checks
         private bool resourceNamesEmpty = false;
+        private bool resMaxAmountEmpty = false;
 
         #endregion
 
@@ -92,6 +93,15 @@ namespace GTI
                 #region Parse Arrays
                 resourceNamesEmpty = Util.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
                 #endregion
+                #region Parse Strings
+                resMaxAmountEmpty = Util.StringEvaluate(resMaxAmount, out resMaxAmount);
+                
+                //If the resMaxAmount is empty, try getting the maxAmount of first intake. If fails, then return a simple 2 Units.
+                try
+                { resMaxAmount = resMaxAmountEmpty ? ModuleIntakes[0].res.maxAmount.ToString() : resMaxAmount; }
+                catch
+                { resMaxAmount = "2"; }
+                #endregion
 
                 #region GUI Update
                 if (!resourceNamesEmpty) { initializeGUI(); }
@@ -100,6 +110,8 @@ namespace GTI
                 #endregion
 
                 ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
+
+                GUIResourceName = ModuleIntakes[0].resourceName;        //Temporarily added
 
                 //set settings to initialized
                 _settingsInitialized = true;
@@ -114,6 +126,7 @@ namespace GTI
         {
             ConfigNode newIntakeNode = new ConfigNode();
             Part currentPart = this.part;
+            int resIniAmount = 0;
 
 
             //foreach (PartModule moduleIntake in ModuleIntakes)
@@ -121,13 +134,13 @@ namespace GTI
             for (int i = 0; i < ModuleIntakes.Count; i++)
             {
                 //*****************************
-                Debug.Log("Update Resource Intake");
+                Debug.Log("Intake Switcher: Update Resource Intake");
 
                 //Define the node object
                 ConfigNode IntakeNode = newIntakeNode;          //.GetNode("ModuleResourceIntake");
                 ConfigNode IntakeResource = newIntakeNode;
 
-                //Debug.Log("Confignode defined");
+                Debug.Log("Confignode defined");
 
                 //Set new setting values
                 IntakeNode.AddValue("resourceName", arrIntakeNames[selectedIntake]);
@@ -136,6 +149,8 @@ namespace GTI
 
                 //Load changes (nodeobject) into the moduleIntake
                 ModuleIntakes[i].Load(IntakeNode);
+
+                //Debug.Log("Cleanout old resources");
 
                 //Clean out any previous resources in the intake
                 currentPart.Resources.list.Clear();
@@ -146,11 +161,15 @@ namespace GTI
                     DestroyImmediate(resource);
                 }
 
+                resIniAmount = HighLogic.LoadedSceneIsFlight ? 0 : int.Parse(resMaxAmount);
+
                 //Create Resource node
                 IntakeResource.AddNode("RESOURCE");
                 IntakeResource.AddValue("name", arrIntakeNames[selectedIntake]);
-                IntakeResource.AddValue("amount", 0f);
+                IntakeResource.AddValue("amount", resIniAmount);
                 IntakeResource.AddValue("maxAmount", int.Parse(resMaxAmount));
+
+                //Debug.Log("Add resource node");
 
                 //Add the resources
                 currentPart.AddResource(IntakeResource);
@@ -158,29 +177,13 @@ namespace GTI
                 //Update the part resources
                 currentPart.Resources.UpdateList();
 
-                if (HighLogic.LoadedSceneIsFlight) { KSP.UI.Screens.ResourceDisplay.Instance.Refresh(); }
-
+                //Debug.Log("Confignode updated, now checking for update of resource display");
+                
+                //added check for called by player, since the ResourceDisplay update fails when called from the OnStart function.
+                try
+                { if (HighLogic.LoadedSceneIsFlight && calledByPlayer) { KSP.UI.Screens.ResourceDisplay.Instance.Refresh(); } }
+                catch { Debug.LogError("Update of resource panel failed" + "\ncallingFunction: " + callingFunction + "\ncalledByPlayer: " + calledByPlayer); }
                 //Debug.Log("Confignode Loaded");
-
-                /*
-                //machCurves
-                //for (int i = 0; i < IntakeNode.GetNode("machCurve").GetValues().Length; i++)
-                //{
-                //    Debug.Log("MachCurve: [" + i + "] --> " + IntakeNode.GetNode("machCurve").GetValues().GetValue(i));
-                //    //IntakeNode.
-                //}
-                //Debug.Log("MachCurve: " + IntakeNode.GetNode("machCurve").GetValues().GetValue(0));
-                //Debug.Log("MachCurve: " + IntakeNode.GetNode("machCurve").);
-                string temp = string.Empty;
-                foreach (var key in ModuleIntakes[i].machCurve.Curve.keys)
-                {
-                    //ModuleIntakes[i].machCurve.Curve.
-                    //Debug.Log(
-                        temp = temp + "\nmachKeys: " + key.time + " " + key.value + " " + key.inTangent + " " + key.outTangent;
-                        //);
-                }
-                Debug.Log(temp);
-                */
 
             }
 
@@ -215,7 +218,8 @@ namespace GTI
                 Debug.Log(
                     "\npart.Resources[0].resourceName: " + part.Resources[i].resourceName +
                     "\npart.Resources[0].amount: " + part.Resources[i].amount +
-                    "\npart.Resources[0].maxAmount: " + part.Resources[i].maxAmount
+                    "\npart.Resources[0].maxAmount: " + part.Resources[i].maxAmount +
+                    "\nresMaxAmountEmpty: " + resMaxAmountEmpty
                     );
             }
             #endregion

@@ -48,6 +48,10 @@ namespace GTI
             Debug.Log("initializeGUI() | arrPropellantNames.Length: " + arrPropellantNames.Length);
 
             //Create array Options that are simple ref's to the propellant list
+            Debug.Log(
+                "propList.Count: "+ propList.Count +
+                "\n(propList.Count == arrPropellantNames.Length) --> " + (propList.Count == arrPropellantNames.Length)
+                );
             Options = new string[arrPropellantNames.Length];
             for (int i = 0; i < arrPropellantNames.Length; i++)
             {
@@ -57,6 +61,7 @@ namespace GTI
                     );
                 Options[i] = i.ToString();
             }
+            
             
             //Set which function run's when changing selection, which options, and the text to display
             //var chooseOptionEditor = chooseField.uiControlEditor as UI_ChooseOption;

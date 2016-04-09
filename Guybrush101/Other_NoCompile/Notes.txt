@@ -1,6 +1,9 @@
 ﻿Changes
-- Implementation of UI_CHOOSEOPTION in engineSwitch (thanks to blowfish on doing a small guide)
-- Resource panel now refreshes when changing air intake
+- Added support for
+ - atmChangeFlow
+ - useVelCurve
+ - useAtmCurve
+- Engine thrust is not mandatory anymore
 
 
 
