@@ -81,7 +81,6 @@ namespace GTI.GenericFunctions
                 return 0;
             }
 
-            
             try
             {
                 //Debug.Log("calcWeightedDensity: Sum ratios");
@@ -122,7 +121,7 @@ namespace GTI.GenericFunctions
             {
                 if (value <= 0)
                 {
-                    _gravity = 9.82f;
+                    _gravity = 9.81f;
                 }
                 _gravity = value;
             }
@@ -131,7 +130,12 @@ namespace GTI.GenericFunctions
 
     class Utilities
     {
-        //Function for creating correctly formatted KeyFrames from specifically formatted strings
+        /// <summary>
+        /// Function for creating correctly formatted KeyFrames from specifically formatted strings. Format of inKey is "0 0 0 0;1 1 1 1;2 2 2 2" -- (float time, float value, float inTangent, float outTangent)
+        /// </summary>
+        /// <param name="inKeys"></param>
+        /// <param name="iniKeys"></param>
+        /// <returns></returns>
         public Keyframe[] KeyFrameFromString(string inKeys, Keyframe[] iniKeys)
         {
             //Format of inKey is
@@ -173,6 +177,12 @@ namespace GTI.GenericFunctions
             }
             return outKeys;
         }
+        /// <summary>
+        /// Write a KeyFrame to the same format as used in CFG files. Use the heading if debugging KeyFrames
+        /// </summary>
+        /// <param name="inKeyFrameKeys"></param>
+        /// <param name="Heading"></param>
+        /// <returns></returns>
         public string KeyFrameGetToCFG(Keyframe[] inKeyFrameKeys, string Heading = "")
         {
             System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
@@ -192,7 +202,12 @@ namespace GTI.GenericFunctions
 
             return BuildString.ToString();
         }
-
+        /// <summary>
+        /// Get the maximum value from a KeyFrame object. 
+        /// TIME VALUE INTANGENT OUTTANGENT
+        /// </summary>
+        /// <param name="inKeyFrameKeys"></param>
+        /// <returns></returns>
         public float KeyFrameGetMaxValue(Keyframe[] inKeyFrameKeys)
         {
             float MaxValue = 0;
@@ -208,7 +223,13 @@ namespace GTI.GenericFunctions
 
 
 
-        //Return if the input is empty and an output array if non-empty
+        /// <summary>
+        /// Return if the input is empty and an output array if non-empty
+        /// </summary>
+        /// <param name="_input"></param>
+        /// <param name="_outputArray"></param>
+        /// <param name="_separator"></param>
+        /// <returns></returns>
         public bool ArraySplitEvaluate(string _input, out string[] _outputArray, char _separator)
         {
             bool isEmpty;
@@ -226,7 +247,12 @@ namespace GTI.GenericFunctions
             //Return of the input is an empty or null string
             return isEmpty;
         }
-        //Evaluates if a string is nothing, empty, null
+        /// <summary>
+        /// Evaluates if a string is nothing, empty, null
+        /// </summary>
+        /// <param name="_input"></param>
+        /// <param name="_output"></param>
+        /// <returns></returns>
         public bool StringEvaluate(string _input, out string _output)
         {
             bool isEmpty;

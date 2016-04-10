@@ -1,13 +1,11 @@
 ﻿using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
+using System.Collections;
 using UnityEngine;
 using GTI.GenericFunctions;
 
 namespace GTI.CustomTypes
 {
-    public class PropellantList
+    public class PropellantList : CollectionBase
     {
         //private string _names;            //New name of part in event of new propellant
         private string _propellants;        //The propellants
@@ -29,14 +27,22 @@ namespace GTI.CustomTypes
         private string _useVelCurve;
         private string _useAtmCurve;
 
+        private bool _TechLevelReqAchieved = true;
+
         //arrPropIgnoreForISP, arrPropDrawGauge, arrHeatProd, arrEngineTypes;
 
         //find ISP Turbine = 1 atm, LiquidFuel = 0 atm and use the function for FuelFlow to ensure right flow rate
 
         private float _maxThrust;           //  Kg * m/s^2 = N
-        //private float _maxFuelFlow;         //  Kg/s
+                                            //private float _maxFuelFlow;         //  Kg/s
 
         //For storing and retrieving propellants
+        public bool TechLevelReqAchieved
+        {
+            get { return _TechLevelReqAchieved; }
+            set { _TechLevelReqAchieved = value; }
+        }
+
         public string Propellants
         {
             get { return _propellants; }
@@ -216,5 +222,13 @@ namespace GTI.CustomTypes
             get { return _atmCurve; }
             set { _atmCurve = value; }
         }
+        //public int Length
+        //{
+        //    get
+        //    {
+        //        //foreach (string item in propList)
+        //        //return 0;
+        //    }
+        //}
     }
 }

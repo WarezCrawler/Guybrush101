@@ -1,9 +1,5 @@
 ﻿Changes
-- Added support for
- - atmChangeFlow
- - useVelCurve
- - useAtmCurve
-- Engine thrust is not mandatory anymore
+
 
 
 
@@ -12,19 +8,22 @@
 
 to-do list
 implement
-- atmosphereCurve			[DONE]
-- maxThrust --> fuelFlow	[DONE]
-- Engine Names				--> Supposed to be change to the engine name. Does apparently not work well
-- propellantIgnoreForIsp	[DONE]
-- propellantDrawGauge		[postponed] --> Implemented but commented out pending decition about validity
-- heatProduction			[DONE]
-- EngineType				[DONE]
+- runningEffectName = XXX
+- powerEffectName = xxx
+- Possiblity to switch between runningEffectName and powerEffectName
+- spoolEffectName
+ - engineSpoolIdle
+ - engineSpoolTime
+
+- useEngineResponseTime
+ - engineAccelerationSpeed
+ - engineDecelerationSpeed
+
+
+
 
 
 Should these be implemented?
-		atmChangeFlow = True
-		useVelCurve = True
-		useAtmCurve = True
 		resourceFlowMode
 			STACK_PRIORITY_SEARCH
 			STAGE_STACK_FLOW_BALANCE

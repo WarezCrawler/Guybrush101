@@ -16,45 +16,52 @@ namespace GTI
     partial class GTI_EngineClassSwitch : PartModule
     {
         //Engine manipulation
-        #region KSPFields and supporting settings
+        #region Engine parameters
         [KSPField]
         public string engineID = string.Empty;                                                         //the engine to affect. Needed if multiple engines are present in the part.
-        //[KSPField]
-        //public string engineNames = string.Empty;                                                      //Names of the engine after switch, if empty, then not name switching occurs
+        [KSPField]
+        public string maxThrust = string.Empty;
+        [KSPField]
+        public string EngineTypes = string.Empty;
+        [KSPField]
+        public string heatProduction = string.Empty;
+        #endregion
+        
+        #region Propellant parameters
+        [KSPField]
+        public string propellantNames = string.Empty;                                    //the list of propellant setups available to the switch.
+        [KSPField]
+        public string propellantRatios = string.Empty;                                   //the propellant ratios to set. NOTE: It is the actual fuel flow that defines the thrust => fuel usage.
         [KSPField]
         public string propellantIgnoreForIsp = string.Empty;
         [KSPField]
         public string propellantDrawGauge = string.Empty;
-        [KSPField]
-        public string heatProduction = string.Empty;
-        [KSPField]
-        public string EngineTypes = string.Empty;
-        [KSPField]
-        public string propellantNames = "LiquidFuel,Oxidizer;MonoPropellant";           //the list of propellant setups available to the switch.
-        [KSPField]
-        public string propellantRatios = "45,55;100";                                   //the propellant ratios to set. NOTE: It is the actual fuel flow that defines the thrust => fuel usage.
-        [KSPField]
-        public string maxThrust = string.Empty;
-
+        #endregion
+        
+        #region KeyFrame / Float Curve parameters
+        //(float time, float value, float inTangent, float outTangent)
         [KSPField]
         public string atmosphereCurveKeys = string.Empty;
         [KSPField]
-        public string atmChangeFlows = string.Empty;
-        [KSPField]
         public string velCurveKeys = string.Empty; //"0 0 0 0;1 1 1 1";                 //White space for parameters, ";" for keys and "|" for each setup linked to a propellant setup. Provide keys for all propellants or none, else wierd thing will happen
+        [KSPField]
+        public string atmCurveKeys = string.Empty; //"0 0 0 0;1 1 0 0";                                  
+
+        [KSPField]
+        public string atmChangeFlows = string.Empty;
         [KSPField]
         public string useVelCurves = string.Empty;
         [KSPField]
-        public string atmCurveKeys = string.Empty; //"0 0 0 0;1 1 0 0";
-                                                   //(float time, float value, float inTangent, float outTangent)
-        [KSPField]
         public string useAtmCurves = string.Empty;
+        #endregion
 
+        #region Empty value indicators (boolean)
         private bool MaxThrustEmpty = true;
         private bool EngineTypesEmpty = true;
-
         private bool heatProductionEmpty = true;
 
+        //propellantNames is mandatory
+        //propellantRatios is mandatory
         private bool propellantIgnoreForIspEmpty = true;
         private bool propellantDrawGaugeEmpty = true;
 
@@ -65,7 +72,6 @@ namespace GTI
         private bool atmChangeFlowsEmpty = true;
         private bool useVelCurvesEmpty = true;
         private bool useAtmCurvesEmpty = true;
-
         #endregion
 
         #region Arrays and Lists
@@ -88,39 +94,26 @@ namespace GTI
         #endregion
 
         //####### Beginning of logics
-        #region Events
+        #region Events, OnStart
         public override void OnStart(PartModule.StartState state)
         {
-            Debug.Log("Tech start: " + ResearchAndDevelopment.GetTechnologyState("start").ToString());
-            Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry").ToString());
-            Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
+            //Debug.Log("Tech start: " + ResearchAndDevelopment.GetTechnologyState("start").ToString());
+            //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry").ToString());
+            //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
 
-
-                
-
-            //Debug.Log("EngineClassSwitch --> OnStart");
-            //try
-            //{
-            //Debug.Log("OnStart --> InitializeSettings");
             InitializeSettings();
                 if (selectedPropellant == -1)
                 {
                     selectedPropellant = 0;
-                    //assignResourcesToPart(false);
                 }
-                //Debug.Log("OnStart --> assignPropToPart");
                 updateEngineModule(false, "OnStart");
-            //}
-            //catch
-            //{
-            //    Debug.LogError("EngineClassSwitch: Error on OnStart()");
-            //}
         }
         #endregion
 
         #region Settings
         public void InitializeSettings()
         {
+            
             //Debug.Log("EngineClassSwitch --> InitializeSettings");
             if (!_settingsInitialized)
             {
@@ -131,34 +124,34 @@ namespace GTI
                 //Propellant names and ratios are mandatory information
 
                 //Propellant level
-                arrPropellantNames = propellantNames.Trim().Split(';');        //arrPropellantNames should now have the propellant names and combinations
-                arrPropellantRatios = propellantRatios.Trim().Split(';');      //arrPropellantRatios should now have the propellant ratios and combinations
-                propellantIgnoreForIspEmpty = Util.ArraySplitEvaluate(propellantIgnoreForIsp, out arrPropIgnoreForISP, ';');
-                propellantDrawGaugeEmpty = Util.ArraySplitEvaluate(propellantDrawGauge, out arrPropDrawGauge, ';');
+                arrPropellantNames          = propellantNames.Trim().Split(';');                //arrPropellantNames should now have the propellant names and combinations
+                arrPropellantRatios         = propellantRatios.Trim().Split(';');               //arrPropellantRatios should now have the propellant ratios and combinations
+                propellantIgnoreForIspEmpty = Util.ArraySplitEvaluate(propellantIgnoreForIsp,   out arrPropIgnoreForISP     , ';');
+                propellantDrawGaugeEmpty    = Util.ArraySplitEvaluate(propellantDrawGauge,      out arrPropDrawGauge        , ';');
 
 
                 //Engine level
-                MaxThrustEmpty              = Util.ArraySplitEvaluate(maxThrust, out arrMaxThrust, ';');
-                EngineTypesEmpty            = Util.ArraySplitEvaluate(EngineTypes, out arrEngineTypes, ';');
-                heatProductionEmpty         = Util.ArraySplitEvaluate(heatProduction, out arrHeatProd, ';');
-                atmChangeFlowsEmpty         = Util.ArraySplitEvaluate(atmChangeFlows, out arratmChangeFlows, ';');
-                useVelCurvesEmpty           = Util.ArraySplitEvaluate(useVelCurves, out arruseVelCurves, ';');
-                useAtmCurvesEmpty           = Util.ArraySplitEvaluate(useAtmCurves, out arruseAtmCurves, ';');
+                MaxThrustEmpty              = Util.ArraySplitEvaluate(maxThrust,                out arrMaxThrust            , ';');
+                EngineTypesEmpty            = Util.ArraySplitEvaluate(EngineTypes,              out arrEngineTypes          , ';');
+                heatProductionEmpty         = Util.ArraySplitEvaluate(heatProduction,           out arrHeatProd             , ';');
+                atmChangeFlowsEmpty         = Util.ArraySplitEvaluate(atmChangeFlows,           out arratmChangeFlows       , ';');
+                useVelCurvesEmpty           = Util.ArraySplitEvaluate(useVelCurves,             out arruseVelCurves         , ';');
+                useAtmCurvesEmpty           = Util.ArraySplitEvaluate(useAtmCurves,             out arruseAtmCurves         , ';');
 
                 //Engine level curves
-                atmosphereCurveEmpty        = Util.ArraySplitEvaluate(atmosphereCurveKeys, out arrAtmosphereCurve,'|');
-                velCurveEmpty               = Util.ArraySplitEvaluate(velCurveKeys, out arrPropellantVelCurve, '|');
-                atmCurveEmpty               = Util.ArraySplitEvaluate(atmCurveKeys, out arrPropellantAtmCurve, '|');
+                atmosphereCurveEmpty        = Util.ArraySplitEvaluate(atmosphereCurveKeys,      out arrAtmosphereCurve      , '|');
+                velCurveEmpty               = Util.ArraySplitEvaluate(velCurveKeys,             out arrPropellantVelCurve   , '|');
+                atmCurveEmpty               = Util.ArraySplitEvaluate(atmCurveKeys,             out arrPropellantAtmCurve   , '|');
 
                 //Test if the two arrays are compatible                 <------ This test should be extended!
                 if (arrPropellantNames.Length != arrPropellantRatios.Length)
                 {
                     Debug.LogError("EngineClassSwitch: Error on InitializeSettings() - \nPropellant names (" + arrPropellantNames.Length + "pcs) and ratios (" + arrPropellantRatios.Length + "pcs) does not match\nConfig file error");
                 }
-                if (arrPropellantNames.Length != arrMaxThrust.Length)
-                {
-                    Debug.LogError("EngineClassSwitch: Error on InitializeSettings() - \nPropellant names (" + arrPropellantNames.Length + "pcs) and maxThrusts (" + arrMaxThrust.Length + "pcs) does not match\nConfig file error");
-                }
+                //if (arrPropellantNames.Length != arrMaxThrust.Length)
+                //{
+                //    Debug.LogError("EngineClassSwitch: Error on InitializeSettings() - \nPropellant names (" + arrPropellantNames.Length + "pcs) and maxThrusts (" + arrMaxThrust.Length + "pcs) does not match\nConfig file error");
+                //}
                 #endregion
 
                 #region Populate Propellant List
@@ -170,11 +163,6 @@ namespace GTI
                         {
                             Propellants = arrPropellantNames[i],
                             PropRatios  = arrPropellantRatios[i]
-                            //setMaxThrust = arrMaxThrust[i],
-                            //propIgnoreForISP = arrPropIgnoreForISP[i],
-                            //propDrawGauge = arrPropDrawGauge[i],
-                            //heatProduction = arrHeatProd[i],
-                            //engineType = arrEngineTypes[i]
                         });
 
 
@@ -212,7 +200,13 @@ namespace GTI
                 }
                 #endregion
 
-                
+                //Debug.Log("--> propList.Count: " + propList.Count);
+                //propList.RemoveAt(1);
+                //Debug.Log("--> propList.Count: " + propList.Count);
+                //Debug.Log("--> propList[0].Propellants: " + propList[0].Propellants);
+                //Debug.Log("--> propList[1].Propellants: " + propList[1].Propellants);
+                //Debug.Log("--> propList[3].Propellants: " + propList[2].Propellants);
+
 
                 #region Identify ModuleEngines in Scope
                 //Find modules which is to be manipulated
@@ -360,52 +354,54 @@ namespace GTI
 
                 //Set the engine type
                 //[LiquidFuel, Nuclear, SolidBooster, Turbine, MonoProp, ScramJet, Electric, Generic, Piston]
-                switch (propList[selectedPropellant].engineType)
+                if (!EngineTypesEmpty)
                 {
-                    case "LiquidFuel":
-                        moduleEngine.engineType = EngineType.LiquidFuel;
-                        break;
-                    case "Nuclear":
-                        moduleEngine.engineType = EngineType.Nuclear;
-                        break;
-                    case "SolidBooster":
-                        moduleEngine.engineType = EngineType.SolidBooster;
-                        break;
-                    case "Turbine":
-                        moduleEngine.engineType = EngineType.Turbine;
-                        break;
-                    case "MonoProp":
-                        moduleEngine.engineType = EngineType.MonoProp;
-                        break;
-                    case "ScramJet":
-                        moduleEngine.engineType = EngineType.ScramJet;
-                        break;
-                    case "Electric":
-                        moduleEngine.engineType = EngineType.Electric;
-                        break;
-                    case "Generic":
-                        moduleEngine.engineType = EngineType.Generic;
-                        break;
-                    case "Piston":
-                        moduleEngine.engineType = EngineType.Piston;
-                        break;
-                    default:
-                        moduleEngine.engineType = EngineType.LiquidFuel;
-                        break;
+                    switch (propList[selectedPropellant].engineType)
+                    {
+                        case "LiquidFuel":
+                            moduleEngine.engineType = EngineType.LiquidFuel;
+                            break;
+                        case "Nuclear":
+                            moduleEngine.engineType = EngineType.Nuclear;
+                            break;
+                        case "SolidBooster":
+                            moduleEngine.engineType = EngineType.SolidBooster;
+                            break;
+                        case "Turbine":
+                            moduleEngine.engineType = EngineType.Turbine;
+                            break;
+                        case "MonoProp":
+                            moduleEngine.engineType = EngineType.MonoProp;
+                            break;
+                        case "ScramJet":
+                            moduleEngine.engineType = EngineType.ScramJet;
+                            break;
+                        case "Electric":
+                            moduleEngine.engineType = EngineType.Electric;
+                            break;
+                        case "Generic":
+                            moduleEngine.engineType = EngineType.Generic;
+                            break;
+                        case "Piston":
+                            moduleEngine.engineType = EngineType.Piston;
+                            break;
+                        default:
+                            moduleEngine.engineType = EngineType.LiquidFuel;
+                            break;
+                    }
                 }
 
                 //Write the propellant setup to the right click GUI
+
+
                 if ( iniGUIpropellantNames == string.Empty )
-                {
-                    //Default naming if no user defined names are found
+                {   //Default naming if no user defined names are found
                     GUIpropellantNames = "[" + selectedPropellant + "] " + propList[selectedPropellant].Propellants.Replace(",", ", ");
                 }
                 else
-                {
-                    //User defined names
+                {   //User defined names
                     GUIpropellantNames = iniGUIpropellantNames.Trim().Split(';')[selectedPropellant];
                 }
-                //chooseField.guiName = GUIpropellantNames;
 
                 //Restart engine if it was on before switching
                 if (engineState == true) { moduleEngine.Activate(); }
