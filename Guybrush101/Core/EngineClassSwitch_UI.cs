@@ -32,25 +32,28 @@ namespace GTI
         [KSPField(guiActive = true, guiActiveEditor = true, isPersistant = true, guiName = "EngineSwitcher")]
         [UI_ChooseOption(affectSymCounterparts = UI_Scene.Editor, scene = UI_Scene.All, suppressEditorShipModified = false, options = new[] { "None" })]
         public string ChooseOption = "0";
-        private string[] Options;
-        private string[] OptionsDisplay;
-        BaseField chooseField;
+        //private string[] Options;
+        //private string[] OptionsDisplay;
+        //BaseField chooseField;
         //UI_ChooseOption chooseOption;
 
         private void initializeGUI()
         {
-            Debug.Log("initializeGUI(): START");
+            BaseField chooseField;
+            string[] Options;
+            string[] OptionsDisplay;
+
+            //Debug.Log("initializeGUI(): START");
             chooseField                     = Fields[nameof(ChooseOption)];
             chooseField.guiName             = "Propellants";
             chooseField.guiActiveEditor     = availableInEditor;
             chooseField.guiActive           = availableInFlight;
 
-            Debug.Log("initializeGUI() | arrPropellantNames.Length: " + arrPropellantNames.Length);
+            //Debug.Log("initializeGUI() | arrPropellantNames.Length: " + arrPropellantNames.Length);
 
             //Create array Options that are simple ref's to the propellant list
             Debug.Log(
-                "propList.Count: "+ propList.Count +
-                "\n(propList.Count == arrPropellantNames.Length) --> " + (propList.Count == arrPropellantNames.Length)
+                "propList.Count: " + propList.Count
                 );
             Options = new string[propList.Count];        //Options = new string[arrPropellantNames.Length];
             OptionsDisplay = new string[propList.Count];
@@ -58,14 +61,17 @@ namespace GTI
             {
                 Debug.Log(
                     "\ni: " + i +
-                    "\n arrPropellantNames: " + propList[i].Propellants                                                            //"\n arrPropellantNames: " + arrPropellantNames[i]
+                    "\npropList[i].Propellants: " + propList[i].Propellants
                     );
-                if (propList[i].TechLevelReqAchieved)
-                {
+
+                //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
+                //if (ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Available)
+                //if (propList[i].EngineConfigAvailable)
+                //{
+                    Debug.Log("Add " + propList[i].Propellants + " (" + i + ") to UI");
                     Options[i] = i.ToString();
                     OptionsDisplay[i] = propList[i].Propellants;
-                }
-                
+                //}
             }
             
             
@@ -84,10 +90,6 @@ namespace GTI
             //chooseField.guiName = propList[selectedPropellant].Propellants;
             updateEngineModule(true);
         }
-
-
-
- 
         #endregion
         
         
@@ -97,7 +99,7 @@ namespace GTI
             //nextPropellantEvent();
 
             selectedPropellant++;
-            if (selectedPropellant > arrPropellantNames.GetUpperBound(0))
+            if (selectedPropellant > (propList.Count - 1))                           //arrPropellantNames.GetUpperBound(0))
             {
                 //if we move from last propellant, then the next one is the first one - aka 0
                 selectedPropellant = 0;
@@ -114,7 +116,7 @@ namespace GTI
             if (selectedPropellant < 0)
             {
                 //if we move from the first propellant, then the previous is the last - aka the upperbound
-                selectedPropellant = arrPropellantNames.GetUpperBound(0);
+                selectedPropellant = (propList.Count-1);                           //arrPropellantNames.GetUpperBound(0))
             }
             ChooseOption = selectedPropellant.ToString();
             updateEngineModule(true);

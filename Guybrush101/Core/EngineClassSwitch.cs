@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using GTI.GenericFunctions;
+
 
 //####################################################################################################################################
 // Credits:
@@ -15,6 +17,9 @@ namespace GTI
 {
     partial class GTI_EngineClassSwitch : PartModule
     {
+        //Tech Requirement
+        [KSPField]
+        public string requiredTech = string.Empty;
         //Engine manipulation
         #region Engine parameters
         [KSPField]
@@ -56,6 +61,8 @@ namespace GTI
         #endregion
 
         #region Empty value indicators (boolean)
+        private bool requiredTechEmpty = true;
+        private bool iniGUIpropellantNamesEmpty = true;
         private bool MaxThrustEmpty = true;
         private bool EngineTypesEmpty = true;
         private bool heatProductionEmpty = true;
@@ -76,10 +83,10 @@ namespace GTI
 
         #region Arrays and Lists
         //Arrays for data processing
-        private string[] arrPropellantNames;    //for the split list of prop names
-        private string[] arrPropellantRatios;   //for the split list of prop ratios
-        private string[] arrMaxThrust, arrPropDrawGauge, arrHeatProd, arrEngineTypes, arrPropIgnoreForISP, arratmChangeFlows, arruseVelCurves, arruseAtmCurves;
-        private string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
+        //private string[] arrPropellantNames;    //for the split list of prop names
+        //private string[] arrPropellantRatios;   //for the split list of prop ratios
+        //private string[] arrMaxThrust, arrPropDrawGauge, arrHeatProd, arrEngineTypes, arrPropIgnoreForISP, arratmChangeFlows, arruseVelCurves, arruseAtmCurves;
+        //private string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
 
         //Customtype for list of relevant settings
         private List<CustomTypes.PropellantList> propList = new List<CustomTypes.PropellantList>();
@@ -100,6 +107,18 @@ namespace GTI
             //Debug.Log("Tech start: " + ResearchAndDevelopment.GetTechnologyState("start").ToString());
             //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry").ToString());
             //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
+            
+
+            //bool isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "KerbalEngineer");
+            //Debug.Log("KerbalEngineer " + isThatModLoaded);
+            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "KerbalEngineer.Unity");
+            //Debug.Log("KerbalEngineer.Unity " + isThatModLoaded);
+            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "GTI");
+            //Debug.Log("GTI " + isThatModLoaded);
+            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "MightyPirate");
+            //Debug.Log("MightyPirate " + isThatModLoaded);
+            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "Guybrush101");
+            //Debug.Log("Guybrush101 " + isThatModLoaded);
 
             InitializeSettings();
                 if (selectedPropellant == -1)
@@ -117,6 +136,11 @@ namespace GTI
             //Debug.Log("EngineClassSwitch --> InitializeSettings");
             if (!_settingsInitialized)
             {
+                string[] arrPropellantNames, arrPropellantRatios;
+                string[] arrPropDrawGauge, arrPropIgnoreForISP;
+                string[] arrrequiredTech, arrGUIpropellantNames;
+                string[] arrMaxThrust, arrHeatProd, arrEngineTypes, arratmChangeFlows, arruseVelCurves, arruseAtmCurves;
+                string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
                 Utilities Util = new Utilities();
 
                 #region Parse Arrays
@@ -129,6 +153,9 @@ namespace GTI
                 propellantIgnoreForIspEmpty = Util.ArraySplitEvaluate(propellantIgnoreForIsp,   out arrPropIgnoreForISP     , ';');
                 propellantDrawGaugeEmpty    = Util.ArraySplitEvaluate(propellantDrawGauge,      out arrPropDrawGauge        , ';');
 
+                //Required Technology & GUI
+                requiredTechEmpty           = Util.ArraySplitEvaluate(requiredTech,             out arrrequiredTech         , ';');
+                iniGUIpropellantNamesEmpty  = Util.ArraySplitEvaluate(iniGUIpropellantNames,    out arrGUIpropellantNames   , ';');
 
                 //Engine level
                 MaxThrustEmpty              = Util.ArraySplitEvaluate(maxThrust,                out arrMaxThrust            , ';');
@@ -155,7 +182,8 @@ namespace GTI
                 #endregion
 
                 #region Populate Propellant List
-                try { 
+                try
+                { 
                 //Populate the Propellant List (propList) from the array for more intuitive access to this information later
                 for (int i = 0; i < arrPropellantRatios.Length; i++)
                     {
@@ -165,6 +193,8 @@ namespace GTI
                             PropRatios  = arrPropellantRatios[i]
                         });
 
+                        propList[i].requiredTech        = requiredTechEmpty             ? "start"   : arrrequiredTech[i];
+                        propList[i].GUIpropellantNames  = iniGUIpropellantNamesEmpty    ? string.Empty : arrGUIpropellantNames[i];
 
                         //Propellant level --> Propellant level is needed as the entire node is replaced.
                         propList[i].propIgnoreForISP    = propellantIgnoreForIspEmpty   ? "false"   : arrPropIgnoreForISP[i];       //Has Default value "false"
@@ -192,6 +222,8 @@ namespace GTI
                             propList[i].atmCurve = arrPropellantAtmCurve[i];
                         }
                     }
+                    //Initialize the effects for EngineSwitch
+                    InitializeEffects();
                 }
                 catch(Exception e)
                 {
@@ -199,14 +231,21 @@ namespace GTI
                     throw e;
                 }
                 #endregion
+                //ResearchAndDevelopment.GetTechnologyState("basicRocketry")
+                //Debug.Log("Remove tech which is not available. propList.Count before: " + propList.Count);
+                for (int i = propList.Count - 1; i >= 0; i--)
+                {
+                    Debug.Log("Propellants: " + propList[i].Propellants +
+                        "\nrequiredTech --> " + propList[i].requiredTech + " : " + ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) + 
+                        "\ni: " + i);
 
-                //Debug.Log("--> propList.Count: " + propList.Count);
-                //propList.RemoveAt(1);
-                //Debug.Log("--> propList.Count: " + propList.Count);
-                //Debug.Log("--> propList[0].Propellants: " + propList[0].Propellants);
-                //Debug.Log("--> propList[1].Propellants: " + propList[1].Propellants);
-                //Debug.Log("--> propList[3].Propellants: " + propList[2].Propellants);
-
+                    if ((ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable)) { propList.RemoveAt(i); }
+                }
+                //foreach (var item in propList)
+                //{
+                //    Debug.Log(item.Propellants);
+                //}
+                //Debug.Log("Done removing tech which is not available. propList.Count after: " + propList.Count);
 
                 #region Identify ModuleEngines in Scope
                 //Find modules which is to be manipulated
@@ -215,8 +254,8 @@ namespace GTI
                     foreach (var moduleEngine in ModuleEngines)
                     {
                         if (moduleEngine.engineID == engineID || string.IsNullOrEmpty(engineID) || engineID.Trim().Length == 0)       //"string.IsNullOrEmpty(engineID) || engineID.Trim().Length==0" is used instead of IsNullOrWhiteSpace()
-                        { 
-                            //do nothing 
+                        {
+                            Debug.Log(moduleEngine.name + " added to list of engines using EngineSwitch");
                         }
                         else
                         {
@@ -231,9 +270,9 @@ namespace GTI
                 #endregion
 
                 #region GUI Update
-                Debug.Log("--> initializeGUI()");
+                //Debug.Log("--> initializeGUI()");
                 initializeGUI();
-                Debug.Log("--> initializeGUI() is Done");
+                //Debug.Log("--> initializeGUI() is Done");
                 #endregion
 
                 //set settings to initialized
@@ -392,17 +431,17 @@ namespace GTI
                 }
 
                 //Write the propellant setup to the right click GUI
-
-
-                if ( iniGUIpropellantNames == string.Empty )
+                GUIpropellantNames = propList[selectedPropellant].Propellants.Replace(",", ", ");
+                
+                if (iniGUIpropellantNamesEmpty)
                 {   //Default naming if no user defined names are found
                     GUIpropellantNames = "[" + selectedPropellant + "] " + propList[selectedPropellant].Propellants.Replace(",", ", ");
                 }
                 else
                 {   //User defined names
-                    GUIpropellantNames = iniGUIpropellantNames.Trim().Split(';')[selectedPropellant];
+                    GUIpropellantNames = propList[selectedPropellant].GUIpropellantNames;                               //iniGUIpropellantNames.Trim().Split(';')[selectedPropellant];
                 }
-
+                
                 //Restart engine if it was on before switching
                 if (engineState == true) { moduleEngine.Activate(); }
             }

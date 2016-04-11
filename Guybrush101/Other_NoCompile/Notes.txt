@@ -15,6 +15,19 @@ implement
  - engineSpoolIdle
  - engineSpoolTime
 
+ 	fx_exhaustFlame_blue = 0.0, -5.74338, 0.0, 0.0, 1.0, 0.0, running
+	fx_exhaustLight_blue = 0.0, -5.74338, 0.0, 0.0, 0.0, 1.0, running
+	fx_smokeTrail_light = 0.0, -5.74338, 0.0, 0.0, 1.0, 0.0, running
+	fx_exhaustSparks_flameout = 0.0, -5.74338, 0.0, 0.0, 1.0, 0.0, flameout
+	sound_vent_medium = engage
+	sound_rocket_hard = running
+	sound_vent_soft = disengage
+	sound_explosion_low = flameout
+
+		engageEffectName = engage
+		disengageEffectName = disengage
+
+
 - useEngineResponseTime
  - engineAccelerationSpeed
  - engineDecelerationSpeed

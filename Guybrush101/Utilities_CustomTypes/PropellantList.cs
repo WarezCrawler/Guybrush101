@@ -27,7 +27,8 @@ namespace GTI.CustomTypes
         private string _useVelCurve;
         private string _useAtmCurve;
 
-        private bool _TechLevelReqAchieved = true;
+        private string _requiredTech = string.Empty;
+        private string _GUIpropellantNames = string.Empty;
 
         //arrPropIgnoreForISP, arrPropDrawGauge, arrHeatProd, arrEngineTypes;
 
@@ -37,11 +38,24 @@ namespace GTI.CustomTypes
                                             //private float _maxFuelFlow;         //  Kg/s
 
         //For storing and retrieving propellants
-        public bool TechLevelReqAchieved
+        public string requiredTech
         {
-            get { return _TechLevelReqAchieved; }
-            set { _TechLevelReqAchieved = value; }
+            get { return _requiredTech; }
+            set
+            {
+                //_engineConfigAvailable = ResearchAndDevelopment.GetTechnologyState(value) == RDTech.State.Available;
+                _requiredTech = value;
+            }
         }
+
+        public string GUIpropellantNames
+        {
+            get { return _GUIpropellantNames; }
+            set { _GUIpropellantNames = value; }
+        }
+
+
+
 
         public string Propellants
         {
@@ -73,7 +87,7 @@ namespace GTI.CustomTypes
                                 Debug.LogWarning("CustomTypes.PropellantList -> Could not parse propellant ratio " + item + " into integer.");
                     }
                 }
-                catch (Exception e) { Debug.LogError("CustomTypes.PropellantList -> Could not parse propellant ratio into integer.\n" + value + "\nError trown:\n" + e); }
+                catch (Exception e) { Debug.LogError("CustomTypes.PropellantList -> Could not parse propellant ratio into integer.\n" + value + "\nError trown:\n" + e);throw e; }
                 CalcDensity(_propellants,_propRatios, _ignoreForIsp);
             }
         }

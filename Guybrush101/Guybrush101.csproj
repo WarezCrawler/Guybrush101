@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\EngineClassSwitch_Effects.cs" />
     <Compile Include="UI_Examples\TEST_MODULE.cs" />
     <Compile Include="UI_Examples\UI_CHOOSEOPTION.cs" />
     <Compile Include="Core\IntakeSwitch_UI.cs" />

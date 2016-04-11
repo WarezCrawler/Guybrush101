@@ -55,7 +55,7 @@ namespace GTI
         #region Events
         public override void OnStart(PartModule.StartState state)
         {
-            Debug.Log("Intake Switch OnStart()");
+            //Debug.Log("Intake Switch OnStart()");
             InitializeSettings();
             if (selectedIntake == -1)
             {
@@ -74,7 +74,7 @@ namespace GTI
         {
             if (!_settingsInitialized)
             {
-                Debug.Log("Loading Settings for Intake Switcher");
+                //Debug.Log("Loading Settings for Intake Switcher");
                 Utilities Util = new Utilities();
 
                 /*
@@ -115,7 +115,7 @@ namespace GTI
 
                 //set settings to initialized
                 _settingsInitialized = true;
-                Debug.Log("Intake Switcher settings loaded: " + _settingsInitialized);
+                //Debug.Log("Intake Switcher settings loaded: " + _settingsInitialized);
 
             }
         }
@@ -134,13 +134,13 @@ namespace GTI
             for (int i = 0; i < ModuleIntakes.Count; i++)
             {
                 //*****************************
-                Debug.Log("Intake Switcher: Update Resource Intake");
+                //Debug.Log("Intake Switcher: Update Resource Intake");
 
                 //Define the node object
                 ConfigNode IntakeNode = newIntakeNode;          //.GetNode("ModuleResourceIntake");
                 ConfigNode IntakeResource = newIntakeNode;
 
-                Debug.Log("Confignode defined");
+                //Debug.Log("Confignode defined");
 
                 //Set new setting values
                 IntakeNode.AddValue("resourceName", arrIntakeNames[selectedIntake]);
@@ -189,7 +189,7 @@ namespace GTI
 
             #region DEBUGGING
             /* Debugging Area */
-
+            /*
             Debug.Log("Update GUI");
             GUIResourceName = ModuleIntakes[0].resourceName;
             Debug.Log("GUI Updated");
@@ -222,6 +222,7 @@ namespace GTI
                     "\nresMaxAmountEmpty: " + resMaxAmountEmpty
                     );
             }
+            */
             #endregion
 
         }
