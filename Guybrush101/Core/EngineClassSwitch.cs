@@ -110,22 +110,21 @@ namespace GTI
             
 
             //bool isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "KerbalEngineer");
-            //Debug.Log("KerbalEngineer " + isThatModLoaded);
             //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "KerbalEngineer.Unity");
-            //Debug.Log("KerbalEngineer.Unity " + isThatModLoaded);
-            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "GTI");
-            //Debug.Log("GTI " + isThatModLoaded);
-            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "MightyPirate");
+            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "MightyPirate");     //File name
             //Debug.Log("MightyPirate " + isThatModLoaded);
-            //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "Guybrush101");
-            //Debug.Log("Guybrush101 " + isThatModLoaded);
 
             InitializeSettings();
+            InitializeEffects();
                 if (selectedPropellant == -1)
                 {
                     selectedPropellant = 0;
                 }
+            if (propList.Count > 0)
+            {
                 updateEngineModule(false, "OnStart");
+            }
+                
         }
         #endregion
 
@@ -240,6 +239,11 @@ namespace GTI
                         "\ni: " + i);
 
                     if ((ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable)) { propList.RemoveAt(i); }
+                }
+                if (propList.Count == 0)
+                {
+                    availableInFlight = false;
+                    availableInEditor = false;
                 }
                 //foreach (var item in propList)
                 //{

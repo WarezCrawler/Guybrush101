@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Guybrush101")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("GTI EngineSwitch")]
+[assembly: AssemblyDescription("KSP Plugin")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Guybrush101")]
+[assembly: AssemblyProduct("KSP GTI EngineSwitch")]
 [assembly: AssemblyCopyright("Copyright © WarezCrawler  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.4.*")]
-[assembly: AssemblyFileVersion("0.4.*")]
+[assembly: AssemblyVersion("0.5.0.5")]
+[assembly: AssemblyFileVersion("0.5.0.5")]
 [assembly: NeutralResourcesLanguage("en")]
 

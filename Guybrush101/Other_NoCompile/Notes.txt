@@ -1,5 +1,5 @@
 ﻿Changes
-
+- Now it's possible to add a required technology for each engine propellant combination
 
 
 
