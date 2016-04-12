@@ -9,9 +9,9 @@ namespace GTI.CustomTypes
     {
         //private string _names;            //New name of part in event of new propellant
         private string _propellants;        //The propellants
-        private int _propAmount;
+        private int    _propAmount;
         private string _propRatios;         //The propellant ratios
-        private float _propDensity;
+        private float  _propDensity;
         private string _ignoreForIsp = string.Empty;
         private string _drawGauge;
 
@@ -36,6 +36,37 @@ namespace GTI.CustomTypes
 
         private float _maxThrust;           //  Kg * m/s^2 = N
                                             //private float _maxFuelFlow;         //  Kg/s
+
+        #region Effects
+        public string runningEffectName;
+        public string powerEffectName;
+        public string spoolEffectName;
+        
+        public string engineSpoolIdle;
+        public string engineSpoolTime;
+        
+        public string useEngineResponseTime;
+        public string engineAccelerationSpeed;
+        public string engineDecelerationSpeed;
+
+        public string engageEffectName;
+        public string disengageEffectName;
+        
+        public string fx_exhaustFlame_blue;
+        public string fx_exhaustLight_blue;
+        public string fx_smokeTrail_light;
+        public string fx_exhaustSparks_flameout;
+        
+        public string sound_vent_medium;
+        public string sound_rocket_hard;
+        public string sound_vent_soft;
+        public string sound_explosion_low;
+        #endregion
+
+
+
+
+
 
         //For storing and retrieving propellants
         public string requiredTech
@@ -136,7 +167,7 @@ namespace GTI.CustomTypes
                     //loop the arrays and recreate cleaned arrays
                     for (int i = 0; i < arrInPropellants.Length; i++)
                     {
-                        Debug.Log("if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)");
+                        //Debug.Log("if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)");
                         if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)
                         {
                             inPropellants = inPropellants + "," + arrInPropellants[i];

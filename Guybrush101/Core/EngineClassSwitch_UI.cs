@@ -52,23 +52,23 @@ namespace GTI
             //Debug.Log("initializeGUI() | arrPropellantNames.Length: " + arrPropellantNames.Length);
 
             //Create array Options that are simple ref's to the propellant list
-            Debug.Log(
-                "propList.Count: " + propList.Count
-                );
+            //Debug.Log(
+            //    "propList.Count: " + propList.Count
+            //    );
             Options = new string[propList.Count];        //Options = new string[arrPropellantNames.Length];
             OptionsDisplay = new string[propList.Count];
             for (int i = 0; (i < propList.Count) ; i++)
             {
-                Debug.Log(
-                    "\ni: " + i +
-                    "\npropList[i].Propellants: " + propList[i].Propellants
-                    );
+                //Debug.Log(
+                //    "\ni: " + i +
+                //    "\npropList[i].Propellants: " + propList[i].Propellants
+                //    );
 
                 //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
                 //if (ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Available)
                 //if (propList[i].EngineConfigAvailable)
                 //{
-                    Debug.Log("Add " + propList[i].Propellants + " (" + i + ") to UI");
+                    //Debug.Log("Add " + propList[i].Propellants + " (" + i + ") to UI");
                     Options[i] = i.ToString();
                     OptionsDisplay[i] = propList[i].Propellants;
                 //}

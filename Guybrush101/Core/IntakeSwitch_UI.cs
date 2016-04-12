@@ -39,16 +39,16 @@ namespace GTI
             chooseField.guiActiveEditor = availableInEditor;
             chooseField.guiActive = availableInFlight;
 
-            Debug.Log("initializeGUI() | arrPropellantNames.Length: " + arrIntakeNames.Length);
+            //Debug.Log("initializeGUI() | arrPropellantNames.Length: " + arrIntakeNames.Length);
 
             //Create array Options that are simple ref's to the propellant list
             Options = new string[arrIntakeNames.Length];
             for (int i = 0; i < arrIntakeNames.Length; i++)
             {
-                Debug.Log(
-                    "\ni: " + i +
-                    "\n arrIntakeNames: " + arrIntakeNames[i]
-                    );
+                //Debug.Log(
+                //    "\ni: " + i +
+                //    "\n arrIntakeNames: " + arrIntakeNames[i]
+                //    );
                 Options[i] = i.ToString();
             }
             //Set which function run's when changing selection, which options, and the text to display

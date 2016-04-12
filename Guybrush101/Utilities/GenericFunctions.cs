@@ -68,12 +68,12 @@ namespace GTI.GenericFunctions
             string[] arrResources, arrRatios;
             float weightTotal;
 
-            Debug.Log("calcWeightedDensity: split arrays");
+            //Debug.Log("calcWeightedDensity: split arrays");
             //Parse strings into arrays
             arrResources = Resources.Trim().Split(',');
             arrRatios = Ratios.Trim().Split(',');
 
-            Debug.Log("calcWeightedDensity: Consistency Check");
+            //Debug.Log("calcWeightedDensity: Consistency Check");
             //Check consistency of arrays
             if (arrResources.Length != arrRatios.Length)
             {

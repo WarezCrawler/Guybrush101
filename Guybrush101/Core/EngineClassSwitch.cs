@@ -115,11 +115,10 @@ namespace GTI
             //Debug.Log("MightyPirate " + isThatModLoaded);
 
             InitializeSettings();
-            InitializeEffects();
-                if (selectedPropellant == -1)
-                {
-                    selectedPropellant = 0;
-                }
+            if (selectedPropellant == -1)
+            {
+                selectedPropellant = 0;
+            }
             if (propList.Count > 0)
             {
                 updateEngineModule(false, "OnStart");
@@ -135,12 +134,14 @@ namespace GTI
             //Debug.Log("EngineClassSwitch --> InitializeSettings");
             if (!_settingsInitialized)
             {
+                Utilities Util = new Utilities();
+
                 string[] arrPropellantNames, arrPropellantRatios;
                 string[] arrPropDrawGauge, arrPropIgnoreForISP;
                 string[] arrrequiredTech, arrGUIpropellantNames;
                 string[] arrMaxThrust, arrHeatProd, arrEngineTypes, arratmChangeFlows, arruseVelCurves, arruseAtmCurves;
                 string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
-                Utilities Util = new Utilities();
+                
 
                 #region Parse Arrays
                 //Parse the strings into arrays of information
@@ -234,9 +235,9 @@ namespace GTI
                 //Debug.Log("Remove tech which is not available. propList.Count before: " + propList.Count);
                 for (int i = propList.Count - 1; i >= 0; i--)
                 {
-                    Debug.Log("Propellants: " + propList[i].Propellants +
-                        "\nrequiredTech --> " + propList[i].requiredTech + " : " + ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) + 
-                        "\ni: " + i);
+                    //Debug.Log("Propellants: " + propList[i].Propellants +
+                    //    "\nrequiredTech --> " + propList[i].requiredTech + " : " + ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) + 
+                    //    "\ni: " + i);
 
                     if ((ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable)) { propList.RemoveAt(i); }
                 }
@@ -259,7 +260,7 @@ namespace GTI
                     {
                         if (moduleEngine.engineID == engineID || string.IsNullOrEmpty(engineID) || engineID.Trim().Length == 0)       //"string.IsNullOrEmpty(engineID) || engineID.Trim().Length==0" is used instead of IsNullOrWhiteSpace()
                         {
-                            Debug.Log(moduleEngine.name + " added to list of engines using EngineSwitch");
+                            //Debug.Log(moduleEngine.name + " added to list of engines using EngineSwitch");
                         }
                         else
                         {
@@ -272,7 +273,7 @@ namespace GTI
                     }
                 //Now ModulesEngines should have exactly the engine modules in scope
                 #endregion
-
+                
                 #region GUI Update
                 //Debug.Log("--> initializeGUI()");
                 initializeGUI();
