@@ -434,6 +434,11 @@ namespace GTI
                             break;
                     }
                 }
+                //Update the effects
+                updateEngineModuleEffects(
+                    calledByPlayer: calledByPlayer, 
+                    callingFunction: callingFunction, 
+                    moduleEngine: moduleEngine);
 
                 //Write the propellant setup to the right click GUI
                 GUIpropellantNames = propList[selectedPropellant].Propellants.Replace(",", ", ");

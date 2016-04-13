@@ -99,11 +99,25 @@ namespace GTI
                 propList[i].powerEffectName = powerEffectNameEmpty ? string.Empty : arrPowerEffectName[i];
                 propList[i].spoolEffectName = spoolEffectNameEmpty ? string.Empty : arrSpoolEffectName[i];
 
+                propList[i].engineSpoolIdle = engineSpoolIdleEmpty ? string.Empty : arrEngineSpoolIdle[i];
+                propList[i].engineSpoolTime = engineSpoolTimeEmpty ? string.Empty : arrEngineSpoolTime[i];
 
+                propList[i].useEngineResponseTime = useEngineResponseTimeEmpty ? string.Empty : arrUseEngineResponseTime[i];
+                propList[i].engineAccelerationSpeed = engineAccelerationSpeedEmpty ? string.Empty : arrEngineAccelerationSpeed[i];
+                propList[i].engineDecelerationSpeed = engineDecelerationSpeedEmpty ? string.Empty : arrEngineDecelerationSpeed[i];
 
+                propList[i].engageEffectName = engageEffectNameEmpty ? string.Empty : arrEngageEffectName[i];
+                propList[i].disengageEffectName = disengageEffectNameEmpty ? string.Empty : arrDisengageEffectName[i];
 
+                propList[i].fx_exhaustFlame_blue = fx_exhaustFlame_blueEmpty ? string.Empty : arrFx_exhaustFlame_blue[i];
+                propList[i].fx_exhaustLight_blue = fx_exhaustLight_blueEmpty ? string.Empty : arrFx_exhaustLight_blue[i];
+                propList[i].fx_smokeTrail_light = fx_smokeTrail_lightEmpty ? string.Empty : arrFx_smokeTrail_light[i];
+                propList[i].fx_exhaustSparks_flameout = fx_exhaustSparks_flameoutEmpty ? string.Empty : arrFx_exhaustSparks_flameout[i];
 
-
+                propList[i].sound_vent_medium = sound_vent_mediumEmpty ? string.Empty : arrSound_vent_medium[i];
+                propList[i].sound_rocket_hard = sound_rocket_hardEmpty ? string.Empty : arrSound_rocket_hard[i];
+                propList[i].sound_vent_soft = sound_vent_softEmpty ? string.Empty : arrSound_vent_soft[i];
+                propList[i].sound_explosion_low = sound_explosion_lowEmpty ? string.Empty : arrSound_explosion_low[i];
             }
             Debug.Log("EngineSwitch Load Effects to propList finished");
 
@@ -112,9 +126,65 @@ namespace GTI
             #endregion
         }
 
-        public void updateEngineModuleEffects(bool calledByPlayer, string callingFunction = "player")
+        public void updateEngineModuleEffects(ModuleEngines moduleEngine, bool calledByPlayer, string callingFunction = "player")
         {
+            ConfigNode newEngineEffectNode = new ConfigNode();
+            ConfigNode EngineEffectNode = newEngineEffectNode;
+            
 
+            if (!runningEffectNameEmpty)
+            {
+
+                if (string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName))
+                {
+                    EngineEffectNode.RemoveValue("runningEffectName");
+                    moduleEngine.DeactivateRunningFX();
+                }
+                else
+                {
+                    EngineEffectNode.AddValue("runningEffectName", propList[selectedPropellant].runningEffectName);
+                    moduleEngine.ActivateRunningFX();
+                }
+
+                
+                Debug.Log(
+                        "\npropList[selectedPropellant].runningEffectName " + propList[selectedPropellant].runningEffectName +
+                        "\nstring.IsNullOrEmpt " + string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName) +
+                        "" + "");
+            }
+            if (!powerEffectNameEmpty)
+            {
+                if (string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName))
+                {
+                    EngineEffectNode.RemoveValue("powerEffectName");
+                    moduleEngine.DeactivatePowerFX();
+                }
+                else
+                {
+                    EngineEffectNode.AddValue("powerEffectName", propList[selectedPropellant].powerEffectName);
+                    moduleEngine.ActivatePowerFX();
+                }
+
+
+
+                
+                Debug.Log("propList[selectedPropellant].powerEffectName: " + propList[selectedPropellant].powerEffectName);
+            }
+            if (!spoolEffectNameEmpty)
+            {
+                EngineEffectNode.AddValue("spoolEffectName", propList[selectedPropellant].spoolEffectName);
+                Debug.Log("propList[selectedPropellant].spoolEffectName: " + propList[selectedPropellant].spoolEffectName);
+            }
+
+
+
+            moduleEngine.Load(EngineEffectNode);
+            moduleEngine.InitializeFX();
+            
+            //moduleEngine.FXReset();
+            //moduleEngine.FXUpdate();
+            //moduleEngine.
+            //}
         }
     }
 }

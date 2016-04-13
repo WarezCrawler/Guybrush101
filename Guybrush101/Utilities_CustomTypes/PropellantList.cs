@@ -38,7 +38,8 @@ namespace GTI.CustomTypes
                                             //private float _maxFuelFlow;         //  Kg/s
 
         #region Effects
-        public string runningEffectName;
+        //public string runningEffectName;
+        private string _runningEffectName;
         public string powerEffectName;
         public string spoolEffectName;
         
@@ -275,5 +276,21 @@ namespace GTI.CustomTypes
         //        //return 0;
         //    }
         //}
+
+        //Effects
+        public string runningEffectName
+        {
+            get { return _runningEffectName;  }
+            set
+            {
+                string Result;
+
+                Result = string.IsNullOrEmpty(value) ? string.Empty : value;
+
+                _runningEffectName = Result;
+            }
+        }
+
+
     }
 }
