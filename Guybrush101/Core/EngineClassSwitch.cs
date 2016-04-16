@@ -93,6 +93,7 @@ namespace GTI
         
         //For the engines modules
         private List<ModuleEngines> ModuleEngines;
+        private ModuleEngines currentModuleEngine;
         #endregion
 
         #region Other class level declarations
@@ -119,19 +120,34 @@ namespace GTI
             {
                 selectedPropellant = 0;
             }
+            Debug.Log("OnStart() --> propList.Count: " + propList.Count);
             if (propList.Count > 0)
             {
-                updateEngineModule(false, "OnStart");
+                Debug.Log("OnStart() --> updateEngineModule(false, 'OnStart')");
+                //updateEngineModule(false, "OnStart");
+                Invoke("updateEngineModuleFromOnStart", 1f);
+
+
+
+                //selectedPropellant++;
+                //if (selectedPropellant > (propList.Count - 1)) { selectedPropellant = 0; }
+                //updateEngineModule(false, "OnStart");
+                //selectedPropellant--;
+                //if (selectedPropellant < 0) { selectedPropellant = (propList.Count - 1); }
+                //updateEngineModule(false, "OnStart");
             }
-                
+        }
+        private void updateEngineModuleFromOnStart()
+        {
+            updateEngineModule(false, "OnStart");
         }
         #endregion
 
         #region Settings
         public void InitializeSettings()
         {
-            
-            //Debug.Log("EngineClassSwitch --> InitializeSettings");
+
+            Debug.Log("EngineClassSwitch --> InitializeSettings");
             if (!_settingsInitialized)
             {
                 Utilities Util = new Utilities();
@@ -285,10 +301,23 @@ namespace GTI
             }
         }
         #endregion
-
-
-
+        
+        
         #region UpdatePart Engine Module
+        private void ActivateEngine()
+        {
+            if (currentEngineState == true) { currentModuleEngine.Activate(); }
+            //currentModuleEngine.useEngineResponseTime = true;
+        }
+        private void ShutdownEngine()
+        {
+            //Shutdown the engine --> Removes the gauges, and make sense to do before changing propellant
+            currentModuleEngine.Shutdown();
+        }
+
+        bool currentEngineState = false;
+        //float currentThrottleState;
+
         private void updateEngineModule(bool calledByPlayer, string callingFunction = "player")
         {
             string[] arrtargetPropellants, arrtargetRatios, arrtargetIgnoreForISP, arrtargetDrawGuage;
@@ -300,17 +329,49 @@ namespace GTI
             ConfigNode newPropNode = new ConfigNode();
             Utilities MiscFx = new Utilities();
             PhysicsUtilities EngineCalc = new PhysicsUtilities();
-            //PartResourceDefinitionList resourceID;
 
             foreach (var moduleEngine in this.ModuleEngines)
             {
-                bool engineState = false;
-                
+                //bool engineState = false;
+                //float ThrottleState;
+                currentModuleEngine = moduleEngine;
                 //Get the Ignition state, i.e. is the engine shutdown or activated
-                engineState = moduleEngine.getIgnitionState;
-                //Shutdown the engine --> Removes the gauges, and make sense to do before changing propellant
-                //Debug.Log("engine shutdown");
-                moduleEngine.Shutdown();
+                currentEngineState = currentModuleEngine.getIgnitionState;
+                ShutdownEngine();
+                currentModuleEngine.DeactivateLoopingFX();
+                currentModuleEngine.DeactivatePowerFX();
+                currentModuleEngine.DeactivateRunningFX();
+
+                
+
+
+                //currentThrottleState = FlightInputHandler.state.mainThrottle;
+                //FlightInputHandler.state.mainThrottle = 0f;
+                //currentModuleEngine.useEngineResponseTime = false;
+
+                //moduleEngine.maxFuelFlow = 0f;
+
+                //Invoke("ShutdownEngine",2f);
+
+                ////Get the Ignition state, i.e. is the engine shutdown or activated
+                //engineState = currentModuleEngine.getIgnitionState;
+                ////Shutdown the engine --> Removes the gauges, and make sense to do before changing propellant
+                ////Debug.Log("engine shutdown");
+                //currentModuleEngine.Shutdown();
+                ////Debug.Log("1) FlightInputHandler.state.mainThrottle : " + FlightInputHandler.state.mainThrottle);
+                //ThrottleState = FlightInputHandler.state.mainThrottle;
+                //FlightInputHandler.state.mainThrottle = 0f;
+
+                //StartCoroutine(wait());
+                //Debug.Log("2) FlightInputHandler.state.mainThrottle : " + FlightInputHandler.state.mainThrottle);
+
+                moduleEngine.Flameout(
+                    message: "Switch Engine State", 
+                    statusOnly: false, 
+                    showFX: false);
+
+                //Invoke("shortwait", 2f);
+                
                 //Debug.Log("engine shutdown completed");
 
                 //Split cfg subsettings into arrays
@@ -451,9 +512,15 @@ namespace GTI
                 {   //User defined names
                     GUIpropellantNames = propList[selectedPropellant].GUIpropellantNames;                               //iniGUIpropellantNames.Trim().Split(';')[selectedPropellant];
                 }
-                
+
+
+
                 //Restart engine if it was on before switching
-                if (engineState == true) { moduleEngine.Activate(); }
+                //moduleEngine.Flameout("Switch Engine State", false, false);
+                currentModuleEngine.UnFlameout(false);
+                //FlightInputHandler.state.mainThrottle = currentThrottleState;
+                Invoke("ActivateEngine", 0f);
+                //if (currentEngineState == true) { moduleEngine.Activate(); }
             }
         }
         #endregion

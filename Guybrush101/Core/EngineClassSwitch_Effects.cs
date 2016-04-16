@@ -128,9 +128,9 @@ namespace GTI
 
         public void updateEngineModuleEffects(ModuleEngines moduleEngine, bool calledByPlayer, string callingFunction = "player")
         {
-            ConfigNode newEngineEffectNode = new ConfigNode();
-            ConfigNode EngineEffectNode = newEngineEffectNode;
-            
+            //ConfigNode newEngineEffectNode = new ConfigNode();
+            //ConfigNode EngineEffectNode = newEngineEffectNode;
+            ConfigNode EngineEffectNode = new ConfigNode();
 
             if (!runningEffectNameEmpty)
             {
@@ -138,12 +138,13 @@ namespace GTI
                 if (string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName))
                 {
                     EngineEffectNode.RemoveValue("runningEffectName");
-                    moduleEngine.DeactivateRunningFX();
+                    //moduleEngine.DeactivateRunningFX();
                 }
                 else
                 {
-                    EngineEffectNode.AddValue("runningEffectName", propList[selectedPropellant].runningEffectName);
-                    moduleEngine.ActivateRunningFX();
+                    EngineEffectNode.SetValue("runningEffectName", propList[selectedPropellant].runningEffectName, true);
+                    //moduleEngine.DeactivateRunningFX();
+                    //moduleEngine.ActivateRunningFX();
                 }
 
                 
@@ -157,12 +158,12 @@ namespace GTI
                 if (string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName))
                 {
                     EngineEffectNode.RemoveValue("powerEffectName");
-                    moduleEngine.DeactivatePowerFX();
+                    //moduleEngine.DeactivatePowerFX();
                 }
                 else
                 {
-                    EngineEffectNode.AddValue("powerEffectName", propList[selectedPropellant].powerEffectName);
-                    moduleEngine.ActivatePowerFX();
+                    EngineEffectNode.SetValue("powerEffectName", propList[selectedPropellant].powerEffectName, true);
+                    //moduleEngine.ActivatePowerFX();
                 }
 
 
@@ -172,15 +173,92 @@ namespace GTI
             }
             if (!spoolEffectNameEmpty)
             {
-                EngineEffectNode.AddValue("spoolEffectName", propList[selectedPropellant].spoolEffectName);
+                EngineEffectNode.SetValue("spoolEffectName", propList[selectedPropellant].spoolEffectName, true);
                 Debug.Log("propList[selectedPropellant].spoolEffectName: " + propList[selectedPropellant].spoolEffectName);
             }
 
 
 
             moduleEngine.Load(EngineEffectNode);
-            moduleEngine.InitializeFX();
-            
+            moduleEngine.SetupFXGroups();
+            //moduleEngine.DeactivateRunningFX();
+            //moduleEngine.ActivateRunningFX();
+            //moduleEngine.InitializeFX();
+            //part.InitializeModules();
+            //part.InitializeEffects();
+
+
+
+
+
+
+
+            //ConfigNode EngineNode = part.partInfo.partConfig.GetNode("MODULE");
+            //ConfigNode copiedEngineNode = new ConfigNode("MODULE");
+            //EngineNode.CopyTo(copiedEngineNode);
+
+            //Debug.Log("foreach (ConfigNode innervalue in copiedEngineNode.values)");
+            //foreach (var innervalue in copiedEngineNode.values)
+            //{
+            //    //Debug.Log("foreach (ConfigNode innervalue in copiedEngineNode.values)");
+            //    Debug.Log(
+            //        "\nid: " + innervalue.ToString() + 
+            //        "\name: " + innervalue.name
+            //        );
+
+            //    //if (part.partInfo.partConfig.nodes.Contains("ModuleEnginesFX"))
+            //    //{
+            //    //    Debug.Log("If ModuleEnginesFX");
+            //    //    innervalue.Save("Node.txt");
+            //    //    Debug.Log(
+            //    //        "\ninnerNode1.GetValue('name'): " + innervalue.GetValue("name") +
+            //    //        "\ninnerNode1.GetValue('maxThrust'): " + innervalue.GetValue("maxThrust")
+            //    //        );
+            //    //    //innerNode1.CopyTo(copiedEngineNode);
+            //    //    break;
+            //    //}
+            //}
+            //foreach (ConfigNode innerNode1 in copiedEngineNode.nodes)
+            //{
+            //    Debug.Log("foreach (ConfigNode innerNode1 in copiedEngineNode.nodes)");
+            //    Debug.Log("part.partInfo.partConfig.nodes.Contains('ModuleEnginesFX'): " + part.partInfo.partConfig.nodes.Contains("ModuleEnginesFX"));
+            //    Debug.Log("innerNode1.GetNodeID('ModuleEnginesFX'): " + innerNode1.GetNodeID("ModuleEnginesFX"));
+            //    Debug.Log("innerNode1.GetValue('name'): " + innerNode1.GetValue("name"));
+
+            //    if (part.partInfo.partConfig.nodes.Contains("ModuleEnginesFX"))
+            //    {
+            //        Debug.Log("If ModuleEnginesFX");
+            //        innerNode1.Save("Node.txt");
+            //        Debug.Log(
+            //            "\ninnerNode1.GetValue('name'): " + innerNode1.GetValue("name") +
+            //            "\ninnerNode1.GetValue('maxThrust'): " + innerNode1.GetValue("maxThrust")
+            //            );
+            //        //innerNode1.CopyTo(copiedEngineNode);
+            //        break;
+            //    }
+            //}
+
+            //ConfigNode effectsNode = part.partInfo.partConfig.GetNode("EFFECTS");
+            //ConfigNode copiedEffectsNode = new ConfigNode("EFFECTS");
+            //effectsNode.CopyTo(copiedEffectsNode);
+            //part.Effects.OnLoad(copiedEffectsNode);
+
+
+
+
+            //EngineNode.CopyTo(copiedEngineNode);
+            //part.Effects.OnLoad(copiedEngineNode);
+            //part.LoadModule(copiedEngineNode);
+            //part.partInfo.partConfig.GetNodes("MODULE");
+            //part.partInfo.partConfig.GetNode("ModuleEnginesFX");
+
+
+
+            //moduleEngine.OnLoad(EngineEffectNode);
+            //part.partInfo.partConfig.
+            //part.Effects.Initialize();
+            //moduleEngine.InitializeFX();
+
             //moduleEngine.FXReset();
             //moduleEngine.FXUpdate();
             //moduleEngine.
