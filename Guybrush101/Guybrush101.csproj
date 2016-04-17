@@ -49,6 +49,11 @@
     </Reference>
     <Reference Include="Assembly-UnityScript">
       <HintPath>S:\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-UnityScript.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GTI_Utilities">
+      <HintPath>S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTI_Utilities.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="KSPUtil">
       <HintPath>S:\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\KSPUtil.dll</HintPath>
@@ -68,8 +73,8 @@
     <Compile Include="Core\IntakeSwitch_UI.cs" />
     <Compile Include="Core\IntakeSwitch.cs" />
     <Compile Include="Core\EngineClassSwitch_UI.cs" />
-    <Compile Include="Utilities\GenericFunctions.cs" />
-    <Compile Include="Utilities_CustomTypes\PropellantList.cs" />
+    <None Include="Utilities\GenericFunctions.cs" />
+    <None Include="Utilities_CustomTypes\PropellantList.cs" />
     <Compile Include="Core\EngineClassSwitch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

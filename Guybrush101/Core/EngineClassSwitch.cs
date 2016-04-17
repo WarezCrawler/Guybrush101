@@ -105,6 +105,8 @@ namespace GTI
         #region Events, OnStart
         public override void OnStart(PartModule.StartState state)
         {
+            
+
             //Debug.Log("Tech start: " + ResearchAndDevelopment.GetTechnologyState("start").ToString());
             //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry").ToString());
             //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
