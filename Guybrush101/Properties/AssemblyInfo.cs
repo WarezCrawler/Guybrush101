@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("KSP GTI EngineSwitch")]
-[assembly: AssemblyCopyright("Copyright © WarezCrawler  2016")]
+[assembly: AssemblyCopyright("Copyright WarezCrawler© 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
