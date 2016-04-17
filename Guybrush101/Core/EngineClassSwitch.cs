@@ -123,22 +123,13 @@ namespace GTI
             Debug.Log("OnStart() --> propList.Count: " + propList.Count);
             if (propList.Count > 0)
             {
-                Debug.Log("OnStart() --> updateEngineModule(false, 'OnStart')");
-                //updateEngineModule(false, "OnStart");
+                //Delaying the update in the OnStart ensures that the effects are correctly initialized
                 Invoke("updateEngineModuleFromOnStart", 1f);
-
-
-
-                //selectedPropellant++;
-                //if (selectedPropellant > (propList.Count - 1)) { selectedPropellant = 0; }
-                //updateEngineModule(false, "OnStart");
-                //selectedPropellant--;
-                //if (selectedPropellant < 0) { selectedPropellant = (propList.Count - 1); }
-                //updateEngineModule(false, "OnStart");
             }
         }
         private void updateEngineModuleFromOnStart()
         {
+            Debug.Log("OnStart() --> updateEngineModule(false, 'OnStart')");
             updateEngineModule(false, "OnStart");
         }
         #endregion
@@ -338,6 +329,8 @@ namespace GTI
                 //Get the Ignition state, i.e. is the engine shutdown or activated
                 currentEngineState = currentModuleEngine.getIgnitionState;
                 ShutdownEngine();
+
+                //Deactivate effects to force KSP to update them as intended
                 currentModuleEngine.DeactivateLoopingFX();
                 currentModuleEngine.DeactivatePowerFX();
                 currentModuleEngine.DeactivateRunningFX();

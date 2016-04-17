@@ -13,21 +13,23 @@ namespace GTI
         public string powerEffectName;
         [KSPField]
         public string spoolEffectName;
+
+        [KSPField]
+        public string engageEffectName;
+        [KSPField]
+        public string disengageEffectName;
+
         [KSPField]
         public string engineSpoolIdle;
         [KSPField]
         public string engineSpoolTime;
+
         [KSPField]
         public string useEngineResponseTime;
         [KSPField]
         public string engineAccelerationSpeed;
         [KSPField]
         public string engineDecelerationSpeed;
-
-        [KSPField]
-        public string engageEffectName;
-        [KSPField]
-        public string disengageEffectName;
 
         [KSPField]
         public string fx_exhaustFlame_blue;
@@ -69,15 +71,15 @@ namespace GTI
             powerEffectNameEmpty            = Util.ArraySplitEvaluate(powerEffectName           , out arrPowerEffectName, ';');
             spoolEffectNameEmpty            = Util.ArraySplitEvaluate(spoolEffectName           , out arrSpoolEffectName, ';');
 
+            engageEffectNameEmpty = Util.ArraySplitEvaluate(engageEffectName, out arrEngageEffectName, ';');
+            disengageEffectNameEmpty = Util.ArraySplitEvaluate(disengageEffectName, out arrDisengageEffectName, ';');
+
             engineSpoolIdleEmpty            = Util.ArraySplitEvaluate(engineSpoolIdle           , out arrEngineSpoolIdle, ';');
             engineSpoolTimeEmpty            = Util.ArraySplitEvaluate(engineSpoolTime           , out arrEngineSpoolTime, ';');
 
             useEngineResponseTimeEmpty      = Util.ArraySplitEvaluate(useEngineResponseTime     , out arrUseEngineResponseTime, ';');
             engineAccelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineAccelerationSpeed   , out arrEngineAccelerationSpeed, ';');
             engineDecelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineDecelerationSpeed   , out arrEngineDecelerationSpeed, ';');
-
-            engageEffectNameEmpty           = Util.ArraySplitEvaluate(engageEffectName          , out arrEngageEffectName, ';');
-            disengageEffectNameEmpty        = Util.ArraySplitEvaluate(disengageEffectName       , out arrDisengageEffectName, ';');
 
             fx_exhaustFlame_blueEmpty       = Util.ArraySplitEvaluate(fx_exhaustFlame_blue      , out arrFx_exhaustFlame_blue, ';');
             fx_exhaustLight_blueEmpty       = Util.ArraySplitEvaluate(fx_exhaustLight_blue      , out arrFx_exhaustLight_blue, ';');
@@ -99,15 +101,15 @@ namespace GTI
                 propList[i].powerEffectName = powerEffectNameEmpty ? string.Empty : arrPowerEffectName[i];
                 propList[i].spoolEffectName = spoolEffectNameEmpty ? string.Empty : arrSpoolEffectName[i];
 
+                propList[i].engageEffectName = engageEffectNameEmpty ? string.Empty : arrEngageEffectName[i];
+                propList[i].disengageEffectName = disengageEffectNameEmpty ? string.Empty : arrDisengageEffectName[i];
+
                 propList[i].engineSpoolIdle = engineSpoolIdleEmpty ? string.Empty : arrEngineSpoolIdle[i];
                 propList[i].engineSpoolTime = engineSpoolTimeEmpty ? string.Empty : arrEngineSpoolTime[i];
 
                 propList[i].useEngineResponseTime = useEngineResponseTimeEmpty ? string.Empty : arrUseEngineResponseTime[i];
                 propList[i].engineAccelerationSpeed = engineAccelerationSpeedEmpty ? string.Empty : arrEngineAccelerationSpeed[i];
                 propList[i].engineDecelerationSpeed = engineDecelerationSpeedEmpty ? string.Empty : arrEngineDecelerationSpeed[i];
-
-                propList[i].engageEffectName = engageEffectNameEmpty ? string.Empty : arrEngageEffectName[i];
-                propList[i].disengageEffectName = disengageEffectNameEmpty ? string.Empty : arrDisengageEffectName[i];
 
                 propList[i].fx_exhaustFlame_blue = fx_exhaustFlame_blueEmpty ? string.Empty : arrFx_exhaustFlame_blue[i];
                 propList[i].fx_exhaustLight_blue = fx_exhaustLight_blueEmpty ? string.Empty : arrFx_exhaustLight_blue[i];
@@ -120,77 +122,119 @@ namespace GTI
                 propList[i].sound_explosion_low = sound_explosion_lowEmpty ? string.Empty : arrSound_explosion_low[i];
             }
             Debug.Log("EngineSwitch Load Effects to propList finished");
-
-
-
             #endregion
         }
 
         public void updateEngineModuleEffects(ModuleEngines moduleEngine, bool calledByPlayer, string callingFunction = "player")
         {
-            //ConfigNode newEngineEffectNode = new ConfigNode();
-            //ConfigNode EngineEffectNode = newEngineEffectNode;
             ConfigNode EngineEffectNode = new ConfigNode();
 
+            Debug.Log("Switch exhaust effects on: " + moduleEngine.name);
             if (!runningEffectNameEmpty)
             {
-
-                if (string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName))
-                {
-                    EngineEffectNode.RemoveValue("runningEffectName");
-                    //moduleEngine.DeactivateRunningFX();
-                }
-                else
-                {
-                    EngineEffectNode.SetValue("runningEffectName", propList[selectedPropellant].runningEffectName, true);
-                    //moduleEngine.DeactivateRunningFX();
-                    //moduleEngine.ActivateRunningFX();
-                }
-
-                
-                Debug.Log(
-                        "\npropList[selectedPropellant].runningEffectName " + propList[selectedPropellant].runningEffectName +
-                        "\nstring.IsNullOrEmpt " + string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName) +
-                        "" + "");
+                EngineEffectNode.SetValue("runningEffectName", propList[selectedPropellant].runningEffectName, true);
+                Debug.Log("EngineEffectNode.SetValue('runningEffectName', " + propList[selectedPropellant].runningEffectName + ", true);");
             }
             if (!powerEffectNameEmpty)
             {
-                if (string.IsNullOrEmpty(propList[selectedPropellant].runningEffectName))
-                {
-                    EngineEffectNode.RemoveValue("powerEffectName");
-                    //moduleEngine.DeactivatePowerFX();
-                }
-                else
-                {
-                    EngineEffectNode.SetValue("powerEffectName", propList[selectedPropellant].powerEffectName, true);
-                    //moduleEngine.ActivatePowerFX();
-                }
-
-
-
-                
-                Debug.Log("propList[selectedPropellant].powerEffectName: " + propList[selectedPropellant].powerEffectName);
+                EngineEffectNode.SetValue("powerEffectName", propList[selectedPropellant].powerEffectName, true);
+                Debug.Log("EngineEffectNode.SetValue('powerEffectName', " + propList[selectedPropellant].powerEffectName + ", true);");
             }
             if (!spoolEffectNameEmpty)
             {
                 EngineEffectNode.SetValue("spoolEffectName", propList[selectedPropellant].spoolEffectName, true);
-                Debug.Log("propList[selectedPropellant].spoolEffectName: " + propList[selectedPropellant].spoolEffectName);
+                Debug.Log("EngineEffectNode.SetValue('spoolEffectName', " + propList[selectedPropellant].spoolEffectName + ", true);");
             }
 
+            if (!engageEffectNameEmpty)
+            {
+                EngineEffectNode.SetValue("engageEffectName", propList[selectedPropellant].engageEffectName, true);
+                Debug.Log("EngineEffectNode.SetValue('engageEffectName', " + propList[selectedPropellant].engageEffectName + ", true);");
+            }
+            if (!disengageEffectNameEmpty)
+            {
+                EngineEffectNode.SetValue("disengageEffectName", propList[selectedPropellant].disengageEffectName, true);
+                Debug.Log("EngineEffectNode.SetValue('disengageEffectName', " + propList[selectedPropellant].disengageEffectName + ", true);");
+            }
 
+            if (!engineSpoolIdleEmpty)
+            {
+                EngineEffectNode.SetValue("engineSpoolIdle", propList[selectedPropellant].engineSpoolIdle, true);
+                Debug.Log("EngineEffectNode.SetValue('engineSpoolIdle', " + propList[selectedPropellant].engineSpoolIdle + ", true);");
+            }
+            if (!engineSpoolTimeEmpty)
+            {
+                EngineEffectNode.SetValue("engineSpoolTime", propList[selectedPropellant].engineSpoolTime, true);
+                Debug.Log("EngineEffectNode.SetValue('engineSpoolTime', " + propList[selectedPropellant].engineSpoolTime + ", true);");
+            }
+
+            if (!useEngineResponseTimeEmpty)
+            {
+                EngineEffectNode.SetValue("useEngineResponseTime", propList[selectedPropellant].useEngineResponseTime, true);
+                Debug.Log("EngineEffectNode.SetValue('useEngineResponseTime', " + propList[selectedPropellant].useEngineResponseTime + ", true);");
+            }
+            if (!engineAccelerationSpeedEmpty)
+            {
+                EngineEffectNode.SetValue("engineAccelerationSpeed", propList[selectedPropellant].engineAccelerationSpeed, true);
+                Debug.Log("EngineEffectNode.SetValue('engineAccelerationSpeed', " + propList[selectedPropellant].engineAccelerationSpeed + ", true);");
+            }
+            if (!engineDecelerationSpeedEmpty)
+            {
+                EngineEffectNode.SetValue("engineDecelerationSpeed", propList[selectedPropellant].engineDecelerationSpeed, true);
+                Debug.Log("EngineEffectNode.SetValue('engineDecelerationSpeed', " + propList[selectedPropellant].engineDecelerationSpeed + ", true);");
+            }
+
+            if (!fx_exhaustFlame_blueEmpty)
+            {
+                EngineEffectNode.SetValue("fx_exhaustFlame_blue", propList[selectedPropellant].fx_exhaustFlame_blue, true);
+                Debug.Log("EngineEffectNode.SetValue('fx_exhaustFlame_blue', " + propList[selectedPropellant].fx_exhaustFlame_blue + ", true);");
+            }
+            if (!fx_exhaustLight_blueEmpty)
+            {
+                EngineEffectNode.SetValue("fx_exhaustLight_blue", propList[selectedPropellant].fx_exhaustLight_blue, true);
+                Debug.Log("EngineEffectNode.SetValue('fx_exhaustLight_blue', " + propList[selectedPropellant].fx_exhaustLight_blue + ", true);");
+            }
+            if (!fx_smokeTrail_lightEmpty)
+            {
+                EngineEffectNode.SetValue("fx_smokeTrail_light", propList[selectedPropellant].fx_smokeTrail_light, true);
+                Debug.Log("EngineEffectNode.SetValue('fx_smokeTrail_light', " + propList[selectedPropellant].fx_smokeTrail_light + ", true);");
+            }
+            if (!fx_exhaustSparks_flameoutEmpty)
+            {
+                EngineEffectNode.SetValue("fx_exhaustSparks_flameout", propList[selectedPropellant].fx_exhaustSparks_flameout, true);
+                Debug.Log("EngineEffectNode.SetValue('fx_exhaustSparks_flameout', " + propList[selectedPropellant].fx_exhaustSparks_flameout + ", true);");
+            }
+
+            if (!sound_vent_mediumEmpty)
+            {
+                EngineEffectNode.SetValue("sound_vent_medium", propList[selectedPropellant].sound_vent_medium, true);
+                Debug.Log("EngineEffectNode.SetValue('sound_vent_medium', " + propList[selectedPropellant].sound_vent_medium + ", true);");
+            }
+            if (!sound_rocket_hardEmpty)
+            {
+                EngineEffectNode.SetValue("sound_rocket_hard", propList[selectedPropellant].sound_rocket_hard, true);
+                Debug.Log("EngineEffectNode.SetValue('sound_rocket_hard', " + propList[selectedPropellant].sound_rocket_hard + ", true);");
+            }
+            if (!sound_vent_softEmpty)
+            {
+                EngineEffectNode.SetValue("sound_vent_soft", propList[selectedPropellant].sound_vent_soft, true);
+                Debug.Log("EngineEffectNode.SetValue('sound_vent_soft', " + propList[selectedPropellant].sound_vent_soft + ", true);");
+            }
+            if (!sound_explosion_lowEmpty)
+            {
+                EngineEffectNode.SetValue("sound_explosion_low", propList[selectedPropellant].sound_explosion_low, true);
+                Debug.Log("EngineEffectNode.SetValue('sound_explosion_low', " + propList[selectedPropellant].sound_explosion_low + ", true);");
+            }
 
             moduleEngine.Load(EngineEffectNode);
-            moduleEngine.SetupFXGroups();
+            
+            
+            //moduleEngine.SetupFXGroups();
             //moduleEngine.DeactivateRunningFX();
             //moduleEngine.ActivateRunningFX();
             //moduleEngine.InitializeFX();
             //part.InitializeModules();
             //part.InitializeEffects();
-
-
-
-
-
 
 
             //ConfigNode EngineNode = part.partInfo.partConfig.GetNode("MODULE");
