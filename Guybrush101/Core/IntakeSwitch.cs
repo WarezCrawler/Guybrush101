@@ -25,7 +25,9 @@ namespace GTI
         */
 
         [KSPField]
-        public string resourceNames = "IntakeAir, IntakeAtm";
+        public string resourceNames = string.Empty;
+        [KSPField]
+        public string checkForOxygen = string.Empty;
         [KSPField]
         public string areas = string.Empty;                      //"0.0031, 0.0031";
         [KSPField]
@@ -37,16 +39,20 @@ namespace GTI
         [KSPField]
         public string resMaxAmount = string.Empty;
 
+        [KSPField]
+        public string debugMode = "false";
+
         #region Booleans for existence checks
         private bool resourceNamesEmpty = false;
         private bool resMaxAmountEmpty = false;
+        private bool checkForOxygenEmpty = false;
 
         #endregion
 
         #region Other class level declarations
         private bool _settingsInitialized = false;
 
-        private string[] arrIntakeNames;
+        private string[] arrIntakeNames, arrcheckForOxygen;
 
         private List<ModuleResourceIntake> ModuleIntakes;
 
@@ -77,21 +83,9 @@ namespace GTI
                 //Debug.Log("Loading Settings for Intake Switcher");
                 Utilities Util = new Utilities();
 
-                /*
-                #region GUI Update
-                var nextEvent = Events["nextIntakeEvent"];
-                nextEvent.guiActive = availableInFlight;
-                nextEvent.guiActiveEditor = availableInEditor;
-
-                var previousEvent = Events["previousIntakeEvent"];
-                previousEvent.guiActive = availableInFlight;
-                previousEvent.guiActiveEditor = availableInEditor;
-                #endregion
-                */
-
-
                 #region Parse Arrays
                 resourceNamesEmpty = Util.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
+                checkForOxygenEmpty = Util.ArraySplitEvaluate(checkForOxygen, out arrcheckForOxygen, ';');
                 #endregion
                 #region Parse Strings
                 resMaxAmountEmpty = Util.StringEvaluate(resMaxAmount, out resMaxAmount);
@@ -105,18 +99,27 @@ namespace GTI
 
                 #region GUI Update
                 if (!resourceNamesEmpty) { initializeGUI(); }
-                else
-                { Debug.LogError("GTI_IntakeSwitch is missing settings for intake names."); return; }
+                else { Debug.LogError("GTI_IntakeSwitch is missing settings for intake names."); return; }
                 #endregion
 
                 ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
 
-                GUIResourceName = ModuleIntakes[0].resourceName;        //Temporarily added
+                //GUIResourceName = ModuleIntakes[0].resourceName;        //Temporarily added
+
+                //Debug.Log("debugMode before: " + debugMode);
+                if (bool.Parse(debugMode)) { Events["DEBUG_INTAKESWITCH"].guiActive = true; Events["DEBUG_INTAKESWITCH"].guiActiveEditor = true; Events["DEBUG_INTAKESWITCH"].active = true; Debug.Log("Intake Switch debugMode activated"); }
+                else { Events["DEBUG_INTAKESWITCH"].guiActive = false; Events["DEBUG_INTAKESWITCH"].guiActiveEditor = false; Events["DEBUG_INTAKESWITCH"].active = false; /*Debug.Log("debugMode deactivated");*/ }
+                //Debug.Log(
+                //    "\ndebugMode after: " + debugMode +
+                //    "\nguiActive after: " + Events["DEBUG_INTAKESWITCH"].guiActive +
+                //    "\nguiActiveEditor after: " + Events["DEBUG_INTAKESWITCH"].guiActiveEditor +
+                //    "\nactive after: " + Events["DEBUG_INTAKESWITCH"].active
+                //    );
+
 
                 //set settings to initialized
                 _settingsInitialized = true;
                 //Debug.Log("Intake Switcher settings loaded: " + _settingsInitialized);
-
             }
         }
         #endregion
@@ -141,9 +144,11 @@ namespace GTI
                 ConfigNode IntakeResource = newIntakeNode;
 
                 //Debug.Log("Confignode defined");
+                //Debug.Log("checkForOxygen: " + arrIntakeNames[selectedIntake]);
 
                 //Set new setting values
-                IntakeNode.AddValue("resourceName", arrIntakeNames[selectedIntake]);
+                if (!resourceNamesEmpty) { IntakeNode.SetValue("resourceName", arrIntakeNames[selectedIntake], true); }
+                if (!checkForOxygenEmpty) { IntakeNode.SetValue("checkForOxygen", arrcheckForOxygen[selectedIntake], true); } else { IntakeNode.RemoveNode("checkForOxygen"); }
 
                 //Debug.Log("Confignode value added");
 
@@ -152,6 +157,7 @@ namespace GTI
 
                 //Debug.Log("Cleanout old resources");
 
+                #region Intake Resource
                 //Clean out any previous resources in the intake
                 currentPart.Resources.list.Clear();
                 PartResource[] partResources = currentPart.GetComponents<PartResource>();
@@ -168,17 +174,14 @@ namespace GTI
                 IntakeResource.AddValue("name", arrIntakeNames[selectedIntake]);
                 IntakeResource.AddValue("amount", resIniAmount);
                 IntakeResource.AddValue("maxAmount", int.Parse(resMaxAmount));
-
-                //Debug.Log("Add resource node");
-
                 //Add the resources
                 currentPart.AddResource(IntakeResource);
 
                 //Update the part resources
                 currentPart.Resources.UpdateList();
+                GUIResourceName = ModuleIntakes[0].resourceName;
+                #endregion
 
-                //Debug.Log("Confignode updated, now checking for update of resource display");
-                
                 //added check for called by player, since the ResourceDisplay update fails when called from the OnStart function.
                 try
                 { if (HighLogic.LoadedSceneIsFlight && calledByPlayer) { KSP.UI.Screens.ResourceDisplay.Instance.Refresh(); } }
@@ -186,10 +189,15 @@ namespace GTI
                 //Debug.Log("Confignode Loaded");
 
             }
+        }
+        #endregion
 
-            #region DEBUGGING
+        #region --------------------------------Debugging---------------------------------------
+        [KSPEvent(active = false, guiActive = false, guiActiveEditor = false, guiName = "DEBUG")]
+        public void DEBUG_INTAKESWITCH()
+        {
             /* Debugging Area */
-            /*
+
             Debug.Log("Update GUI");
             GUIResourceName = ModuleIntakes[0].resourceName;
             Debug.Log("GUI Updated");
@@ -222,8 +230,7 @@ namespace GTI
                     "\nresMaxAmountEmpty: " + resMaxAmountEmpty
                     );
             }
-            */
-            #endregion
+            
 
         }
         #endregion

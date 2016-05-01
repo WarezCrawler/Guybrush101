@@ -90,7 +90,10 @@ namespace GTI
 
         //Customtype for list of relevant settings
         private List<CustomTypes.PropellantList> propList = new List<CustomTypes.PropellantList>();
-        
+
+        [KSPField]
+        public string debugMode = "false";
+
         //For the engines modules
         private List<ModuleEngines> ModuleEngines;
         private ModuleEngines currentModuleEngine;
@@ -98,19 +101,47 @@ namespace GTI
 
         #region Other class level declarations
         private bool _settingsInitialized = false;
-
+        [KSPField]
+        public string _startDelay = "1";
+        //private ConfigNode SourceEffectsNode;
         #endregion
 
         //####### Beginning of logics
-        #region Events, OnStart
+        #region Events, OnLoad, OnStart
+        public override void OnLoad(ConfigNode node)
+        {
+            try
+            {
+                //base.OnLoad(node);
+
+                //if (HighLogic.LoadedScene == GameScenes.LOADING)
+                //{
+                //    SourceEffectsNode = node.GetNode("SOURCEEFFECTS");
+                //    Debug.Log("SourceEffectsNode.CountNodes: " + SourceEffectsNode.CountNodes);
+
+                //    foreach (ConfigNode nodeEffect in SourceEffectsNode.nodes)
+                //    {
+                //        Debug.Log("name: " + nodeEffect.name + " id: " + nodeEffect.id);
+                //    }
+                //}
+                    
+
+            }
+            catch(Exception e)
+            {
+                Debug.LogError("'SourceEffectsNode = node.GetNode('EFFECTS')' Error " + e.Message);
+                throw;
+            }
+
+        }
+
         public override void OnStart(PartModule.StartState state)
         {
             
-
             //Debug.Log("Tech start: " + ResearchAndDevelopment.GetTechnologyState("start").ToString());
             //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry").ToString());
             //Debug.Log("Tech basicRocketry: " + ResearchAndDevelopment.GetTechnologyState("basicRocketry"));
-            
+
 
             //bool isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "KerbalEngineer");
             //isThatModLoaded = AssemblyLoader.loadedAssemblies.Any(a => a.name == "KerbalEngineer.Unity");
@@ -126,7 +157,13 @@ namespace GTI
             if (propList.Count > 0)
             {
                 //Delaying the update in the OnStart ensures that the effects are correctly initialized
-                Invoke("updateEngineModuleFromOnStart", 1f);
+                //part.LoadEffects(SourceEffectsNode);
+
+                //ConfigNode effectsNode = part.partInfo.partConfig.GetNode("EFFECTS");
+                //part.partInfo.partConfig.
+                
+
+                Invoke("updateEngineModuleFromOnStart", Single.Parse(_startDelay));
             }
         }
         private void updateEngineModuleFromOnStart()
@@ -232,6 +269,7 @@ namespace GTI
                         }
                     }
                     //Initialize the effects for EngineSwitch
+
                     InitializeEffects();
                 }
                 catch(Exception e)
@@ -279,13 +317,19 @@ namespace GTI
                     foreach (var remove in toBeRemoved)
                     {
                         ModuleEngines.Remove(remove);
+                        //part.RemoveModule(remove);
                     }
+                
                 //Now ModulesEngines should have exactly the engine modules in scope
                 #endregion
                 
                 #region GUI Update
                 //Debug.Log("--> initializeGUI()");
                 initializeGUI();
+
+                //Show Debug GUI?
+                if (bool.Parse(debugMode)) { Events["DEBUG_ENGINESSWITCH"].guiActive = true; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = true; Events["DEBUG_ENGINESSWITCH"].active = true; Debug.Log("Engine Switch debugMode activated"); }
+                else { Events["DEBUG_ENGINESSWITCH"].guiActive = false; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = false; Events["DEBUG_ENGINESSWITCH"].active = false; /*Debug.Log("debugMode deactivated");*/ }
                 //Debug.Log("--> initializeGUI() is Done");
                 #endregion
 
@@ -321,12 +365,17 @@ namespace GTI
 
             ConfigNode newPropNode = new ConfigNode();
             Utilities MiscFx = new Utilities();
-            PhysicsUtilities EngineCalc = new PhysicsUtilities();
+            PhysicsUtilities EngineCalc = new PhysicsUtilities();        
 
-            foreach (var moduleEngine in this.ModuleEngines)
+            foreach (var moduleEngine in ModuleEngines)
             {
+
+                //Debug.Log("moduleEngine.isEnabled: " + moduleEngine.isEnabled);
+                //moduleEngine.isEnabled = !moduleEngine.isEnabled;
+                //Debug.Log("moduleEngine.isEnabled: " + moduleEngine.isEnabled);
                 //bool engineState = false;
                 //float ThrottleState;
+
                 currentModuleEngine = moduleEngine;
                 //Get the Ignition state, i.e. is the engine shutdown or activated
                 currentEngineState = currentModuleEngine.getIgnitionState;
@@ -370,10 +419,10 @@ namespace GTI
                 //Debug.Log("engine shutdown completed");
 
                 //Split cfg subsettings into arrays
-                arrtargetPropellants = propList[selectedPropellant].Propellants.Split(',');
-                arrtargetRatios = propList[selectedPropellant].PropRatios.Split(',');
-                arrtargetIgnoreForISP = propList[selectedPropellant].propIgnoreForISP.Split(',');
-                arrtargetDrawGuage = propList[selectedPropellant].propDrawGauge.Split(',');
+                arrtargetPropellants    = propList[selectedPropellant].Propellants.Split(',');
+                arrtargetRatios         = propList[selectedPropellant].PropRatios.Split(',');
+                arrtargetIgnoreForISP   = propList[selectedPropellant].propIgnoreForISP.Split(',');
+                arrtargetDrawGuage      = propList[selectedPropellant].propDrawGauge.Split(',');
 
                 //Create new propellent nodes by looping them in.
                 for (int i = 0; i < arrtargetPropellants.Length; i++)
@@ -507,15 +556,18 @@ namespace GTI
                 {   //User defined names
                     GUIpropellantNames = propList[selectedPropellant].GUIpropellantNames;                               //iniGUIpropellantNames.Trim().Split(';')[selectedPropellant];
                 }
-
-
+                
+                //Write on screen message
+                //ScreenMessages.PostScreenMessage("message", 3f, ScreenMessageStyle.UPPER_LEFT);
+                ScreenMessages.PostScreenMessage(propList[selectedPropellant].GUIpropellantNames, 1.5f, ScreenMessageStyle.UPPER_CENTER);
 
                 //Restart engine if it was on before switching
                 //moduleEngine.Flameout("Switch Engine State", false, false);
                 currentModuleEngine.UnFlameout(false);
                 //FlightInputHandler.state.mainThrottle = currentThrottleState;
-                Invoke("ActivateEngine", 0f);
-                //if (currentEngineState == true) { moduleEngine.Activate(); }
+                //Invoke("ActivateEngine", 0f);
+                //ActivateEngine();
+                if (currentEngineState) { moduleEngine.Activate(); }
             }
         }
         #endregion
@@ -548,19 +600,38 @@ namespace GTI
         }
         #endregion
         
-        #region --------------------------------TESTING---------------------------------------
+        #region --------------------------------Debugging---------------------------------------
         [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "DEBUG")]
         public void DEBUG_ENGINESSWITCH()
         {
             InitializeSettings();
             PhysicsUtilities Calc = new PhysicsUtilities();
             Utilities MiscFx = new Utilities();
-            System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
+            //System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
             float Density = propList[selectedPropellant].propDensity;
             //int i = 0;
 
             foreach (var moduleEngine in ModuleEngines)
             {
+                moduleEngine.Events["Activate"].active = !moduleEngine.Events["Activate"].active;
+                moduleEngine.Events["Shutdown"].active = !moduleEngine.Events["Activate"].active;
+                moduleEngine.Events["Activate"].guiActive = moduleEngine.Events["Activate"].active;
+                moduleEngine.Events["Shutdown"].guiActive = !moduleEngine.Events["Activate"].active;
+
+                //if (moduleEngine.Events["Activate"].active)
+                //{
+                //    //moduleEngine.Events["Activate"].active = false;
+                //    moduleEngine.Events["Shutdown"].active = false;
+                //    moduleEngine.Events["Activate"].guiActive = false;
+                //    moduleEngine.Events["Shutdown"].guiActive = false;
+                //}
+                //else
+                //{
+                //    //moduleEngine.Events["Activate"].active = true;
+                //    moduleEngine.Events["Shutdown"].active = true;
+                //    moduleEngine.Events["Activate"].guiActive = true;
+                //    moduleEngine.Events["Shutdown"].guiActive = true;
+                //}
 
                 //Debug.Log("CGF velCurveKeys: " + velCurveKeys);
                 //Debug.Log("CGF atmCurveKeys: " + atmCurveKeys);
@@ -607,8 +678,28 @@ namespace GTI
                 );*/
                 Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.atmCurve.Curve.keys, "atmCurveKeys --> "));
                 Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.velCurve.Curve.keys, "velCurveKeys --> "));
+
+
+                foreach (var engineEvent in moduleEngine.Events)
+                {
+                    Debug.Log("moduleEngine.Events" +
+                        "\nGUIName: " + engineEvent.GUIName +
+                        "\nid: " + engineEvent.id +
+                        "\nname: " + engineEvent.name +
+                        "\nactive: " + engineEvent.active +
+                        "\nassigned: " + engineEvent.assigned +
+                        "\ncategory: " + engineEvent.category +
+                        "\nexternalToEVAOnly: " + engineEvent.externalToEVAOnly +
+                        "\nguiActive: " + engineEvent.guiActive +
+                        "\nguiActiveEditor: " + engineEvent.guiActiveEditor +
+                        "\nguiActiveUncommand: " + engineEvent.guiActiveUncommand +
+                        "\nguiActiveUnfocused: " + engineEvent.guiActiveUnfocused +
+                        "\nguiIcon: " + engineEvent.guiIcon +
+                        "\nunfocusedRange: " + engineEvent.unfocusedRange);
+                }
             }
             
+            /*
             foreach (var bodyItem in FlightGlobals.Bodies)
             {
                 Debug.Log("Planet stats -->" +
@@ -620,9 +711,10 @@ namespace GTI
                     );
 
                 //Clear string Builder
-                BuildString.Length = 0;
-                BuildString.Capacity = 16;
+                //BuildString.Length = 0;
+                //BuildString.Capacity = 16;
             }
+            */
         }
         #endregion
 

@@ -8,7 +8,7 @@ namespace GTI.GenericFunctions
     {
         private float _Thrust, _Density, _ISP, _fuelRate, _fuelFlow, _weightedDensity;
         private float _gravity = 9.81f;
-
+        
 
         //Equations:
         //Thrust = (fuel rate in L/s) * density * g * Isp

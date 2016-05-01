@@ -8,24 +8,24 @@ namespace GTI.CustomTypes
     public class PropellantList : CollectionBase
     {
         //private string _names;            //New name of part in event of new propellant
-        private string _propellants;        //The propellants
+        private string _propellants = string.Empty;        //The propellants
         private int    _propAmount;
-        private string _propRatios;         //The propellant ratios
+        private string _propRatios = string.Empty;         //The propellant ratios
         private float  _propDensity;
         private string _ignoreForIsp = string.Empty;
-        private string _drawGauge;
+        private string _drawGauge = string.Empty;
 
-        private string _heatProd;
-        private string _engineType;
+        private string _heatProd = string.Empty;
+        private string _engineType = string.Empty;
 
         
-        private string _atmosphereCurve;
-        private string _velCurve;
-        private string _atmCurve;
+        private string _atmosphereCurve = string.Empty;
+        private string _velCurve = string.Empty;
+        private string _atmCurve = string.Empty;
 
-        private string _atmChangeFlow;
-        private string _useVelCurve;
-        private string _useAtmCurve;
+        private string _atmChangeFlow = string.Empty;
+        private string _useVelCurve = string.Empty;
+        private string _useAtmCurve = string.Empty;
 
         private string _requiredTech = string.Empty;
         private string _GUIpropellantNames = string.Empty;
