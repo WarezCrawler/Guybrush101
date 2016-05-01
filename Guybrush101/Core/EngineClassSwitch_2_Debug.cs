@@ -39,7 +39,7 @@ namespace GTI
 
                 foreach (var propellant in moduleEngine.propellants)
                 {
-                    Debug.Log(
+                       Debug.Log(
                         "\nforeach(var propellant in moduleEngine.propellants)" +
                         "\nPropellant: " + propellant.name +
                         "\nratio: " + propellant.ratio +
@@ -87,8 +87,8 @@ namespace GTI
                         "\nguiActiveUncommand: " + engineEvent.guiActiveUncommand +
                         "\nguiActiveUnfocused: " + engineEvent.guiActiveUnfocused +
                         "\nguiIcon: " + engineEvent.guiIcon +
-                        "\nunfocusedRange: " + engineEvent.unfocusedRange
-                        + "\n");
+                        "\nunfocusedRange: " + engineEvent.unfocusedRange +
+                        "\n");
                 }
                 
                 for (int i = 0; i < moduleEngine.Fields.Count; i++)
@@ -111,11 +111,28 @@ namespace GTI
                             "\nhost: " + moduleEngine.Fields[i].host +
                             "\nuiControlEditor: " + moduleEngine.Fields[i].uiControlEditor +
                             "\nuiControlFlight: " + moduleEngine.Fields[i].uiControlFlight +
-                            "\nuiControlOnly: " + moduleEngine.Fields[i].uiControlOnly
-                            + "\n");
+                            "\nuiControlOnly: " + moduleEngine.Fields[i].uiControlOnly +
+                            "\n");
                     }
                 }
-                
+                for (int i = 0; i < moduleEngine.Actions.Count; i++)
+                {
+                    //moduleEngine.Fields[i].guiName;
+
+                    //if (moduleEngine.Actions[i].active)
+                    //{
+                        Debug.Log(
+                            "\nmoduleEngine.Actions[" + i + "]" +
+                            "\nguiName: " + moduleEngine.Actions[i].guiName +
+                            "\nname: " + moduleEngine.Actions[i].name +
+                            "\noriginalValue: " + moduleEngine.Actions[i].actionGroup +
+                            "\nisPersistant: " + moduleEngine.Actions[i].active +
+                            "\nguiActive: " + moduleEngine.Actions[i].defaultActionGroup +
+                            "\nguiActiveEditor: " + moduleEngine.Actions[i].listParent +
+                            "\n");
+                    //}
+                }
+
                 //foreach (var engineField in moduleEngine.Fields)
                 //{
                 //    Debug.Log("moduleEngine.Fields" +

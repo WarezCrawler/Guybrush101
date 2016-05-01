@@ -60,34 +60,40 @@ namespace GTI
             {
                 Utilities Util = new Utilities();
 
+                #region Split into Arrays
                 arrEngineID = engineID.Trim().Split(';');
                 GUIengineIDEmpty = Util.ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
                 minReqTechEmpty = Util.ArraySplitEvaluate(minReqTech, out arrMinReqTech, ';');
                 maxReqTechEmpty = Util.ArraySplitEvaluate(maxReqTech, out arrMaxReqTech, ';');
-
+                #endregion
 
                 #region Identify ModuleEngines in Scope
                 //Find modules which is to be manipulated
                 ModuleEngines = part.FindModulesImplementing<ModuleEngines>();
                 var toBeRemoved = new List<ModuleEngines>();                      //for removal of irrelevant engine modules
-                /*
+
                 foreach (var moduleEngine in ModuleEngines)
                 {
-                    if (moduleEngine.engineID == engineID)              // || string.IsNullOrEmpty(engineID) || engineID.Trim().Length == 0)
-                    {
-                        //Debug.Log(moduleEngine.name + " added to list of engines using EngineSwitch");
-                    }
-                    else
-                    {
-                        toBeRemoved.Add(moduleEngine);
-                    }
+                    //Deactivate stock engine actions
+                    moduleEngine.Actions["OnAction"].active = false;
+                    moduleEngine.Actions["ShutdownAction"].active = false;
+                    moduleEngine.Actions["ActivateAction"].active = false;
+
+                    //if (moduleEngine.engineID == engineID)              // || string.IsNullOrEmpty(engineID) || engineID.Trim().Length == 0)
+                    //{
+                    //    //Debug.Log(moduleEngine.name + " added to list of engines using EngineSwitch");
+                    //}
+                    //else
+                    //{
+                    //    toBeRemoved.Add(moduleEngine);
+                    //}
                 }
-                foreach (var remove in toBeRemoved)
-                {
-                    //disabled until a valid criteria is implemented. Probably tech requirement
-                    //ModuleEngines.Remove(remove);
-                }
-                */
+                //foreach (var remove in toBeRemoved)
+                //{
+                //    //disabled until a valid criteria is implemented. Probably tech requirement
+                //    //ModuleEngines.Remove(remove);
+                //}
+
 
                 //If there is an engine, and none is currently selected, then set the active one to be the first one
                 if (ModuleEngines.Count > 0)
@@ -142,6 +148,7 @@ namespace GTI
                     //Reactivate engine if it was active
                     if (currentEngineState) { moduleEngine.Activate(); }
 
+                    #region Update GUI
                     //Activate Gui Events
                     moduleEngine.Events["Activate"].guiActive = true;
                     moduleEngine.Events["Shutdown"].guiActive = true;
@@ -152,10 +159,12 @@ namespace GTI
                     moduleEngine.Fields["realIsp"].guiActive = true;
                     moduleEngine.Fields["status"].guiActive = true;
                     moduleEngine.Fields["thrustPercentage"].guiActive = true;
+                    #endregion
                 }
                 else
                 {
                     moduleEngine.Shutdown();
+                    #region Update GUI
                     //Deactivate Gui Events
                     moduleEngine.Events["Activate"].guiActive = false;
                     moduleEngine.Events["Shutdown"].guiActive = false;
@@ -165,9 +174,56 @@ namespace GTI
                     moduleEngine.Fields["realIsp"].guiActive = false;
                     moduleEngine.Fields["status"].guiActive = false;
                     moduleEngine.Fields["thrustPercentage"].guiActive = false;
+                    #endregion
                 }
             }
+            //Find the ID (int) of "ChooseOption"
+            //for (int i = 0; i < arrEngineID.Length; i++)
+            //{
+            //    if (arrEngineID[i] == ChooseOption) { selectedPropulsion = i; break; } else { selectedPropulsion = 0; }
+            //}
+            //if (ChooseOption == "DarkGooFusion")
+            //{
+            //    this.Actions["PropulsionAction"].active = false;
+            //}
+            //else
+            //{
+            //    this.Actions["PropulsionAction"].active = true;
+            //}
         } //END OF updatePropulsion()
         
     }
 }
+/*
+moduleEngine.Actions[OnAction]
+moduleEngine.Actions[ShutdownAction]
+moduleEngine.Actions[ActivateAction]
+
+
+[LOG 14:32:15.764]
+moduleEngine.Actions[0]
+guiName: Toggle Engine
+name: OnAction
+originalValue: None
+isPersistant: True
+guiActive: None
+guiActiveEditor: BaseActionList
+
+[LOG 14:32:15.765]
+moduleEngine.Actions[1]
+guiName: Shutdown Engine
+name: ShutdownAction
+originalValue: None
+isPersistant: True
+guiActive: None
+guiActiveEditor: BaseActionList
+
+[LOG 14:32:15.765]
+moduleEngine.Actions[2]
+guiName: Activate Engine
+name: ActivateAction
+originalValue: None
+isPersistant: True
+guiActive: None
+guiActiveEditor: BaseActionList
+*/
