@@ -12,24 +12,30 @@ namespace GTI
         public string engineID = string.Empty;
         [KSPField]
         public string GUIengineID = string.Empty;
+        [KSPField(isPersistant = true)]
+        public string engineAvailable = string.Empty;
+        [KSPField]
+        public bool applyTechReqToSandbox = false;
         [KSPField]
         public string minReqTech = string.Empty;
         [KSPField]
         public string maxReqTech = string.Empty;
 
         #region Empty value indicators (boolean)
-        private bool minReqTechEmpty = true, maxReqTechEmpty = true, GUIengineIDEmpty = true;
+        private bool minReqTechEmpty = true, maxReqTechEmpty = true, engineAvailableEmpty = true, GUIengineIDEmpty = true;
         #endregion
 
 
         #region Arrays and Lists
-        private string[] arrEngineID, arrGUIengineID, arrMinReqTech, arrMaxReqTech; 
+        //private string[] arrEngineID, arrGUIengineID, arrMinReqTech, arrMaxReqTech; 
 
         //For the engines modules
         private List<ModuleEngines> ModuleEngines;
 
         private ModuleEngines currentModuleEngine;
         private bool currentEngineState;
+
+        private List<CustomTypes.EngineSwitchList> engineList = new List<CustomTypes.EngineSwitchList>();
         #endregion
 
 
@@ -59,12 +65,23 @@ namespace GTI
             if (!_settingsInitialized)
             {
                 Utilities Util = new Utilities();
+                string[] arrEngineID, arrGUIengineID, arrMinReqTech, arrMaxReqTech, arrEngineAvailable;
 
                 #region Split into Arrays
-                arrEngineID = engineID.Trim().Split(';');
-                GUIengineIDEmpty = Util.ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
-                minReqTechEmpty = Util.ArraySplitEvaluate(minReqTech, out arrMinReqTech, ';');
-                maxReqTechEmpty = Util.ArraySplitEvaluate(maxReqTech, out arrMaxReqTech, ';');
+                arrEngineID =       engineID.Trim().Split(';');
+                GUIengineIDEmpty =  Util.ArraySplitEvaluate(GUIengineID,    out arrGUIengineID  , ';');
+                minReqTechEmpty =   Util.ArraySplitEvaluate(minReqTech,     out arrMinReqTech   , ';');
+                maxReqTechEmpty =   Util.ArraySplitEvaluate(maxReqTech,     out arrMaxReqTech   , ';');
+
+                engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';');
+
+                //CONTROL: Evaluate if the engineAvailable is of same size as the engineID one. If not, we reevaluate, since the might be new engines in the part. This is not perfect, but the function does not fail.
+                if (arrEngineAvailable.Length != arrEngineID.Length)
+                { engineAvailable = string.Empty; engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';');
+                    Debug.LogError(
+                        "GTI_EngineClassSwitch_2 -> arrEngineAvailable.Length != arrEngineID.Length \narrEngineID.Length: " + arrEngineID.Length + "\narrEngineAvailable.Length: " + arrEngineAvailable.Length); }
+                Debug.Log("engineAvailable: \n'" + engineAvailable + "' \nafter evaluation against engineID");
+                //engineAvailable
                 #endregion
 
                 #region Identify ModuleEngines in Scope
@@ -94,14 +111,44 @@ namespace GTI
                 //    //ModuleEngines.Remove(remove);
                 //}
 
+                for (int i = 0; i < arrEngineID.Length; i++)
+                {
+                    engineList.Add(new CustomTypes.EngineSwitchList()
+                    {
+                        engineID = arrEngineID[i],
+                        GUIengineID = GUIengineIDEmpty ? string.Empty : arrGUIengineID[i],
+                        minReqTech = minReqTechEmpty ? "start" : arrMinReqTech[i],
+                        maxReqTech = maxReqTechEmpty ? string.Empty : arrMaxReqTech[i]
+                    });
+                    //engineList[i].minReqTech = minReqTechEmpty ? "start" : arrMinReqTech[i];
+                    //engineList[i].maxReqTech = maxReqTechEmpty ? string.Empty : arrMaxReqTech[i];
+                    //engineList[i].GUIengineID = GUIengineIDEmpty ? string.Empty : arrGUIengineID[i];
+                }
+                
+                foreach (var item in engineList)
+                {
+                    Debug.Log(
+                        "\n" + item.engineID +
+                        "\n" + item.GUIengineID +
+                        "\n" + item.minReqTech +
+                        "\n" + item.maxReqTech +
+                        "\n");
+                }
 
+
+                /*HERE GOES ANY CHECKS AND REMOVALS BASED ON TECHLEVEL*/
+                CheckTech(ref arrEngineAvailable, Util);
+                
+                //ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable
+                for (int i = engineList.Count - 1; i >= 0; i--)
+                {
+                    if (!engineList[i].engineAvailable) { engineList.RemoveAt(i); }
+                }
+                
                 //If there is an engine, and none is currently selected, then set the active one to be the first one
                 if (ModuleEngines.Count > 0)
                 {
-                    if (ChooseOption == string.Empty)
-                    {
-                        ChooseOption = arrEngineID[0];
-                    }
+                    selPropFromChooseOption();
                 }
                 //find the current engine and store it in "currentModuleEngine"
                 foreach (var moduleEngine in ModuleEngines)
@@ -111,7 +158,6 @@ namespace GTI
                         currentModuleEngine = moduleEngine;
                     }
                 }
-
 
                 //Now ModulesEngines should have exactly the engine modules in scope
                 #endregion
@@ -129,7 +175,7 @@ namespace GTI
             Debug.Log("updatePropulsion() --> ChooseOption = " + ChooseOption);
 
             currentEngineState = currentModuleEngine.getIgnitionState;
-
+            
             foreach (var moduleEngine in ModuleEngines)
             {
                 #region NOTES
@@ -182,48 +228,80 @@ namespace GTI
             //{
             //    if (arrEngineID[i] == ChooseOption) { selectedPropulsion = i; break; } else { selectedPropulsion = 0; }
             //}
-            //if (ChooseOption == "DarkGooFusion")
-            //{
-            //    this.Actions["PropulsionAction"].active = false;
-            //}
-            //else
-            //{
-            //    this.Actions["PropulsionAction"].active = true;
-            //}
+
         } //END OF updatePropulsion()
+
+
+        /// <summary>
+        /// selPropFromChooseOption set selectedPropulsion from ChooseOption.
+        /// If ChooseOption is empty, then the first engine in engineList is returned.
+        /// Dependent on: engineList, ChooseOption, selectedPropulsion
+        /// </summary>
+        private void selPropFromChooseOption()
+        {
+            if (ChooseOption == string.Empty)
+            {
+                ChooseOption = engineList[0].engineID;
+                selectedPropulsion = 0;
+            }
+            else
+            {
+                for (int i = 0; i < engineList.Count; i++)
+                {
+                    selectedPropulsion = (ChooseOption == engineList[i].engineID) ? i : 0;
+                }
+            }
+        }
+
+        private void CheckTech(ref string[] arrEngineAvailable, Utilities Util)
+        {
+            if (engineAvailableEmpty)
+            {
+                Debug.Log("Check ResearchAndDevelopment.GetTechnologyState for engineList");
+                foreach (var item in engineList)
+                {
+                    Debug.Log(
+                    "\n(ResearchAndDevelopment.GetTechnologyState(item.minReqTech) == RDTech.State.Unavailable) && !minReqTechEmpty" +
+                    "\nResearchAndDevelopment.GetTechnologyState(item.minReqTech): " + ResearchAndDevelopment.GetTechnologyState(item.minReqTech) +
+                    "\n!minReqTechEmpty: " + !minReqTechEmpty
+                    );
+                    Debug.Log(
+                    "\n(ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) == RDTech.State.Available) && !maxReqTechEmpty && (HighLogic.CurrentGame.Mode != Game.Modes.SANDBOX || applyTechReqToSandbox)" +
+                    "\nResearchAndDevelopment.GetTechnologyState(item.maxReqTech): " + ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) +
+                    "\n!maxReqTechEmpty: " + !maxReqTechEmpty +
+                    "\nHighLogic.CurrentGame.Mode: " + HighLogic.CurrentGame.Mode +
+                    "\napplyTechReqToSandbox: " + applyTechReqToSandbox
+                    );
+                    if ((ResearchAndDevelopment.GetTechnologyState(item.minReqTech) == RDTech.State.Unavailable) && !minReqTechEmpty)
+                    {
+                        Debug.Log("(ResearchAndDevelopment.GetTechnologyState(item.minReqTech) == RDTech.State.Unavailable) && !minReqTechEmpty\ntrue");
+                        item.engineAvailable = false;
+                    }
+                    else if ((ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) == RDTech.State.Available) && (!maxReqTechEmpty) && (HighLogic.CurrentGame.Mode != Game.Modes.SANDBOX || applyTechReqToSandbox))
+                    {
+                        Debug.Log("(ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) == RDTech.State.Available) && !maxReqTechEmpty && (HighLogic.CurrentGame.Mode != Game.Modes.SANDBOX || applyTechReqToSandbox)\ntrue");
+                        item.engineAvailable = false;
+                    }
+                    else
+                    {
+                        item.engineAvailable = true;
+                    }
+                    engineAvailable += item.engineAvailable.ToString() + ";";
+                }
+                engineAvailable = engineAvailable.Substring(0, engineAvailable.Length - 1);   //Remove the last and redundant ";"
+                Debug.Log("engineAvailable: \n'" + engineAvailable + "' \nbuild from the engineList");
+
+            }
+            else
+            {
+                //TAKE THE KSPFIELD AND LOAD INTO engineList
+                //At this point the engineList has all engineID's and the engineAvailable list is supposed to follow that at this point. That way we can now use it to select what is available, based on it.
+                //engineAvailable is persistent, hence loaded from the save file of any active vessel, and recalculated for any new vessels.
+                
+                //engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';');
+                Debug.Log("engineAvailable: '" + engineAvailable + "' based on the [KSPField]");
+            }
+        }
         
     }
 }
-/*
-moduleEngine.Actions[OnAction]
-moduleEngine.Actions[ShutdownAction]
-moduleEngine.Actions[ActivateAction]
-
-
-[LOG 14:32:15.764]
-moduleEngine.Actions[0]
-guiName: Toggle Engine
-name: OnAction
-originalValue: None
-isPersistant: True
-guiActive: None
-guiActiveEditor: BaseActionList
-
-[LOG 14:32:15.765]
-moduleEngine.Actions[1]
-guiName: Shutdown Engine
-name: ShutdownAction
-originalValue: None
-isPersistant: True
-guiActive: None
-guiActiveEditor: BaseActionList
-
-[LOG 14:32:15.765]
-moduleEngine.Actions[2]
-guiName: Activate Engine
-name: ActivateAction
-originalValue: None
-isPersistant: True
-guiActive: None
-guiActiveEditor: BaseActionList
-*/

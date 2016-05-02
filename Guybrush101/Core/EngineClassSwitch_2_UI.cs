@@ -30,8 +30,7 @@ namespace GTI
         public string ChooseOption = string.Empty;
         //[KSPField(isPersistant = true)]
         //public int selectedEngine = 0;                                            //holds the selected propellant setup.
-        private const int numberOfSpecificActions = 4;
-
+        
         #endregion
 
         private void initializeGUI()
@@ -45,8 +44,22 @@ namespace GTI
             chooseField.guiActiveEditor = availableInEditor;
             chooseField.guiActive = availableInFlight;
 
-            Options = arrEngineID;
-            OptionsDisplay = GUIengineIDEmpty ? arrEngineID : arrGUIengineID;
+            //Extract options from the engineList
+            Options = new string[engineList.Count];
+            OptionsDisplay = new string[engineList.Count];
+            for (int i = 0; (i < engineList.Count); i++)
+            {
+                Options[i] = engineList[i].engineID;
+                OptionsDisplay[i] = GUIengineIDEmpty ? engineList[i].engineID : engineList[i].GUIengineID;
+            }
+            //If there is only one engine available, then hide the selector menu --> It yields null ref errors if used in flight!!!
+            if (engineList.Count < 2)
+            {
+                chooseField.guiActive = false;
+                chooseField.guiActiveEditor = false;
+            }
+            //Options = arrEngineID;
+            //OptionsDisplay = GUIengineIDEmpty ? arrEngineID : arrGUIengineID;
 
             UI_ChooseOption chooseOption = HighLogic.LoadedSceneIsFlight ? chooseField.uiControlFlight as UI_ChooseOption : chooseField.uiControlEditor as UI_ChooseOption;
             chooseOption.options = Options;
@@ -56,8 +69,8 @@ namespace GTI
             //Update Actions GUI texts and hide the ones not applicable
             for (int i = 1; i <= numberOfSpecificActions; i++)
             {
-                if (arrEngineID.Length < i) { this.Actions["ActionPropulsion_" + i].active = false; }
-                if (!(arrEngineID.Length < i)) { this.Actions["ActionPropulsion_" + i].guiName = GUIengineIDEmpty ? "Set " + arrEngineID[i-1]: "Set " + arrGUIengineID[i-1]; }
+                if (engineList.Count < i) { this.Actions["ActionPropulsion_" + i].active = false; }
+                if (!(engineList.Count < i)) { this.Actions["ActionPropulsion_" + i].guiName = GUIengineIDEmpty ? "Set " + engineList[i-1].engineID : "Set " + engineList[i-1].GUIengineID; }
             }
 
         }
@@ -102,8 +115,8 @@ namespace GTI
         public void ActionNextPropulsion(KSPActionParam param)
         {
             selectedPropulsion++;
-            if (selectedPropulsion > arrEngineID.Length - 1) { selectedPropulsion = 0; }
-            ChooseOption = arrEngineID[selectedPropulsion];
+            if (selectedPropulsion > engineList.Count - 1) { selectedPropulsion = 0; }
+            ChooseOption = engineList[selectedPropulsion].engineID;
             updatePropulsion();
         }
         [KSPAction("Previous Propulsion")]
@@ -111,101 +124,54 @@ namespace GTI
         {
             selectedPropulsion--;
             //Check if selected proplusion was the first one, and return the last one instead
-            if (selectedPropulsion < 0) { selectedPropulsion = arrEngineID.Length - 1; }
-            ChooseOption = arrEngineID[selectedPropulsion];
+            if (selectedPropulsion < 0) { selectedPropulsion = engineList.Count - 1; }
+            ChooseOption = engineList[selectedPropulsion].engineID;
             updatePropulsion();
         }
 
+        //Specific actions
+        private const int numberOfSpecificActions = 8;
         [KSPAction("Set Propulsion #1")]
-        public void ActionPropulsion_1(KSPActionParam param)
-        {
-            //Set the constant for this action
-            const int ActionSelect = 0;
-
-            Debug.Log("Action ActionPropulsion_1 (before): " + ChooseOption);
-            
-            //Check if the selected Propulsion is possible
-            if (ActionSelect < arrEngineID.Length)
-            {
-                selectedPropulsion = ActionSelect;
-
-
-
-                ChooseOption = arrEngineID[selectedPropulsion];
-                Debug.Log("ActionPropulsion_1 Executed");
-                updatePropulsion();
-            }
-            
-            Debug.Log("Action ActionPropulsion_1 (after): " + ChooseOption);
-        }
+        public void ActionPropulsion_1(KSPActionParam param)    { ActionPropulsion(0); }
 
         [KSPAction("Set Propulsion #2")]
-        public void ActionPropulsion_2(KSPActionParam param)
-        {
-            //Set the constant for this action
-            const int ActionSelect = 1;
-
-            Debug.Log("Action ActionPropulsion_2 (before): " + ChooseOption);
-
-            //Check if the selected Propulsion is possible
-            if (ActionSelect < arrEngineID.Length)
-            {
-                selectedPropulsion = ActionSelect;
-
-
-
-                ChooseOption = arrEngineID[selectedPropulsion];
-                Debug.Log("ActionPropulsion_2 Executed");
-                updatePropulsion();
-            }
-
-            Debug.Log("Action ActionPropulsion_2 (after): " + ChooseOption);
-        }
+        public void ActionPropulsion_2(KSPActionParam param)    { ActionPropulsion(1); }
 
         [KSPAction("Set Propulsion #3")]
-        public void ActionPropulsion_3(KSPActionParam param)
-        {
-            //Set the constant for this action
-            const int ActionSelect = 2;
-
-            Debug.Log("Action ActionPropulsion_3 (before): " + ChooseOption);
-
-            //Check if the selected Propulsion is possible
-            if (ActionSelect < arrEngineID.Length)
-            {
-                selectedPropulsion = ActionSelect;
-
-
-
-                ChooseOption = arrEngineID[selectedPropulsion];
-                Debug.Log("ActionPropulsion_3 Executed");
-                updatePropulsion();
-            }
-
-            Debug.Log("Action ActionPropulsion_3 (after): " + ChooseOption);
-        }
+        public void ActionPropulsion_3(KSPActionParam param)    { ActionPropulsion(2); }
 
         [KSPAction("Set Propulsion #4")]
-        public void ActionPropulsion_4(KSPActionParam param)
-        {
-            //Set the constant for this action
-            const int ActionSelect = 3;
+        public void ActionPropulsion_4(KSPActionParam param)    { ActionPropulsion(3); }
 
-            Debug.Log("Action ActionPropulsion_4 (before): " + ChooseOption);
+        [KSPAction("Set Propulsion #5")]
+        public void ActionPropulsion_5(KSPActionParam param)    { ActionPropulsion(4); }
+
+        [KSPAction("Set Propulsion #6")]
+        public void ActionPropulsion_6(KSPActionParam param)    { ActionPropulsion(5); }
+
+        [KSPAction("Set Propulsion #7")]
+        public void ActionPropulsion_7(KSPActionParam param)    { ActionPropulsion(6); }
+
+        [KSPAction("Set Propulsion #8")]
+        public void ActionPropulsion_8(KSPActionParam param)    { ActionPropulsion(7); }
+
+        private void ActionPropulsion(int inActionSelect)
+        {
+            Debug.Log("Action ActionPropulsion_" + inActionSelect + " (before): " + ChooseOption);
 
             //Check if the selected Propulsion is possible
-            if (ActionSelect < arrEngineID.Length)
+            if (inActionSelect < engineList.Count)
             {
-                selectedPropulsion = ActionSelect;
+                if (!(selectedPropulsion == inActionSelect))
+                {
+                    selectedPropulsion = inActionSelect;
 
-
-
-                ChooseOption = arrEngineID[selectedPropulsion];
-                Debug.Log("ActionPropulsion_4 Executed");
-                updatePropulsion();
+                    ChooseOption = engineList[selectedPropulsion].engineID;
+                    Debug.Log("ActionPropulsion_" + inActionSelect + " Executed");
+                    updatePropulsion();
+                }
             }
-
-            Debug.Log("Action ActionPropulsion_4 (after): " + ChooseOption);
+            Debug.Log("Action ActionPropulsion_" + inActionSelect + " (after): " + ChooseOption);
         }
         #endregion
 
