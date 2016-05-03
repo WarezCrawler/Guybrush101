@@ -53,13 +53,12 @@ namespace GTI
                 OptionsDisplay[i] = GUIengineIDEmpty ? engineList[i].engineID : engineList[i].GUIengineID;
             }
             //If there is only one engine available, then hide the selector menu --> It yields null ref errors if used in flight!!!
+            Debug.Log("engineList.Count: " + engineList.Count);
             if (engineList.Count < 2)
             {
                 chooseField.guiActive = false;
                 chooseField.guiActiveEditor = false;
             }
-            //Options = arrEngineID;
-            //OptionsDisplay = GUIengineIDEmpty ? arrEngineID : arrGUIengineID;
 
             UI_ChooseOption chooseOption = HighLogic.LoadedSceneIsFlight ? chooseField.uiControlFlight as UI_ChooseOption : chooseField.uiControlEditor as UI_ChooseOption;
             chooseOption.options = Options;
@@ -157,7 +156,7 @@ namespace GTI
 
         private void ActionPropulsion(int inActionSelect)
         {
-            Debug.Log("Action ActionPropulsion_" + inActionSelect + " (before): " + ChooseOption);
+            //Debug.Log("Action ActionPropulsion_" + inActionSelect + " (before): " + ChooseOption);
 
             //Check if the selected Propulsion is possible
             if (inActionSelect < engineList.Count)
@@ -167,11 +166,11 @@ namespace GTI
                     selectedPropulsion = inActionSelect;
 
                     ChooseOption = engineList[selectedPropulsion].engineID;
-                    Debug.Log("ActionPropulsion_" + inActionSelect + " Executed");
+                    //Debug.Log("ActionPropulsion_" + inActionSelect + " Executed");
                     updatePropulsion();
                 }
             }
-            Debug.Log("Action ActionPropulsion_" + inActionSelect + " (after): " + ChooseOption);
+            //Debug.Log("Action ActionPropulsion_" + inActionSelect + " (after): " + ChooseOption);
         }
         #endregion
 

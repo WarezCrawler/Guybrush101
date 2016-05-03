@@ -76,7 +76,8 @@ namespace GTI
                 engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';');
 
                 //CONTROL: Evaluate if the engineAvailable is of same size as the engineID one. If not, we reevaluate, since the might be new engines in the part. This is not perfect, but the function does not fail.
-                if (arrEngineAvailable.Length != arrEngineID.Length)
+                //Added a check for editor, where it will reevaluate, so that the parts does not need to be reloaded
+                if ((arrEngineAvailable.Length != arrEngineID.Length) || HighLogic.LoadedSceneIsEditor)
                 { engineAvailable = string.Empty; engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';');
                     Debug.LogError(
                         "GTI_EngineClassSwitch_2 -> arrEngineAvailable.Length != arrEngineID.Length \narrEngineID.Length: " + arrEngineID.Length + "\narrEngineAvailable.Length: " + arrEngineAvailable.Length); }
@@ -137,7 +138,7 @@ namespace GTI
 
 
                 /*HERE GOES ANY CHECKS AND REMOVALS BASED ON TECHLEVEL*/
-                CheckTech(ref arrEngineAvailable, Util);
+                //CheckTech(ref arrEngineAvailable, Util);
                 
                 //ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable
                 for (int i = engineList.Count - 1; i >= 0; i--)
@@ -260,18 +261,18 @@ namespace GTI
                 Debug.Log("Check ResearchAndDevelopment.GetTechnologyState for engineList");
                 foreach (var item in engineList)
                 {
-                    Debug.Log(
-                    "\n(ResearchAndDevelopment.GetTechnologyState(item.minReqTech) == RDTech.State.Unavailable) && !minReqTechEmpty" +
-                    "\nResearchAndDevelopment.GetTechnologyState(item.minReqTech): " + ResearchAndDevelopment.GetTechnologyState(item.minReqTech) +
-                    "\n!minReqTechEmpty: " + !minReqTechEmpty
-                    );
-                    Debug.Log(
-                    "\n(ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) == RDTech.State.Available) && !maxReqTechEmpty && (HighLogic.CurrentGame.Mode != Game.Modes.SANDBOX || applyTechReqToSandbox)" +
-                    "\nResearchAndDevelopment.GetTechnologyState(item.maxReqTech): " + ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) +
-                    "\n!maxReqTechEmpty: " + !maxReqTechEmpty +
-                    "\nHighLogic.CurrentGame.Mode: " + HighLogic.CurrentGame.Mode +
-                    "\napplyTechReqToSandbox: " + applyTechReqToSandbox
-                    );
+                    //Debug.Log(
+                    //"\n(ResearchAndDevelopment.GetTechnologyState(item.minReqTech) == RDTech.State.Unavailable) && !minReqTechEmpty" +
+                    //"\nResearchAndDevelopment.GetTechnologyState(item.minReqTech): " + ResearchAndDevelopment.GetTechnologyState(item.minReqTech) +
+                    //"\n!minReqTechEmpty: " + !minReqTechEmpty
+                    //);
+                    //Debug.Log(
+                    //"\n(ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) == RDTech.State.Available) && !maxReqTechEmpty && (HighLogic.CurrentGame.Mode != Game.Modes.SANDBOX || applyTechReqToSandbox)" +
+                    //"\nResearchAndDevelopment.GetTechnologyState(item.maxReqTech): " + ResearchAndDevelopment.GetTechnologyState(item.maxReqTech) +
+                    //"\n!maxReqTechEmpty: " + !maxReqTechEmpty +
+                    //"\nHighLogic.CurrentGame.Mode: " + HighLogic.CurrentGame.Mode +
+                    //"\napplyTechReqToSandbox: " + applyTechReqToSandbox
+                    //);
                     if ((ResearchAndDevelopment.GetTechnologyState(item.minReqTech) == RDTech.State.Unavailable) && !minReqTechEmpty)
                     {
                         Debug.Log("(ResearchAndDevelopment.GetTechnologyState(item.minReqTech) == RDTech.State.Unavailable) && !minReqTechEmpty\ntrue");

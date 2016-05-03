@@ -73,6 +73,7 @@
     <Compile Include="Core\EngineClassSwitch_2.cs" />
     <Compile Include="Core\EngineClassSwitch_Effects.cs" />
     <None Include="Other\DockingAlignmentIndicator.cs" />
+    <Compile Include="Scenarios\GTES_ScenarioModule.cs" />
     <Compile Include="UI_Examples\TEST_MODULE.cs" />
     <Compile Include="UI_Examples\UI_CHOOSEOPTION.cs" />
     <Compile Include="Core\IntakeSwitch_UI.cs" />
