@@ -78,9 +78,10 @@ namespace GTI
                 //CONTROL: Evaluate if the engineAvailable is of same size as the engineID one. If not, we reevaluate, since the might be new engines in the part. This is not perfect, but the function does not fail.
                 //Added a check for editor, where it will reevaluate, so that the parts does not need to be reloaded
                 if ((arrEngineAvailable.Length != arrEngineID.Length) || HighLogic.LoadedSceneIsEditor)
-                { engineAvailable = string.Empty; engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';');
-                    Debug.LogError(
-                        "GTI_EngineClassSwitch_2 -> arrEngineAvailable.Length != arrEngineID.Length \narrEngineID.Length: " + arrEngineID.Length + "\narrEngineAvailable.Length: " + arrEngineAvailable.Length); }
+                {
+                    engineAvailable = string.Empty; engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';');
+                    Debug.LogError("GTI_EngineClassSwitch_2 -> arrEngineAvailable.Length != arrEngineID.Length \narrEngineID.Length: " + arrEngineID.Length + "\narrEngineAvailable.Length: " + arrEngineAvailable.Length);
+                }
                 Debug.Log("engineAvailable: \n'" + engineAvailable + "' \nafter evaluation against engineID");
                 //engineAvailable
                 #endregion
@@ -117,9 +118,10 @@ namespace GTI
                     engineList.Add(new CustomTypes.EngineSwitchList()
                     {
                         engineID = arrEngineID[i],
-                        GUIengineID = GUIengineIDEmpty ? string.Empty : arrGUIengineID[i],
+                        GUIengineID = GUIengineIDEmpty ? arrEngineID[i] : arrGUIengineID[i],
                         minReqTech = minReqTechEmpty ? "start" : arrMinReqTech[i],
-                        maxReqTech = maxReqTechEmpty ? string.Empty : arrMaxReqTech[i]
+                        maxReqTech = maxReqTechEmpty ? string.Empty : arrMaxReqTech[i],
+                        engineAvailable = engineAvailableEmpty ? true : bool.Parse(arrEngineAvailable[i])
                     });
                     //engineList[i].minReqTech = minReqTechEmpty ? "start" : arrMinReqTech[i];
                     //engineList[i].maxReqTech = maxReqTechEmpty ? string.Empty : arrMaxReqTech[i];
@@ -138,11 +140,12 @@ namespace GTI
 
 
                 /*HERE GOES ANY CHECKS AND REMOVALS BASED ON TECHLEVEL*/
-                //CheckTech(ref arrEngineAvailable, Util);
+                CheckTech(ref arrEngineAvailable, Util);
                 
                 //ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable
                 for (int i = engineList.Count - 1; i >= 0; i--)
                 {
+                    Debug.Log("engineList[i].engineAvailable: " + engineList[i].engineAvailable);
                     if (!engineList[i].engineAvailable) { engineList.RemoveAt(i); }
                 }
                 
@@ -176,7 +179,8 @@ namespace GTI
             Debug.Log("updatePropulsion() --> ChooseOption = " + ChooseOption);
 
             currentEngineState = currentModuleEngine.getIgnitionState;
-            
+
+            writeScreenMessage();
             foreach (var moduleEngine in ModuleEngines)
             {
                 #region NOTES

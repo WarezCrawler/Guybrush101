@@ -28,6 +28,7 @@ namespace GTI.CustomTypes
         private string _useAtmCurve = string.Empty;
 
         private string _requiredTech = string.Empty;
+        public bool engineAvailable = false;
         private string _GUIpropellantNames = string.Empty;
 
         //arrPropIgnoreForISP, arrPropDrawGauge, arrHeatProd, arrEngineTypes;

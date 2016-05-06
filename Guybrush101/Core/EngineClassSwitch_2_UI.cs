@@ -77,8 +77,28 @@ namespace GTI
         private void selectPropulsion(BaseField field, object oldValueObj)
         {
             //selectedPropulsion = ChooseOption;
-            ScreenMessages.PostScreenMessage("Changing Propultion to: " + ChooseOption, 1.5f, ScreenMessageStyle.UPPER_CENTER);
+            //ScreenMessages.PostScreenMessage("Changing Propultion to: " + ChooseOption, 1.5f, ScreenMessageStyle.UPPER_CENTER);
+            //writeScreenMessage();
             updatePropulsion();
+        }
+        private void FindSelectedPropulsion()
+        {
+            for (int i = 0; i < engineList.Count; i++)
+            {
+                if (engineList[i].engineID == ChooseOption) { selectedPropulsion = i; }
+            }
+        }
+        private void writeScreenMessage()
+        {
+            //ScreenMessages.PostScreenMessage("Changing Propultion to: " + engineList[selectedPropulsion].engineID, 1.5f, ScreenMessageStyle.UPPER_CENTER);
+            writeScreenMessage(
+                Message: "Changing Propultion to: " + engineList[selectedPropulsion].GUIengineID,
+                position: ScreenMessageStyle.UPPER_CENTER
+                );
+        }
+        private void writeScreenMessage(ScreenMessageStyle position, string Message, float duration = 1.5f)
+        {
+            ScreenMessages.PostScreenMessage(Message, duration, position);
         }
 
         #region Actions Engine
@@ -125,6 +145,7 @@ namespace GTI
             //Check if selected proplusion was the first one, and return the last one instead
             if (selectedPropulsion < 0) { selectedPropulsion = engineList.Count - 1; }
             ChooseOption = engineList[selectedPropulsion].engineID;
+
             updatePropulsion();
         }
 

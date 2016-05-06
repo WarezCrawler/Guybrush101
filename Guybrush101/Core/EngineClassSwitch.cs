@@ -30,8 +30,10 @@ namespace GTI
         public string EngineTypes = string.Empty;
         [KSPField]
         public string heatProduction = string.Empty;
+        [KSPField(isPersistant = true)]
+        public string engineAvailable = string.Empty;
         #endregion
-        
+
         #region Propellant parameters
         [KSPField]
         public string propellantNames = string.Empty;                                    //the list of propellant setups available to the switch.
@@ -61,7 +63,7 @@ namespace GTI
         #endregion
 
         #region Empty value indicators (boolean)
-        private bool requiredTechEmpty = true;
+        private bool requiredTechEmpty = true, engineAvailableEmpty = true;
         private bool iniGUIpropellantNamesEmpty = true;
         private bool MaxThrustEmpty = true;
         private bool EngineTypesEmpty = true;
@@ -184,7 +186,7 @@ namespace GTI
 
                 string[] arrPropellantNames, arrPropellantRatios;
                 string[] arrPropDrawGauge, arrPropIgnoreForISP;
-                string[] arrrequiredTech, arrGUIpropellantNames;
+                string[] arrrequiredTech, arrEngineAvailable, arrGUIpropellantNames;
                 string[] arrMaxThrust, arrHeatProd, arrEngineTypes, arratmChangeFlows, arruseVelCurves, arruseAtmCurves;
                 string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
                 
@@ -201,6 +203,7 @@ namespace GTI
 
                 //Required Technology & GUI
                 requiredTechEmpty           = Util.ArraySplitEvaluate(requiredTech,             out arrrequiredTech         , ';');
+                engineAvailableEmpty        = Util.ArraySplitEvaluate(engineAvailable,          out arrEngineAvailable      , ';');     //***
                 iniGUIpropellantNamesEmpty  = Util.ArraySplitEvaluate(iniGUIpropellantNames,    out arrGUIpropellantNames   , ';');
 
                 //Engine level
@@ -221,10 +224,10 @@ namespace GTI
                 {
                     Debug.LogError("EngineClassSwitch: Error on InitializeSettings() - \nPropellant names (" + arrPropellantNames.Length + "pcs) and ratios (" + arrPropellantRatios.Length + "pcs) does not match\nConfig file error");
                 }
-                //if (arrPropellantNames.Length != arrMaxThrust.Length)
-                //{
-                //    Debug.LogError("EngineClassSwitch: Error on InitializeSettings() - \nPropellant names (" + arrPropellantNames.Length + "pcs) and maxThrusts (" + arrMaxThrust.Length + "pcs) does not match\nConfig file error");
-                //}
+                //Added a check for editor, where it will reevaluate, so that the parts does not need to be reloaded
+                if ((arrEngineAvailable.Length != arrPropellantNames.Length) || HighLogic.LoadedSceneIsEditor)
+                { engineAvailable = string.Empty; engineAvailableEmpty = Util.ArraySplitEvaluate(engineAvailable, out arrEngineAvailable, ';'); }   //***
+
                 #endregion
 
                 #region Populate Propellant List
@@ -236,7 +239,8 @@ namespace GTI
                         propList.Add(new CustomTypes.PropellantList()
                         {
                             Propellants = arrPropellantNames[i],
-                            PropRatios  = arrPropellantRatios[i]
+                            PropRatios  = arrPropellantRatios[i],
+                            engineAvailable = engineAvailableEmpty ? true : bool.Parse(arrEngineAvailable[i])
                         });
 
                         propList[i].requiredTech        = requiredTechEmpty             ? "start"   : arrrequiredTech[i];
@@ -251,9 +255,9 @@ namespace GTI
                         propList[i].engineType          = EngineTypesEmpty              ? ""        : arrEngineTypes[i];     //No default - Ignore when updating
                         propList[i].heatProduction      = heatProductionEmpty           ? "0"       : arrHeatProd[i];        //No default - Ignore when updating
 
-                        propList[i].atmChangeFlow = atmChangeFlowsEmpty                 ? "true"    : arratmChangeFlows[i];
-                        propList[i].useVelCurve = useVelCurvesEmpty                     ? "true"    : arruseVelCurves[i];
-                        propList[i].useAtmCurve = useAtmCurvesEmpty                     ? "true"    : arruseAtmCurves[i];
+                        propList[i].atmChangeFlow       = atmChangeFlowsEmpty                 ? "true"    : arratmChangeFlows[i];
+                        propList[i].useVelCurve         = useVelCurvesEmpty                     ? "true"    : arruseVelCurves[i];
+                        propList[i].useAtmCurve         = useAtmCurvesEmpty                     ? "true"    : arruseAtmCurves[i];
 
                         if (!atmosphereCurveEmpty)  //No default - Ignore when updating
                         {
@@ -266,6 +270,11 @@ namespace GTI
                         if (!atmCurveEmpty)         //No default - Ignore when updating
                         {
                             propList[i].atmCurve = arrPropellantAtmCurve[i];
+                        }
+
+                        if (engineAvailableEmpty)
+                        {
+                            propList[i].engineAvailable = (ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Available);
                         }
                     }
                     //Initialize the effects for EngineSwitch
@@ -282,12 +291,19 @@ namespace GTI
                 //Debug.Log("Remove tech which is not available. propList.Count before: " + propList.Count);
                 for (int i = propList.Count - 1; i >= 0; i--)
                 {
-                    //Debug.Log("Propellants: " + propList[i].Propellants +
-                    //    "\nrequiredTech --> " + propList[i].requiredTech + " : " + ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) + 
-                    //    "\ni: " + i);
-
-                    if ((ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable)) { propList.RemoveAt(i); }
+                    //if ((ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable)) { propList.RemoveAt(i); }
+                    if (!propList[i].engineAvailable) { propList.RemoveAt(i); }
                 }
+                if (engineAvailableEmpty)
+                {
+                    foreach (var item in propList)
+                    {
+                        //item.engineAvailable;
+                        engineAvailable += item.engineAvailable.ToString() + ";";
+                    }
+                    engineAvailable = engineAvailable.Substring(0, engineAvailable.Length - 1);
+                }
+
                 if (propList.Count == 0)
                 {
                     availableInFlight = false;
@@ -600,6 +616,12 @@ namespace GTI
         }
         #endregion
         
+
+
+
+
+
+
         #region --------------------------------Debugging---------------------------------------
         [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "DEBUG")]
         public void DEBUG_ENGINESSWITCH()

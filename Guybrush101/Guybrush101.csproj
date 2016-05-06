@@ -92,7 +92,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program SSD\KSP 1.1.2_Cur\GameData\GTIndusties\Plugins\$(TargetName).dll"
-copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTIndusties\Plugins\$(TargetName).dll"</PostBuildEvent>
+copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTIndusties\Plugins\$(TargetName).dll"
+copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\1.1.2_IFS_ES_Dev\GameData\GTIndusties\Plugins\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
