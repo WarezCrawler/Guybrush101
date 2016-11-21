@@ -70,7 +70,10 @@ namespace GTI
                 Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.atmCurve.Curve.keys, "atmCurveKeys --> "));
                 Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.velCurve.Curve.keys, "velCurveKeys --> "));
 
-
+                Debug.Log(
+                    "Events for the following engine" +
+                    "\nmoduleEngine.GUIName" + moduleEngine.GUIName
+                    );
                 foreach (var engineEvent in moduleEngine.Events)
                 {
                     Debug.Log(

@@ -32,6 +32,13 @@ namespace GTI
         public string heatProduction = string.Empty;
         [KSPField(isPersistant = true)]
         public string engineAvailable = string.Empty;
+
+        [KSPField]
+        public string useEngineResponseTime = string.Empty;
+        [KSPField]
+        public string engineAccelerationSpeed = string.Empty;
+        [KSPField]
+        public string engineDecelerationSpeed = string.Empty;
         #endregion
 
         #region Propellant parameters
@@ -81,6 +88,8 @@ namespace GTI
         private bool atmChangeFlowsEmpty = true;
         private bool useVelCurvesEmpty = true;
         private bool useAtmCurvesEmpty = true;
+
+        private bool useEngineResponseTimeEmpty, engineAccelerationSpeedEmpty, engineDecelerationSpeedEmpty;
         #endregion
 
         #region Arrays and Lists
@@ -189,7 +198,8 @@ namespace GTI
                 string[] arrrequiredTech, arrEngineAvailable, arrGUIpropellantNames;
                 string[] arrMaxThrust, arrHeatProd, arrEngineTypes, arratmChangeFlows, arruseVelCurves, arruseAtmCurves;
                 string[] arrAtmosphereCurve, arrPropellantVelCurve, arrPropellantAtmCurve;
-                
+                string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
+
 
                 #region Parse Arrays
                 //Parse the strings into arrays of information
@@ -219,6 +229,12 @@ namespace GTI
                 velCurveEmpty               = Util.ArraySplitEvaluate(velCurveKeys,             out arrPropellantVelCurve   , '|');
                 atmCurveEmpty               = Util.ArraySplitEvaluate(atmCurveKeys,             out arrPropellantAtmCurve   , '|');
 
+                useEngineResponseTimeEmpty  = Util.ArraySplitEvaluate(useEngineResponseTime,    out arrUseEngineResponseTime, ';');
+                engineAccelerationSpeedEmpty = Util.ArraySplitEvaluate(engineAccelerationSpeed, out arrEngineAccelerationSpeed, ';');
+                engineDecelerationSpeedEmpty = Util.ArraySplitEvaluate(engineDecelerationSpeed, out arrEngineDecelerationSpeed, ';');
+
+
+
                 //Test if the two arrays are compatible                 <------ This test should be extended!
                 if (arrPropellantNames.Length != arrPropellantRatios.Length)
                 {
@@ -244,7 +260,8 @@ namespace GTI
                         });
 
                         propList[i].requiredTech        = requiredTechEmpty             ? "start"   : arrrequiredTech[i];
-                        propList[i].GUIpropellantNames  = iniGUIpropellantNamesEmpty    ? string.Empty : arrGUIpropellantNames[i];
+                        //propList[i].GUIpropellantNames  = iniGUIpropellantNamesEmpty    ? string.Empty : arrGUIpropellantNames[i];
+                        propList[i].GUIpropellantNames = iniGUIpropellantNamesEmpty ? arrPropellantNames[i] : arrGUIpropellantNames[i];
 
                         //Propellant level --> Propellant level is needed as the entire node is replaced.
                         propList[i].propIgnoreForISP    = propellantIgnoreForIspEmpty   ? "false"   : arrPropIgnoreForISP[i];       //Has Default value "false"
@@ -255,9 +272,13 @@ namespace GTI
                         propList[i].engineType          = EngineTypesEmpty              ? ""        : arrEngineTypes[i];     //No default - Ignore when updating
                         propList[i].heatProduction      = heatProductionEmpty           ? "0"       : arrHeatProd[i];        //No default - Ignore when updating
 
-                        propList[i].atmChangeFlow       = atmChangeFlowsEmpty                 ? "true"    : arratmChangeFlows[i];
-                        propList[i].useVelCurve         = useVelCurvesEmpty                     ? "true"    : arruseVelCurves[i];
-                        propList[i].useAtmCurve         = useAtmCurvesEmpty                     ? "true"    : arruseAtmCurves[i];
+                        propList[i].atmChangeFlow       = atmChangeFlowsEmpty               ? "true"    : arratmChangeFlows[i];
+                        propList[i].useVelCurve         = useVelCurvesEmpty                 ? "true"    : arruseVelCurves[i];
+                        propList[i].useAtmCurve         = useAtmCurvesEmpty                 ? "true"    : arruseAtmCurves[i];
+
+                        propList[i].useEngineResponseTime = useEngineResponseTimeEmpty      ? string.Empty : arrUseEngineResponseTime[i];
+                        propList[i].engineAccelerationSpeed = engineAccelerationSpeedEmpty  ? string.Empty : arrEngineAccelerationSpeed[i];
+                        propList[i].engineDecelerationSpeed = engineDecelerationSpeedEmpty  ? string.Empty : arrEngineDecelerationSpeed[i];
 
                         if (!atmosphereCurveEmpty)  //No default - Ignore when updating
                         {
@@ -279,7 +300,8 @@ namespace GTI
                     }
                     //Initialize the effects for EngineSwitch
 
-                    InitializeEffects();
+                    //***INITIALIZING OF EFFECT MANIPULATION DEACTIVATED DUE TO MALFUNCTION
+                    //InitializeEffects();
                 }
                 catch(Exception e)
                 {
@@ -335,13 +357,14 @@ namespace GTI
                         ModuleEngines.Remove(remove);
                         //part.RemoveModule(remove);
                     }
-                
+
                 //Now ModulesEngines should have exactly the engine modules in scope
                 #endregion
-                
+
                 #region GUI Update
                 //Debug.Log("--> initializeGUI()");
-                initializeGUI();
+                //initializeGUI();
+                initializeGUI_2();
 
                 //Show Debug GUI?
                 if (bool.Parse(debugMode)) { Events["DEBUG_ENGINESSWITCH"].guiActive = true; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = true; Events["DEBUG_ENGINESSWITCH"].active = true; Debug.Log("Engine Switch debugMode activated"); }
@@ -381,7 +404,9 @@ namespace GTI
 
             ConfigNode newPropNode = new ConfigNode();
             Utilities MiscFx = new Utilities();
-            PhysicsUtilities EngineCalc = new PhysicsUtilities();        
+            PhysicsUtilities EngineCalc = new PhysicsUtilities();
+
+            writeScreenMessage();
 
             foreach (var moduleEngine in ModuleEngines)
             {
@@ -398,9 +423,9 @@ namespace GTI
                 ShutdownEngine();
 
                 //Deactivate effects to force KSP to update them as intended
-                currentModuleEngine.DeactivateLoopingFX();
-                currentModuleEngine.DeactivatePowerFX();
-                currentModuleEngine.DeactivateRunningFX();
+                //currentModuleEngine.DeactivateLoopingFX();
+                //currentModuleEngine.DeactivatePowerFX();
+                //currentModuleEngine.DeactivateRunningFX();
 
                 
 
@@ -555,11 +580,32 @@ namespace GTI
                             break;
                     }
                 }
+
+                moduleEngine.useEngineResponseTime = useEngineResponseTimeEmpty ? false : bool.Parse(propList[selectedPropellant].useEngineResponseTime);
+                moduleEngine.engineAccelerationSpeed = engineAccelerationSpeedEmpty ? 0 : Single.Parse(propList[selectedPropellant].engineAccelerationSpeed);
+                moduleEngine.engineDecelerationSpeed = engineDecelerationSpeedEmpty ? 0 : Single.Parse(propList[selectedPropellant].engineDecelerationSpeed);
+
+                //if (!useEngineResponseTimeEmpty)
+                //{
+                //    EngineEffectNode.SetValue("useEngineResponseTime", propList[selectedPropellant].useEngineResponseTime, true);
+                //    Debug.Log("EngineEffectNode.SetValue('useEngineResponseTime', " + propList[selectedPropellant].useEngineResponseTime + ", true);");
+                //}
+                //if (!engineAccelerationSpeedEmpty)
+                //{
+                //    EngineEffectNode.SetValue("engineAccelerationSpeed", propList[selectedPropellant].engineAccelerationSpeed, true);
+                //    Debug.Log("EngineEffectNode.SetValue('engineAccelerationSpeed', " + propList[selectedPropellant].engineAccelerationSpeed + ", true);");
+                //}
+                //if (!engineDecelerationSpeedEmpty)
+                //{
+                //    EngineEffectNode.SetValue("engineDecelerationSpeed", propList[selectedPropellant].engineDecelerationSpeed, true);
+                //    Debug.Log("EngineEffectNode.SetValue('engineDecelerationSpeed', " + propList[selectedPropellant].engineDecelerationSpeed + ", true);");
+                //}
+
                 //Update the effects
-                updateEngineModuleEffects(
-                    calledByPlayer: calledByPlayer, 
-                    callingFunction: callingFunction, 
-                    moduleEngine: moduleEngine);
+                //updateEngineModuleEffects(
+                //    calledByPlayer: calledByPlayer, 
+                //    callingFunction: callingFunction, 
+                //    moduleEngine: moduleEngine);
 
                 //Write the propellant setup to the right click GUI
                 GUIpropellantNames = propList[selectedPropellant].Propellants.Replace(",", ", ");

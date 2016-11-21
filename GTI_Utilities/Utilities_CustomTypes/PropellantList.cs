@@ -27,6 +27,10 @@ namespace GTI.CustomTypes
         private string _useVelCurve = string.Empty;
         private string _useAtmCurve = string.Empty;
 
+        public string useEngineResponseTime;
+        public string engineAccelerationSpeed;
+        public string engineDecelerationSpeed;
+
         private string _requiredTech = string.Empty;
         public bool engineAvailable = false;
         private string _GUIpropellantNames = string.Empty;
@@ -46,10 +50,7 @@ namespace GTI.CustomTypes
         
         public string engineSpoolIdle;
         public string engineSpoolTime;
-        
-        public string useEngineResponseTime;
-        public string engineAccelerationSpeed;
-        public string engineDecelerationSpeed;
+
 
         public string engageEffectName;
         public string disengageEffectName;

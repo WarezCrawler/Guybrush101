@@ -27,12 +27,12 @@ namespace GTI
         [KSPField]
         public string engineSpoolTime;
 
-        [KSPField]
-        public string useEngineResponseTime;
-        [KSPField]
-        public string engineAccelerationSpeed;
-        [KSPField]
-        public string engineDecelerationSpeed;
+        //[KSPField]
+        //public string useEngineResponseTime;
+        //[KSPField]
+        //public string engineAccelerationSpeed;
+        //[KSPField]
+        //public string engineDecelerationSpeed;
 
         [KSPField]
         public string fx_exhaustFlame_blue;
@@ -56,7 +56,7 @@ namespace GTI
         public string sound_explosion_low;
 
         bool runningEffectNameEmpty, powerEffectNameEmpty, spoolEffectNameEmpty, engineSpoolIdleEmpty, engineSpoolTimeEmpty;
-        bool useEngineResponseTimeEmpty, engineAccelerationSpeedEmpty, engineDecelerationSpeedEmpty;
+        //bool useEngineResponseTimeEmpty, engineAccelerationSpeedEmpty, engineDecelerationSpeedEmpty;
         bool engageEffectNameEmpty, disengageEffectNameEmpty;
         bool fx_exhaustFlame_blueEmpty, fx_exhaustLight_blueEmpty, fx_smokeTrail_lightEmpty, fx_exhaustSparks_flameoutEmpty;
         bool sound_vent_mediumEmpty, sound_rocket_hardEmpty, sound_vent_softEmpty, sound_explosion_lowEmpty;
@@ -69,7 +69,7 @@ namespace GTI
             Utilities Util = new Utilities();
 
             string[] arrRunningEffectName, arrPowerEffectName, arrSpoolEffectName, arrEngineSpoolIdle, arrEngineSpoolTime;
-            string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
+            //string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
             string[] arrEngageEffectName, arrDisengageEffectName;
             string[] arrFx_exhaustFlame_blue, arrFx_exhaustLight_blue, arrFx_smokeTrail_light, arrFx_exhaustSparks_flameout;
             string[] arrSound_vent_medium, arrSound_rocket_hard, arrSound_vent_soft, arrSound_explosion_low;
@@ -85,9 +85,9 @@ namespace GTI
             engineSpoolIdleEmpty            = Util.ArraySplitEvaluate(engineSpoolIdle           , out arrEngineSpoolIdle, ';');
             engineSpoolTimeEmpty            = Util.ArraySplitEvaluate(engineSpoolTime           , out arrEngineSpoolTime, ';');
 
-            useEngineResponseTimeEmpty      = Util.ArraySplitEvaluate(useEngineResponseTime     , out arrUseEngineResponseTime, ';');
-            engineAccelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineAccelerationSpeed   , out arrEngineAccelerationSpeed, ';');
-            engineDecelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineDecelerationSpeed   , out arrEngineDecelerationSpeed, ';');
+            //useEngineResponseTimeEmpty      = Util.ArraySplitEvaluate(useEngineResponseTime     , out arrUseEngineResponseTime, ';');
+            //engineAccelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineAccelerationSpeed   , out arrEngineAccelerationSpeed, ';');
+            //engineDecelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineDecelerationSpeed   , out arrEngineDecelerationSpeed, ';');
 
             fx_exhaustFlame_blueEmpty       = Util.ArraySplitEvaluate(fx_exhaustFlame_blue      , out arrFx_exhaustFlame_blue, ';');
             fx_exhaustLight_blueEmpty       = Util.ArraySplitEvaluate(fx_exhaustLight_blue      , out arrFx_exhaustLight_blue, ';');
@@ -115,9 +115,9 @@ namespace GTI
                 propList[i].engineSpoolIdle = engineSpoolIdleEmpty ? string.Empty : arrEngineSpoolIdle[i];
                 propList[i].engineSpoolTime = engineSpoolTimeEmpty ? string.Empty : arrEngineSpoolTime[i];
 
-                propList[i].useEngineResponseTime = useEngineResponseTimeEmpty ? string.Empty : arrUseEngineResponseTime[i];
-                propList[i].engineAccelerationSpeed = engineAccelerationSpeedEmpty ? string.Empty : arrEngineAccelerationSpeed[i];
-                propList[i].engineDecelerationSpeed = engineDecelerationSpeedEmpty ? string.Empty : arrEngineDecelerationSpeed[i];
+                //propList[i].useEngineResponseTime = useEngineResponseTimeEmpty ? string.Empty : arrUseEngineResponseTime[i];
+                //propList[i].engineAccelerationSpeed = engineAccelerationSpeedEmpty ? string.Empty : arrEngineAccelerationSpeed[i];
+                //propList[i].engineDecelerationSpeed = engineDecelerationSpeedEmpty ? string.Empty : arrEngineDecelerationSpeed[i];
 
                 propList[i].fx_exhaustFlame_blue = fx_exhaustFlame_blueEmpty ? string.Empty : arrFx_exhaustFlame_blue[i];
                 propList[i].fx_exhaustLight_blue = fx_exhaustLight_blueEmpty ? string.Empty : arrFx_exhaustLight_blue[i];
@@ -194,21 +194,21 @@ namespace GTI
                     Debug.Log("EngineEffectNode.SetValue('engineSpoolTime', " + propList[selectedPropellant].engineSpoolTime + ", true);");
                 }
 
-                if (!useEngineResponseTimeEmpty)
-                {
-                    EngineEffectNode.SetValue("useEngineResponseTime", propList[selectedPropellant].useEngineResponseTime, true);
-                    Debug.Log("EngineEffectNode.SetValue('useEngineResponseTime', " + propList[selectedPropellant].useEngineResponseTime + ", true);");
-                }
-                if (!engineAccelerationSpeedEmpty)
-                {
-                    EngineEffectNode.SetValue("engineAccelerationSpeed", propList[selectedPropellant].engineAccelerationSpeed, true);
-                    Debug.Log("EngineEffectNode.SetValue('engineAccelerationSpeed', " + propList[selectedPropellant].engineAccelerationSpeed + ", true);");
-                }
-                if (!engineDecelerationSpeedEmpty)
-                {
-                    EngineEffectNode.SetValue("engineDecelerationSpeed", propList[selectedPropellant].engineDecelerationSpeed, true);
-                    Debug.Log("EngineEffectNode.SetValue('engineDecelerationSpeed', " + propList[selectedPropellant].engineDecelerationSpeed + ", true);");
-                }
+                //if (!useEngineResponseTimeEmpty)
+                //{
+                //    EngineEffectNode.SetValue("useEngineResponseTime", propList[selectedPropellant].useEngineResponseTime, true);
+                //    Debug.Log("EngineEffectNode.SetValue('useEngineResponseTime', " + propList[selectedPropellant].useEngineResponseTime + ", true);");
+                //}
+                //if (!engineAccelerationSpeedEmpty)
+                //{
+                //    EngineEffectNode.SetValue("engineAccelerationSpeed", propList[selectedPropellant].engineAccelerationSpeed, true);
+                //    Debug.Log("EngineEffectNode.SetValue('engineAccelerationSpeed', " + propList[selectedPropellant].engineAccelerationSpeed + ", true);");
+                //}
+                //if (!engineDecelerationSpeedEmpty)
+                //{
+                //    EngineEffectNode.SetValue("engineDecelerationSpeed", propList[selectedPropellant].engineDecelerationSpeed, true);
+                //    Debug.Log("EngineEffectNode.SetValue('engineDecelerationSpeed', " + propList[selectedPropellant].engineDecelerationSpeed + ", true);");
+                //}
 
                 //********** MOVE TO PART LEVEL
 

@@ -43,9 +43,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>S:\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\_Ref_Modules\KSP_1.2\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-UnityScript">
@@ -56,14 +55,9 @@
       <HintPath>..\GTI_Utilities\bin\Release\GTI_Utilities.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KSPUtil">
-      <HintPath>S:\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\KSPUtil.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>S:\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\_Ref_Modules\KSP_1.2\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -73,6 +67,7 @@
     <Compile Include="Core\EngineClassSwitch_2.cs" />
     <Compile Include="Core\EngineClassSwitch_Effects.cs" />
     <None Include="Other\DockingAlignmentIndicator.cs" />
+    <Compile Include="ISRU\ISRUSwitch.cs" />
     <Compile Include="Scenarios\GTES_ScenarioModule.cs" />
     <Compile Include="UI_Examples\TEST_MODULE.cs" />
     <Compile Include="UI_Examples\UI_CHOOSEOPTION.cs" />
@@ -91,9 +86,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program SSD\KSP 1.1.2_Cur\GameData\GTIndusties\Plugins\$(TargetName).dll"
-copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTIndusties\Plugins\$(TargetName).dll"
-copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\1.1.2_IFS_ES_Dev\GameData\GTIndusties\Plugins\$(TargetName).dll"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program SSD\KSP 1.2.1_Cur\GameData\GTIndustries\Plugins\$(TargetName).dll"
+copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTIndustries\Plugins\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

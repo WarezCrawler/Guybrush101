@@ -98,6 +98,10 @@ namespace GTI
                     moduleEngine.Actions["ShutdownAction"].active = false;
                     moduleEngine.Actions["ActivateAction"].active = false;
 
+                    //New 21/11-2016
+                    moduleEngine.manuallyOverridden = false;
+                    moduleEngine.isEnabled = false;
+
                     //if (moduleEngine.engineID == engineID)              // || string.IsNullOrEmpty(engineID) || engineID.Trim().Length == 0)
                     //{
                     //    //Debug.Log(moduleEngine.name + " added to list of engines using EngineSwitch");
@@ -140,14 +144,14 @@ namespace GTI
 
 
                 /*HERE GOES ANY CHECKS AND REMOVALS BASED ON TECHLEVEL*/
-                CheckTech(ref arrEngineAvailable, Util);
+                //CheckTech(ref arrEngineAvailable, Util);
                 
                 //ResearchAndDevelopment.GetTechnologyState(propList[i].requiredTech) == RDTech.State.Unavailable
-                for (int i = engineList.Count - 1; i >= 0; i--)
-                {
-                    Debug.Log("engineList[i].engineAvailable: " + engineList[i].engineAvailable);
-                    if (!engineList[i].engineAvailable) { engineList.RemoveAt(i); }
-                }
+                //for (int i = engineList.Count - 1; i >= 0; i--)
+                //{
+                //    Debug.Log("engineList[i].engineAvailable: " + engineList[i].engineAvailable);
+                //    if (!engineList[i].engineAvailable) { engineList.RemoveAt(i); }
+                //}
                 
                 //If there is an engine, and none is currently selected, then set the active one to be the first one
                 if (ModuleEngines.Count > 0)
@@ -180,7 +184,9 @@ namespace GTI
 
             currentEngineState = currentModuleEngine.getIgnitionState;
 
+            FindSelectedPropulsion();
             writeScreenMessage();
+
             foreach (var moduleEngine in ModuleEngines)
             {
                 #region NOTES
@@ -197,7 +203,16 @@ namespace GTI
                 {
                     currentModuleEngine = moduleEngine;
                     //Reactivate engine if it was active
-                    if (currentEngineState) { moduleEngine.Activate(); }
+                    if (currentEngineState)
+                    {
+                        moduleEngine.Activate();
+                    }
+                    moduleEngine.manuallyOverridden = true;
+                    moduleEngine.isEnabled = true;
+                    //moduleEngine.FXReset();
+                    //moduleEngine.ActivatePowerFX();
+                    //moduleEngine.ActivateRunningFX();
+                    //moduleEngine.InitializeFX();
 
                     #region Update GUI
                     //Activate Gui Events
@@ -215,6 +230,12 @@ namespace GTI
                 else
                 {
                     moduleEngine.Shutdown();
+                    moduleEngine.manuallyOverridden = false;
+                    moduleEngine.isEnabled = false;
+                    //moduleEngine.FXReset();
+                    //moduleEngine.DeactivatePowerFX();
+                    //moduleEngine.DeactivateRunningFX();
+                    //moduleEngine.DeactivateLoopingFX();
                     #region Update GUI
                     //Deactivate Gui Events
                     moduleEngine.Events["Activate"].guiActive = false;

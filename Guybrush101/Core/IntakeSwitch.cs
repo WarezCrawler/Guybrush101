@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+//using KSPAssets;
 using UnityEngine;
 using GTI.GenericFunctions;
 
@@ -130,6 +131,7 @@ namespace GTI
             ConfigNode newIntakeNode = new ConfigNode();
             Part currentPart = this.part;
             int resIniAmount = 0;
+            bool removethis = false;
 
 
             //foreach (PartModule moduleIntake in ModuleIntakes)
@@ -154,17 +156,40 @@ namespace GTI
 
                 //Load changes (nodeobject) into the moduleIntake
                 ModuleIntakes[i].Load(IntakeNode);
-
+                
                 //Debug.Log("Cleanout old resources");
-
+                
                 #region Intake Resource
                 //Clean out any previous resources in the intake
-                currentPart.Resources.list.Clear();
-                PartResource[] partResources = currentPart.GetComponents<PartResource>();
-                foreach (PartResource resource in partResources)
+                currentPart.Resources.Clear();
+                //PartResource[] partResources = currentPart.GetComponents<PartResource>();
+                //foreach (PartResource resource in partResources)
+                //List<PartResource> resourcesDeleteList = new List<PartResource>();
+
+                //currentPart.symmetryCounterparts;
+                removethis = false;
+                foreach (PartResource resource in currentPart.Resources)
                 {
+                    //Check if the resource is part of the switching resources, so that we do not destroy resources which are not intended for this switching
+                    foreach (string inIntakeResource in arrIntakeNames)
+                    {
+                        if (inIntakeResource == resource.resourceName)
+                        {
+                            removethis = true;
+                            break;
+                        }
+                    }
+
                     //currentPart.Resources.list.Remove(resource);
-                    DestroyImmediate(resource);
+                    //if (removethis == true) { DestroyImmediate(resource., false); }              //*********COMMENTED OUT BECAUSE OF ERROR
+                    //if (removethis == true) { Destroy(resource); }                              //*********COMMENTED OUT BECAUSE OF ERROR
+                    //if (removethis == true) { PartResourceList[0].Remove(resource); }
+                    //PartResourceList[0].;
+                    //resource.;
+                    //bool a;
+                    //a = PartResourceList.Remove(resource);
+                    if (removethis == true) { currentPart.Resources.Remove(resource); }
+                    removethis = false;
                 }
 
                 resIniAmount = HighLogic.LoadedSceneIsFlight ? 0 : int.Parse(resMaxAmount);
@@ -178,7 +203,7 @@ namespace GTI
                 currentPart.AddResource(IntakeResource);
 
                 //Update the part resources
-                currentPart.Resources.UpdateList();
+                //currentPart.Resources.UpdateList();
                 GUIResourceName = ModuleIntakes[0].resourceName;
                 #endregion
 

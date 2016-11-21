@@ -92,7 +92,7 @@ namespace GTI
         {
             //ScreenMessages.PostScreenMessage("Changing Propultion to: " + engineList[selectedPropulsion].engineID, 1.5f, ScreenMessageStyle.UPPER_CENTER);
             writeScreenMessage(
-                Message: "Changing Propultion to: " + engineList[selectedPropulsion].GUIengineID,
+                Message: "Changing Propulsion to: " + engineList[selectedPropulsion].GUIengineID,
                 position: ScreenMessageStyle.UPPER_CENTER
                 );
         }
