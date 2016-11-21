@@ -15,7 +15,7 @@ Features:
 - Curves: atmosphereCurve, velCurve, atmCurve
 
 
-CFG Example:
+CFG Example: (OUTDATED)
 	
 	MODULE
 	{
