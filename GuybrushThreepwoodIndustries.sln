@@ -10,9 +10,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guybrush101", "Guybrush101\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_Utilities", "GTI_Utilities\GTI_Utilities.csproj", "{204CE34A-D836-4C53-A3EC-5D74DB3F8CB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_MultiModeEngine", "ClassLibrary1\GTI_MultiModeEngine.csproj", "{4E46052C-7170-4F30-BA1A-AA3DD264BF2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_MultiModeEngine", "GTI_MultiModeEngine\GTI_MultiModeEngine.csproj", "{4E46052C-7170-4F30-BA1A-AA3DD264BF2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_MultiModeIntake", "ClassLibrary2\GTI_MultiModeIntake.csproj", "{E3D0D62F-3F6A-465D-BF3E-DEB0A4280601}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_MultiModeIntake", "GTI_MultiModeIntake\GTI_MultiModeIntake.csproj", "{E3D0D62F-3F6A-465D-BF3E-DEB0A4280601}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,15 +40,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(AutomaticVersions) = postSolution
-		AssemblyInfoFilePath = Properties\AssemblyInfo.cs
-		PrimaryVersionType = AssemblyInfoVersionAttribute
-		UpdateAssemblyVersion = True
-		UpdateAssemblyFileVersion = True
-		UpdateAssemblyInfoVersion = True
-		AssemblyVersionSettings = None.None.Increment.None
-		AssemblyFileVersionSettings = None.None.Increment.None
-		AssemblyInfoVersionSettings = None.None.Increment.None
 	EndGlobalSection
 EndGlobal
