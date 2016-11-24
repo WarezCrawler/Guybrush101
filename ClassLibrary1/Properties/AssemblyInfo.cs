@@ -1,16 +1,15 @@
-﻿using System.Resources;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GTI EngineSwitch")]
+[assembly: AssemblyTitle("GTI_MultiModeEngine")]
 [assembly: AssemblyDescription("KSP Plugin")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KSP GTI EngineSwitch")]
+[assembly: AssemblyProduct("KSP GTI MultiModeEngine")]
 [assembly: AssemblyCopyright("Copyright WarezCrawler© 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("04d384f2-34d7-4c53-acb4-4e8ee099c93c")]
+[assembly: Guid("4e46052c-7170-4f30-ba1a-aa3dd264bf2e")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,7 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.9.386")]
-[assembly: AssemblyFileVersion("0.9.386")]
-[assembly: NeutralResourcesLanguage("en-GB")]
-
+[assembly: AssemblyVersion("1.0.16.0")]
+[assembly: AssemblyFileVersion("1.0.16.0")]
