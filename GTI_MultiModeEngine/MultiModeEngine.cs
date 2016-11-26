@@ -200,7 +200,7 @@ namespace GTI
 
             currentEngineState = currentModuleEngine.getIgnitionState;
 
-            //FindSelectedPropulsion();
+            FindSelectedPropulsion();
             writeScreenMessage();
 
             foreach (var moduleEngine in ModuleEngines)

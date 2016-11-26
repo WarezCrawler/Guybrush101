@@ -91,6 +91,10 @@ namespace GTI
         private void writeScreenMessage()
         {
             //ScreenMessages.PostScreenMessage("Changing Propultion to: " + engineList[selectedPropulsion].engineID, 1.5f, ScreenMessageStyle.UPPER_CENTER);
+            Debug.Log("GTI_MultiModeEngine: writeScreenMessage() - " +
+                "\nselectedPropulsion: " + selectedPropulsion +
+                "\nengineList[selectedPropulsion].GUIengineID: + engineList[selectedPropulsion].GUIengineID"
+                );
             writeScreenMessage(
                 Message: "Changing Propulsion to: " + engineList[selectedPropulsion].GUIengineID,
                 position: ScreenMessageStyle.UPPER_CENTER
