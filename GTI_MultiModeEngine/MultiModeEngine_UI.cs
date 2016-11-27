@@ -198,12 +198,6 @@ namespace GTI
             //Debug.Log("Action ActionPropulsion_" + inActionSelect + " (after): " + ChooseOption);
         }
         #endregion
-
-
-
-        //moduleEngine.Actions["OnAction"].active = false;
-        //moduleEngine.Actions["ShutdownAction"].active = false;
-        //moduleEngine.Actions["ActivateAction"].active = false;
     }
 }
 
