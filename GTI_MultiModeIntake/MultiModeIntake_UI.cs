@@ -46,13 +46,13 @@ namespace GTI
             //Create array Options that are simple ref's to the propellant list
             Options = new string[arrIntakeNames.Length];
             OptionsDisplay = new string[arrIntakeNames.Length];
-            Debug.Log("MultiModeIntake: Populate chooseField Options");
+            //Debug.Log("MultiModeIntake: Populate chooseField Options");
             for (int i = 0; i < arrIntakeNames.Length; i++)
             {
                 Options[i] = i.ToString();
                 OptionsDisplay[i] = arrIntakeNames[i];
             }
-            Debug.Log("MultiModeIntake: Set chooseField to inactive");
+            //Debug.Log("MultiModeIntake: Set chooseField to inactive");
             //If there is only one intake available, then hide the selector menu --> It yields null ref errors if used in flight!!!
             if (arrIntakeNames.Length < 2)
             {
@@ -71,7 +71,7 @@ namespace GTI
         //onFieldChanged action
         private void selectIntake(BaseField field, object oldValueObj)
         {
-            Debug.Log("MultiModeIntake: selectIntake");
+            //Debug.Log("MultiModeIntake: selectIntake");
             selectedIntake = int.Parse(ChooseOption);
             //updateIntake(true);
             updateIntake(true);
@@ -86,7 +86,7 @@ namespace GTI
         public void nextIntakeAction(KSPActionParam param)
         {
             //nextIntakeEvent();
-            Debug.Log("MultiModeIntake: nextIntakeAction");
+            //Debug.Log("MultiModeIntake: nextIntakeAction");
             selectedIntake++;
             if (selectedIntake > arrIntakeNames.GetUpperBound(0))
             {
@@ -100,7 +100,7 @@ namespace GTI
         [KSPAction("Previous Intake")]
         public void previousIntakeAction(KSPActionParam param)
         {
-            Debug.Log("MultiModeIntake: previousIntakeAction");
+            //Debug.Log("MultiModeIntake: previousIntakeAction");
             //previousIntakeEvent();
             selectedIntake--;
             if (selectedIntake < 0)

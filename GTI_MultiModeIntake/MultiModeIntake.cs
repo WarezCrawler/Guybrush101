@@ -122,7 +122,7 @@ namespace GTI
         {
             if (!_settingsInitialized)
             {
-                Debug.Log("MultiModeIntake: Loading Settings (2)");
+                //Debug.Log("MultiModeIntake: Loading Settings (2)");
                 Utilities Util = new Utilities();
                 ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
 
@@ -150,13 +150,13 @@ namespace GTI
 
 
                 //Debug.Log("debugMode before: " + debugMode);
-                Debug.Log("MultiModeIntake: Debugging?");
+                //Debug.Log("MultiModeIntake: Debugging?");
                 if (bool.Parse(debugMode)) { Events["DEBUG_INTAKESWITCH"].guiActive = true; Events["DEBUG_INTAKESWITCH"].guiActiveEditor = true; Events["DEBUG_INTAKESWITCH"].active = true; Debug.Log("Intake Switch debugMode activated"); }
                 else { Events["DEBUG_INTAKESWITCH"].guiActive = false; Events["DEBUG_INTAKESWITCH"].guiActiveEditor = false; Events["DEBUG_INTAKESWITCH"].active = false; /*Debug.Log("debugMode deactivated");*/ }
 
                 //set settings to initialized
                 _settingsInitialized = true;
-                Debug.Log("MultiModeIntake: _settingsInitialized");
+                //Debug.Log("MultiModeIntake: _settingsInitialized");
             }
         }
         #endregion
@@ -172,10 +172,10 @@ namespace GTI
 
             //foreach (PartModule moduleIntake in ModuleIntakes)
             //Apparently the foreach does not work properly with Intakes. Don't know why.
-            Debug.Log("MultiModeIntake: Before ModuleIntakes count");
-            Debug.Log("MultiModeIntake: ModuleIntakes count: " + ModuleIntakes.Count);
+            //Debug.Log("MultiModeIntake: Before ModuleIntakes count");
+            //Debug.Log("MultiModeIntake: ModuleIntakes count: " + ModuleIntakes.Count);
 
-            Debug.Log("MultiModeIntake: Cycle ModuleIntakes");
+            //Debug.Log("MultiModeIntake: Cycle ModuleIntakes");
             //for (int i = 0; i < ModuleIntakes.Count; i++)
             for (int i = ModuleIntakes.Count - 1; i == 0; i--)
             {
@@ -187,7 +187,7 @@ namespace GTI
                     //Define the node object
                     ConfigNode IntakeNode = newIntakeNode;          //.GetNode("ModuleResourceIntake");
 
-                    Debug.Log("MultiModeIntake: Confignode defined " + i);
+                    //Debug.Log("MultiModeIntake: Confignode defined " + i);
                     //Debug.Log("checkForOxygen: " + arrIntakeNames[selectedIntake]);
 
                     //Set new setting values
@@ -197,7 +197,7 @@ namespace GTI
                     //Debug.Log("Confignode value added");
 
                     //Load changes (nodeobject) into the moduleIntake
-                    Debug.Log("MultiModeIntake: Load IntakeNode " + i);
+                    //Debug.Log("MultiModeIntake: Load IntakeNode " + i);
                     ModuleIntakes[i].Load(IntakeNode);
                 }
             }
@@ -257,7 +257,7 @@ namespace GTI
             #endregion
 
             //added check for called by player, since the ResourceDisplay update fails when called from the OnStart function.
-            Debug.Log("MultiModeIntake: ResourceDisplay update");
+            //Debug.Log("MultiModeIntake: ResourceDisplay update");
             try
             { if (HighLogic.LoadedSceneIsFlight && calledByPlayer) { KSP.UI.Screens.ResourceDisplay.Instance.Refresh(); } }
             catch { Debug.LogError("Update of resource panel failed" + "\ncallingFunction: " + callingFunction + "\ncalledByPlayer: " + calledByPlayer); }

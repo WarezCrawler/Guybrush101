@@ -53,7 +53,7 @@ namespace GTI
                 OptionsDisplay[i] = GUIengineIDEmpty ? engineList[i].engineID : engineList[i].GUIengineID;
             }
             //If there is only one engine available, then hide the selector menu --> It yields null ref errors if used in flight!!!
-            Debug.Log("engineList.Count: " + engineList.Count);
+            //Debug.Log("engineList.Count: " + engineList.Count);
             if (engineList.Count < 2)
             {
                 chooseField.guiActive = false;
@@ -69,7 +69,7 @@ namespace GTI
             for (int i = 1; i <= numberOfSpecificActions; i++)
             {
                 if (engineList.Count < i) { this.Actions["ActionPropulsion_" + i].active = false; }
-                if (!(engineList.Count < i)) { this.Actions["ActionPropulsion_" + i].guiName = GUIengineIDEmpty ? "Set " + engineList[i - 1].engineID : "Set " + engineList[i - 1].GUIengineID; }
+                else { this.Actions["ActionPropulsion_" + i].guiName = GUIengineIDEmpty ? "Set " + engineList[i - 1].engineID : "Set " + engineList[i - 1].GUIengineID; }
             }
 
         }
@@ -91,10 +91,10 @@ namespace GTI
         private void writeScreenMessage()
         {
             //ScreenMessages.PostScreenMessage("Changing Propultion to: " + engineList[selectedPropulsion].engineID, 1.5f, ScreenMessageStyle.UPPER_CENTER);
-            Debug.Log("GTI_MultiModeEngine: writeScreenMessage() - " +
+            /*Debug.Log("GTI_MultiModeEngine: writeScreenMessage() - " +
                 "\nselectedPropulsion: " + selectedPropulsion +
                 "\nengineList[selectedPropulsion].GUIengineID: + engineList[selectedPropulsion].GUIengineID"
-                );
+                );*/
             writeScreenMessage(
                 Message: "Changing Propulsion to: " + engineList[selectedPropulsion].GUIengineID,
                 position: ScreenMessageStyle.UPPER_CENTER
@@ -113,7 +113,7 @@ namespace GTI
             else { currentModuleEngine.Activate(); }
 
             currentEngineState = currentModuleEngine.getIgnitionState;
-            Debug.Log("Action ActionToggle: " + ChooseOption + " new state is: " + currentEngineState);
+            //Debug.Log("Action ActionToggle: " + ChooseOption + " new state is: " + currentEngineState);
         }
         [KSPAction("Activate Engine")]
         public void ActionActivate(KSPActionParam param)
@@ -121,7 +121,7 @@ namespace GTI
             if (!currentModuleEngine.getIgnitionState) { currentModuleEngine.Activate(); }
 
             currentEngineState = currentModuleEngine.getIgnitionState;
-            Debug.Log("Action currentModuleEngine.Activate(): " + ChooseOption + " new state is: " + currentEngineState);
+            //Debug.Log("Action currentModuleEngine.Activate(): " + ChooseOption + " new state is: " + currentEngineState);
         }
         [KSPAction("Shutdown Engine")]
         public void ActionShutdownAction(KSPActionParam param)
@@ -129,7 +129,7 @@ namespace GTI
             if (currentModuleEngine.getIgnitionState) { currentModuleEngine.Shutdown(); }
 
             currentEngineState = currentModuleEngine.getIgnitionState;
-            Debug.Log("Action currentModuleEngine.Shutdown(): " + ChooseOption + " new state is: " + currentEngineState);
+            //Debug.Log("Action currentModuleEngine.Shutdown(): " + ChooseOption + " new state is: " + currentEngineState);
         }
         #endregion
 

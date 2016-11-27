@@ -60,7 +60,7 @@ namespace GTI
         }
         private void updateEngineModuleFromOnStart()
         {
-            Debug.Log("GTI_MultiModeEngine: OnStart() --> updatePropulsion()");
+            //Debug.Log("GTI_MultiModeEngine: OnStart() --> updatePropulsion()");
             updatePropulsion();
         }
         /// <summary>
@@ -162,17 +162,17 @@ namespace GTI
                 //If there is an engine, and none is currently selected, then set the active one to be the first one
                 if (ModuleEngines.Count > 0)
                 {
-                    Debug.Log("GTI_MultiModeEngine: initializeSettings() --> Before Update ChooseOption/selectedPropulsion" +
+                    /*Debug.Log("GTI_MultiModeEngine: initializeSettings() --> Before Update ChooseOption/selectedPropulsion" +
                         "\nChooseOption: " + ChooseOption +
                         "\nselectedPropulsion: " + selectedPropulsion
-                        );
+                        );*/
 
                     selPropFromChooseOption();
 
-                    Debug.Log("GTI_MultiModeEngine: initializeSettings() --> After Update ChooseOption/selectedPropulsion" +
+                    /*Debug.Log("GTI_MultiModeEngine: initializeSettings() --> After Update ChooseOption/selectedPropulsion" +
                         "\nChooseOption: " + ChooseOption +
                         "\nselectedPropulsion: " + selectedPropulsion
-                        );
+                        );*/
                 }
                 //find the current engine and store it in "currentModuleEngine"
                 foreach (var moduleEngine in ModuleEngines)
@@ -196,7 +196,7 @@ namespace GTI
         private void updatePropulsion()
         {
             initializeSettings();
-            Debug.Log("GTI_MultiModeEngine: updatePropulsion() --> ChooseOption = " + ChooseOption);
+            //Debug.Log("GTI_MultiModeEngine: updatePropulsion() --> ChooseOption = " + ChooseOption);
 
             currentEngineState = currentModuleEngine.getIgnitionState;
 
@@ -217,12 +217,12 @@ namespace GTI
 
                 if (moduleEngine.engineID == ChooseOption)
                 {
-                    Debug.Log("GTI_MultiModeEngine: Set currentModuleEngine " + moduleEngine.engineID);
+                    //Debug.Log("GTI_MultiModeEngine: Set currentModuleEngine " + moduleEngine.engineID);
                     currentModuleEngine = moduleEngine;
                     //Reactivate engine if it was active
                     if (currentEngineState)
                     {
-                        Debug.Log("GTI_MultiModeEngine: Activate() " + moduleEngine.engineID);
+                        //Debug.Log("GTI_MultiModeEngine: Activate() " + moduleEngine.engineID);
                         moduleEngine.Activate();
                     }
                     moduleEngine.manuallyOverridden = false;
@@ -249,7 +249,7 @@ namespace GTI
                 }
                 else
                 {
-                    Debug.Log("GTI_MultiModeEngine: Shutdown() " + moduleEngine.engineID);
+                    //Debug.Log("GTI_MultiModeEngine: Shutdown() " + moduleEngine.engineID);
                     moduleEngine.Shutdown();
                     moduleEngine.manuallyOverridden = true;
                     moduleEngine.isEnabled = false;
