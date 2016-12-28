@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
-using GTI.GenericFunctions;
 
 namespace GTI
 {
-    partial class GTI_MultiModeEngineFX : PartModule
+    partial class GTI_MultiModeConverter : PartModule
     {
         #region VAB Information
         public override string GetInfo()
@@ -25,11 +23,11 @@ namespace GTI
                 //    strOutInfo.AppendLine(item.Propellants.Replace(",",", "));
                 //}
                 //strOutInfo.AppendLine(propellantNames.Replace(";", "; "));
-                return "GTI Multi Mode Engine";
+                return "GTI Multi Mode Converter";
             }
             catch (Exception e)
             {
-                Debug.LogError("GTI_MultiModeEngine GetInfo Error " + e.Message);
+                Debug.LogError("GTI_MultiModeConverter GetInfo Error " + e.Message);
                 throw;
             }
         }

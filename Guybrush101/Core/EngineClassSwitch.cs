@@ -533,6 +533,7 @@ namespace GTI
                 //Set max Thrust and the corresponding fuelflow
                 if (!MaxThrustEmpty)        { moduleEngine.maxThrust        = propList[selectedPropellant].maxThrust; }
 
+                //maxFuelFlow = engine.maxThrust / (engine.atmosphereCurve.Evaluate(0f) * engine.g)
                 moduleEngine.maxFuelFlow = EngineCalc.calcFuelFlow(
                     Thrust: moduleEngine.maxThrust,                             //Thrust: propList[selectedPropellant].maxThrust, 
                     Density: propList[selectedPropellant].propDensity, 

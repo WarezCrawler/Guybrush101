@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using GTI.GenericFunctions;
-
+﻿
 namespace GTI
 {
-    partial class GTI_MultiModeEngine : PartModule
+    partial class GTI_MultiModeEngineFX : PartModule
     {
         #region KSPFields and supporting settings
         //GUI fields for information

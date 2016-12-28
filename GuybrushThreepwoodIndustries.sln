@@ -47,4 +47,14 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(AutomaticVersions) = postSolution
+		AssemblyInfoFilePath = Properties\AssemblyInfo.cs
+		PrimaryVersionType = AssemblyInfoVersionAttribute
+		UpdateAssemblyVersion = True
+		UpdateAssemblyFileVersion = True
+		UpdateAssemblyInfoVersion = True
+		AssemblyVersionSettings = None.None.Increment.None
+		AssemblyFileVersionSettings = None.None.Increment.None
+		AssemblyInfoVersionSettings = None.None.Increment.None
+	EndGlobalSection
 EndGlobal

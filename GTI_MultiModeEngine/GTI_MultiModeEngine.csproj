@@ -54,13 +54,13 @@
   <ItemGroup>
     <Compile Include="VABInfo.cs" />
     <Compile Include="DEBUG.cs" />
-    <Compile Include="MultiModeEngine_UI.cs" />
-    <Compile Include="MultiModeEngine.cs" />
+    <Compile Include="MultiModeEngineFX_UI.cs" />
+    <Compile Include="MultiModeEngineFX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program SSD\KSP 1.2.1_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program SSD\KSP 1.2.2_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
 copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTI_Utilities\Plugins\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

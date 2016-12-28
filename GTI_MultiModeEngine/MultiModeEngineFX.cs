@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using GTI.GenericFunctions;
 
 namespace GTI
 {
-    partial class GTI_MultiModeEngine : PartModule
+    partial class GTI_MultiModeEngineFX : PartModule
     {
         [KSPField]
         public string engineID = string.Empty;

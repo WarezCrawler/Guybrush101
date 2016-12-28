@@ -6,7 +6,7 @@ using GTI.GenericFunctions;
 
 namespace GTI
 {
-    partial class GTI_MultiModeEngine : PartModule
+    partial class GTI_MultiModeEngineFX : PartModule
     {
 
         #region --------------------------------Debugging---------------------------------------

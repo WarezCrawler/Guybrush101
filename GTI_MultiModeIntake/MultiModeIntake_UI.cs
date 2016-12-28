@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using GTI.GenericFunctions;
-
-namespace GTI
+﻿namespace GTI
 {
     partial class GTI_MultiModeIntake : PartModule
     {

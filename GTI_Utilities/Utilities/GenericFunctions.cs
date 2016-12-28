@@ -40,6 +40,7 @@ namespace GTI.GenericFunctions
             return _fuelRate;
         }
 
+        //engine.maxThrust / (engine.atmosphereCurve.Evaluate(0f) * engine.g)
         public float calcFuelFlow(float Thrust, float Density, float ISP)   //fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
         {
             _fuelFlow = Thrust / (_gravity * ISP);                              //fuelFlow = Thrust / (Gravity * ISP)
