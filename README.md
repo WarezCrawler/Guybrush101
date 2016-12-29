@@ -1,7 +1,11 @@
-# KSP plugin Engine Switcher
+# GTIndustries
 
-This is a plugin for Kerbal Space Program version 1.1.
-The purpose is to introduce an alternative way to switch engine configuration (propellants and other properties).
+This is a plugin for Kerbal Space Program version 1.2.2.
+
+Follow high level feature exist
+- Multi Mode Engines
+- Multi Mode Intakes
+- Multi Mode Converters
 
 Features:
 - Multiengine switch
