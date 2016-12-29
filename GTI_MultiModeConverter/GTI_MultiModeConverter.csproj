@@ -41,13 +41,16 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\_Ref_Modules\KSP_1.2\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="GTI_Utilities">
       <HintPath>..\GTI_Utilities\bin\Release\GTI_Utilities.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\_Ref_Modules\KSP_1.2\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

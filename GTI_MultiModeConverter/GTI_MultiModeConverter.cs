@@ -12,10 +12,12 @@ namespace GTI
         private string[] converterNames;
 
         private bool _settingsInitialized = false;
+        private bool _initializing = true;
         private float _startDelay = 1.5f;
 
         public override void OnStart(PartModule.StartState state)
         {
+            _initializing = true;
             initializeSettings();
             initializeGUI();
             //updateConverter();
@@ -57,7 +59,7 @@ namespace GTI
 
             //initializeSettings();
             FindSelectedConverter();
-            writeScreenMessage();
+            if (_initializing == false) { writeScreenMessage(); } else { _initializing = false; }
 
             for (int i = 0; i < MRC.Count; i++)
             {
@@ -107,7 +109,6 @@ namespace GTI
                     //Stop the converter
                     MRC[i].StopResourceConverter();
                 }
-
 
                 //MRC[i].enabled = false;
                 //MRC[i].EnableModule();
