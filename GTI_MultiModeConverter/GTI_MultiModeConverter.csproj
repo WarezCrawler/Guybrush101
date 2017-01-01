@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DEBUG.cs" />
     <Compile Include="GTI_MultiModeConverter.cs" />
     <Compile Include="GTI_MultiModeConverter_UI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -142,6 +142,29 @@ namespace GTI
                 //        "\nengineField: " + engineField
                 //        );
                 //}
+
+
+
+
+                ////Curve experiment
+                //try
+                //{
+                //    Debug.Log("ThrottleISPCurve[0]: " + ThrottleISPCurve[0]);
+                //}
+                //catch
+                //{
+                //    Debug.LogError("ThrottleISPCurve[0] resulted in a error");
+                //}
+                //try
+                //{
+                //    Debug.Log("ThrottleISPCurve: " + ThrottleISPCurve);
+                //}
+                //catch
+                //{
+                //    Debug.LogError("ThrottleISPCurve resulted in a error");
+                //}
+
+
             }
 
             /*

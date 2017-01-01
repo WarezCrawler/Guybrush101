@@ -10,6 +10,9 @@ namespace GTI
     {
         #region KSPFields and supporting settings
 
+        /// <summary>
+        /// Currently selected converter in integer format for use in the arrays
+        /// </summary>
         public int selectedConverter = 0;
 
         //[KSPField(isPersistant = true)]
@@ -23,12 +26,19 @@ namespace GTI
         #endregion
 
         #region User_Interface
+
+        [KSPField]
+        public string messagePosition = string.Empty;
+
         [KSPField(guiActive = true, guiActiveEditor = true, isPersistant = true, guiName = "MultiModeConverter")]
         [UI_ChooseOption(affectSymCounterparts = UI_Scene.Editor, scene = UI_Scene.All, suppressEditorShipModified = false, options = new[] { "None" }, display = new[] { "None" })]
         public string ChooseOption = string.Empty;
 
         #endregion
 
+        /// <summary>
+        /// Initializes setting for the UI of the multimodeconverter
+        /// </summary>
         private void initializeGUI()
         {
             //Debug.Log("GTI_MultiModeConverter: initializeGUI() --> start");
@@ -77,11 +87,19 @@ namespace GTI
             Debug.Log("GTI_MultiModeConverter: initializeGUI() --> end");
         }
 
+        /// <summary>
+        /// Updates the selection the user uses the right click UI
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="oldValueObj"></param>
         private void selectConverter(BaseField field, object oldValueObj)
         {
             Debug.Log("GTI_MultiModeConverter: User switches converter");
             updateConverter();
         }
+        /// <summary>
+        /// Derives the selected converter as integer from the ChooseOption value
+        /// </summary>
         private void FindSelectedConverter()
         {
             for (int i = 0; i < converterNames.Length; i++)
@@ -108,9 +126,27 @@ namespace GTI
 
             Debug.Log("\nGTI_MultiModeConverter:\n" + strOutInfo.ToString());
 
+            //Default position and switch to user defined position
+            ScreenMessageStyle position = ScreenMessageStyle.UPPER_CENTER;
+            switch (messagePosition)
+            {
+                case "UPPER_CENTER":
+                    position = ScreenMessageStyle.UPPER_CENTER;
+                    break;
+                case "UPPER_RIGHT":
+                    position = ScreenMessageStyle.UPPER_RIGHT;
+                    break;
+                case "UPPER_LEFT":
+                    position = ScreenMessageStyle.UPPER_LEFT;
+                    break;
+                case "LOWER_CENTER":
+                    position = ScreenMessageStyle.LOWER_CENTER;
+                    break;
+            }
+
             writeScreenMessage(
                 Message: strOutInfo.ToString(),
-                position: ScreenMessageStyle.UPPER_CENTER,
+                position: position,
                 duration: 3f
                 );
         }
@@ -120,6 +156,18 @@ namespace GTI
         }
 
         #region Actions converter configuration selections
+        [KSPAction("Toggle Resource Converter")]
+        public void ActionToggleConverter(KSPActionParam param)
+        {
+            for (int i = 0; i < MRC.Count; i++)
+            {
+                if (MRC[i].isEnabled)
+                {
+                    MRC[i].ToggleResourceConverterAction(param);
+                }
+            }
+        }
+
         [KSPAction("Next Resource Converter")]
         public void ActionNextConverter(KSPActionParam param)
         {
@@ -147,7 +195,7 @@ namespace GTI
             {
                 //Debug.Log("GTI_MultiModeConverter: create ActionConverter_" + i);
                 if (converterNames.Length < i)
-                { this.Actions["ActionConverter_" + i].active = false; break; }
+                { this.Actions["ActionConverter_" + i].active = false; }
                 else
                 { this.Actions["ActionConverter_" + i].guiName = "Activate: " + converterNames[i - 1]; }
             }

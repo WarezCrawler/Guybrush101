@@ -6,6 +6,8 @@ namespace GTI
 {
     partial class GTI_MultiModeEngineFX : PartModule
     {
+        private string _thismoduleName = "GTI_MultiModeEngineFX";
+
         [KSPField]
         public string engineID = string.Empty;
         [KSPField]
@@ -29,13 +31,20 @@ namespace GTI
         private bool currentEngineState;
 
         private List<CustomTypes.EngineSwitchList> engineList = new List<CustomTypes.EngineSwitchList>();
-        #endregion
 
+        //[KSPField(isPersistant = false)]        //Does not seem to work for loading settings directly
+        //public FloatCurve ThrottleISPCurve = new FloatCurve();
+        //[KSPField]
+        //public bool useThrottleISPCurve = false;
+
+        //private FloatCurve ThrottleISPFloatCurve;
+
+        #endregion
 
         #region Other class level declarations
         private bool _settingsInitialized = false;
         //[KSPField]
-        public string _startDelay = "2";
+        //public string _startDelay = "2";
         [KSPField]
         public string debugMode = "false";
         #endregion
@@ -49,7 +58,202 @@ namespace GTI
             //Show Debug GUI?
             if (bool.Parse(debugMode)) { Events["DEBUG_ENGINESSWITCH"].guiActive = true; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = true; Events["DEBUG_ENGINESSWITCH"].active = true; Debug.Log("GTI_MultiModeEngine debugMode activated"); }
             else { Events["DEBUG_ENGINESSWITCH"].guiActive = false; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = false; Events["DEBUG_ENGINESSWITCH"].active = false; }
+
+
         }
+        /*public override void OnStartFinished(StartState state)
+        {
+
+
+            
+            //ConfigNode myNode = new ConfigNode();
+            //ConfigNode.LoadObjectFromConfig(this, myNode);
+            //Debug.Log("LoadObjectFromConfig --> myNode.ToString()\n" + myNode.ToString());
+
+            //ThrottleISPCurve.ToString();
+
+            //ConfigNode[] myNodes;
+            //ConfigNode myNode = new ConfigNode();
+            ////string[] NodeValues;
+
+            //Debug.Log("GTI_MultiModeEngineFX - ConfigNode Debug");
+
+            //ConfigNode.LoadObjectFromConfig(this, myNode);
+            //Debug.Log("LoadObjectFromConfig --> myNode.ToString()\n" + myNode.ToString());
+
+
+            //myNodes = GameDatabase.Instance.GetConfigNodes("PART");
+
+            //Debug.Log("GameDatabase.Instance.GetConfigs('PART').ToString()");
+            //Debug.Log(GameDatabase.Instance.GetConfigs("PART").ToString());
+
+            //Debug.Log("GameDatabase.Instance.GetConfigNode('root/').ToString()");
+            //Debug.Log(GameDatabase.Instance.GetConfigNode("root/").ToString());
+
+            //Debug.Log("GameDatabase.Instance.root.ToString()");
+            //Debug.Log(GameDatabase.Instance.root.ToString());
+            //Debug.Log("GameDatabase.Instance.root.url");
+            //Debug.Log(GameDatabase.Instance.root.url);
+            //Debug.Log("GameDatabase.Instance.root.AllConfigs.ToString()");
+            //Debug.Log(GameDatabase.Instance.root.AllConfigs.ToString());
+
+
+            //Debug.Log("this.part.protoPartSnapshot.ToString()");
+            //Debug.Log(this.part.protoPartSnapshot.ToString());
+            //Debug.Log("this.part.FindModulesImplementing<GTI_MultiModeEngineFX>().ToString()");
+            //Debug.Log(this.part.FindModulesImplementing<GTI_MultiModeEngineFX>().ToString());
+
+
+            //GTIndustries/Parts/Engines/IonEngine/GTI_IonEngine/GTI_ionEngine
+            Debug.Log("GameDatabase.Instance.GetConfigNode('GTIndustries/Parts/Engines/IonEngine/GTI_IonEngine/GTI_ionEngine')");
+            Debug.Log(GameDatabase.Instance.GetConfigNode("GTIndustries/Parts/Engines/IonEngine/GTI_IonEngine/GTI_ionEngine"));
+
+
+
+
+            //Debug.Log(this.part.);
+
+
+            //Debug.Log("this.part.name: " + this.part.name);
+            //foreach (ConfigNode part_node in myNodes)
+            //{
+            //    //if (part_node.GetValue("name") == null) { continue; }
+            //    Debug.Log(part_node.GetValue("name"));
+            //    //Debug.Log(part_node.ToString());
+
+            //    if (part_node.GetValue("name") == this.part.name)
+            //    {
+            //        myNode = part_node.GetNode("ThrottleISPCurve");
+            //        Debug.Log("myNode.ToString()\n" + myNode.ToString());
+            //    }
+            //}
+            //this.vessel.Parts[0].
+            
+            Debug.Log("this.part.protoPartSnapshot.partData.nodes.ToString()");
+            Debug.Log(this.part.protoPartSnapshot.partData.ToString());
+
+
+            Debug.Log("for (int i = 0; i < PartLoader.Instance.loadedParts.Count; i++)  #" + PartLoader.Instance.loadedParts.Count);
+
+            ConfigNode myConfigNode = new ConfigNode();
+            ConfigNode[] myConfigNodes;
+            ConfigNode myFloatCurveNode = new ConfigNode();
+
+            for (int i = 0; i < PartLoader.Instance.loadedParts.Count; i++)
+            {
+                if (this.part.name == PartLoader.Instance.loadedParts[i].name)
+                {
+                    Debug.Log("name [" + i + "] " + PartLoader.Instance.loadedParts[i].name);
+                    Debug.Log("title [" + i + "] " + PartLoader.Instance.loadedParts[i].title);
+                    //Debug.Log("[" + i + "] " + PartLoader.Instance.loadedParts[i].partConfig.name);
+                    try { Debug.Log(PartLoader.Instance.loadedParts[i].partConfig.ToString()); } catch { Debug.LogWarning(".loadedParts[i].partConfig.ToString() threw error"); }
+                    //try { Debug.Log(PartLoader.Instance.loadedParts[i].partConfig.nodes.ToString()); } catch { Debug.LogWarning(".loadedParts[i].partConfig.nodes.ToString() threw error"); }
+                    //try { Debug.Log(PartLoader.Instance.loadedParts[i].partConfig.values.ToString()); } catch { Debug.LogWarning(".loadedParts[i].partConfig.values.ToString() threw error"); }
+                    //Debug.Log("partUrlConfig [" + i + "] " + PartLoader.Instance.loadedParts[i].partUrlConfig.ToString());
+                    Debug.Log("partUrl " + PartLoader.Instance.loadedParts[i].partUrl);
+                    Debug.Log("internalConfig [" + i + "] " + PartLoader.Instance.loadedParts[i].internalConfig.ToString());
+
+                    myConfigNode = PartLoader.Instance.loadedParts[i].partConfig;
+                    
+                    break;
+                }
+
+                //PartLoader.Instance.loadedParts[i].partConfig.ToString();
+            }
+            //Debug.Log(".HasNode('GTI_MultiModeEngineFX'): " + myConfigNode.HasNode("GTI_MultiModeEngineFX"));
+            //Debug.Log(".HasNode('MODULE'): " + myConfigNode.HasNode("MODULE"));
+            //Debug.Log(".HasValue('GTI_MultiModeEngineFX'): " + myConfigNode.HasValue("GTI_MultiModeEngineFX"));
+
+            myConfigNodes = myConfigNode.GetNodes("MODULE");
+
+            //foreach (ConfigNode n in myConfigNodes)
+            //{
+            //    Debug.Log("this.name " + this.name);        //_thismoduleName
+            //    if (n.GetValue("name") == _thismoduleName)          //"GTI_MultiModeEngineFX"
+            //    {
+            //        if (n.TryGetNode("ThrottleISPCurve", ref myFloatCurveNode))
+            //        {
+            //            Debug.Log("GTI_MultiModeEngineFX loading FloatCurve");
+            //            ThrottleISPCurve.Load(myFloatCurveNode);
+            //            break;
+            //        }
+            //    }
+
+
+            //    //foreach (ConfigNode.Value v in n.values)
+            //    //{
+            //    //    Debug.Log("name " + v.name + " --> Value " + v.value);
+            //    //}
+            //}
+            Debug.Log("ThrottleISPCurve.maxTime\n" + ThrottleISPCurve.maxTime);
+            Debug.Log("ThrottleISPCurve.minTime\n" + ThrottleISPCurve.minTime);
+            Debug.Log("ThrottleISPCurve.Evaluate(0.5f)\n" + ThrottleISPCurve.Evaluate(0.5f));
+            Debug.Log("ThrottleISPCurve.Curve.ToString()\n" + ThrottleISPCurve.Curve.ToString());
+        }
+
+        public override void OnLoad(ConfigNode node)
+        {
+            //base.OnLoad(node);
+            //ConfigNode ThrottleISPCurveNode = node.GetNode("ThrottleISPCurve");
+            //FloatCurve ThrottleISPFloatCurve = new FloatCurve();
+
+
+
+            //ConfigNode myNode = new ConfigNode();
+            //ConfigNode.LoadObjectFromConfig(this.part, myNode);
+            //Debug.Log("LoadObjectFromConfig --> myNode.ToString()\n" + myNode.ToString());
+
+
+
+            //Debug.Log("node.name  " + node.name);
+            //Debug.Log("node.id  " + node.id);
+            //Debug.Log("node.CountNodes  " + node.CountNodes);
+            //Debug.Log("node.CountValues  " + node.CountValues);
+            //Debug.Log("node.ToString\n" + node.ToString());
+            //Debug.Log("ThrottleISPCurve.maxTime\n" + ThrottleISPCurve.maxTime);
+            //Debug.Log("ThrottleISPCurve.minTime\n" + ThrottleISPCurve.minTime);
+            //Debug.Log("ThrottleISPCurve.Curve.keys.ToString()\n" + ThrottleISPCurve.Curve.keys.ToString());
+            //Debug.Log("Print Keys from KeyFrame");
+            //foreach (Keyframe k in ThrottleISPCurve.Curve.keys)
+            //{
+            //    Debug.Log("k.time: " + k.time);
+            //    Debug.Log("k.value: " + k.value);
+            //    Debug.Log("k.inTangent: " + k.inTangent);
+            //    Debug.Log("k.outTangent: " + k.outTangent);
+            //    Debug.Log("k.tangentMode: " + k.tangentMode);
+            //}
+
+            //NodeValues = node.GetValues();
+
+            //Debug.Log("foreach (string n in NodeValues)");
+            //foreach (string n in NodeValues)
+            //{
+            //    Debug.Log("n  " + n);
+            //}
+
+            //Debug.Log("foreach (ConfigNode n in node.nodes)");
+            //foreach (ConfigNode n in node.nodes)
+            //{
+            //    Debug.Log("n.name  " + n.name);
+            //    Debug.Log("n.id  " + n.id);
+            //    Debug.Log("n.CountNodes  " + n.CountNodes);
+            //    Debug.Log("n.CountValues  " + n.CountValues);
+            //}
+
+
+
+            //Debug.Log("ThrottleISPCurveNode.CountNodes  " + ThrottleISPCurveNode.CountNodes);
+            //Debug.Log("ThrottleISPCurveNode.CountValues  " + ThrottleISPCurveNode.CountValues);
+
+            //foreach (ConfigNode.Value value in ThrottleISPCurveNode.values)
+            //{
+            //    Debug.Log("name: " + value.name + "   value: " + value.value);
+            //}
+
+            //Debug.Log("GTI_MultiModeEngineFX - Load to FloatCurve");
+            //ThrottleISPFloatCurve.Load(ThrottleISPCurveNode);
+            //Debug.Log("GTI_MultiModeEngineFX - Load to FloatCurve - DONE");
+        }*/
 
         /// <summary>
         /// Initialize settings for GTI_MultiModeEngine
