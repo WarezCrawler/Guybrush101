@@ -36,8 +36,11 @@ namespace GTI
         //public FloatCurve ThrottleISPCurve = new FloatCurve();
         //[KSPField]
         //public bool useThrottleISPCurve = false;
-
         //private FloatCurve ThrottleISPFloatCurve;
+
+
+
+
 
         #endregion
 
@@ -64,6 +67,7 @@ namespace GTI
 
         public override void OnStartFinished(StartState state)
         {
+
             //Debug.Log("ThrottleISPCurve.maxTime\n" + ThrottleISPCurve.maxTime);
             //Debug.Log("ThrottleISPCurve.minTime\n" + ThrottleISPCurve.minTime);
             //Debug.Log("ThrottleISPCurve.Evaluate(0.5f)\n" + ThrottleISPCurve.Evaluate(0.5f));
@@ -328,7 +332,7 @@ namespace GTI
 
                 //If there is an engine, and none is currently selected, then set the active one to be the first one
                 if (ModuleEngines.Count > 0) { selPropFromChooseOption(); }
-               
+
                 //find the current engine and store it in "currentModuleEngine"
                 foreach (var moduleEngine in ModuleEngines)
                 {
@@ -414,7 +418,7 @@ namespace GTI
                         selectedPropulsion = i;
                         return;
                     }
-                    
+
                 }
             }
         }

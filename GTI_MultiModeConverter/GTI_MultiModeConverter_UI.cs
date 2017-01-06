@@ -23,6 +23,8 @@ namespace GTI
         public bool availableInFlight = false;
         [KSPField]
         public bool availableInEditor = true;
+        
+        private int _InvokeCounter = 0;
         #endregion
 
         #region User_Interface
@@ -52,6 +54,13 @@ namespace GTI
             chooseField.guiName = "Converters";
             chooseField.guiActiveEditor = availableInEditor;
             chooseField.guiActive = availableInFlight;
+            if (useModuleAnimationGroup == true)
+            {
+                //Override the converter selection UI is useModuleAnimationGroup is true
+                chooseField.guiActiveEditor = MAG.isDeployed ? availableInEditor : false;
+                chooseField.guiActive = MAG.isDeployed ? availableInFlight : false;
+            }
+                
 
             //Extract options from the engineList
             //Debug.Log("GTI_MultiModeConverter: Set Options & OptionsDisplay");
@@ -84,7 +93,7 @@ namespace GTI
             //ChooseOption = selectedChooseOption;
             selConverterFromChooseOption();
 
-            Debug.Log("GTI_MultiModeConverter: initializeGUI() --> end");
+            //Debug.Log("GTI_MultiModeConverter: initializeGUI() --> end");
         }
 
         /// <summary>
@@ -94,7 +103,7 @@ namespace GTI
         /// <param name="oldValueObj"></param>
         private void selectConverter(BaseField field, object oldValueObj)
         {
-            Debug.Log("GTI_MultiModeConverter: User switches converter");
+            //Debug.Log("GTI_MultiModeConverter: User switches converter");
             updateConverter();
         }
         /// <summary>
@@ -281,7 +290,83 @@ namespace GTI
             }
         }
         #endregion
+
+        #region ModuleAnimationGroup UI
+        [KSPEvent(active = false, guiActive = false, guiActiveEditor = false, guiName = "Deploy")]
+        public void ModuleAnimationGroupEvent()
+        {
+            float AnimLength;
+
+            //Debug.Log("ModuleAnimationGroupEvent fired");
+            //Animation Anim = part.FindModelAnimator("Deploy");            //Hardcoded animation
+            //Debug.Log("Animation exists: " + (Anim != null));
+            //try { Debug.Log(".length " + Anim.clip.length); } catch { Debug.LogError(".length failed"); }
+            //try { Debug.Log(".name " + Anim.clip.name); } catch { Debug.LogError(".name failed"); }
+            //try { Debug.Log(".apparentSpeed " + Anim.clip.apparentSpeed); } catch { Debug.LogError(".apparentSpeed failed"); }
+            //try { Debug.Log(".averageDuration " + Anim.clip.averageDuration); } catch { Debug.LogError(".averageDuration failed"); }
+            //try { Debug.Log(".isPlaying " + Anim.isPlaying); } catch { Debug.LogError(".isPlaying failed"); }
+
+            //Debug.Log("Anim.isPlaying " + Anim.isPlaying.ToString());
+
+            try { AnimLength = Anim.clip.length + 0.1f; } catch { AnimLength = 1f; }
+
+            BaseField chooseField = Fields[nameof(ChooseOption)];
+            try  //We only handle the  first module
+            {
+                if (MAG.isDeployed)
+                {
+                    MAG.RetractModule();
+                    chooseField.guiActive = false;
+                    chooseField.guiActiveEditor = false;
+
+                    for (int i = 0; i < MRC.Count; i++)
+                    {
+                        //Debug.Log("GTI_MultiModeConverter: Deactivate Converter Module [" + i + "] --> " + MRC[i].ConverterName);
+                        //Deactivate the converter
+                        MRC[i].DisableModule();
+                        //Stop the converter
+                        MRC[i].StopResourceConverter();
+                    }
+                }
+                else
+                {
+                    MAG.DeployModule();
+
+                    //Update UI
+                    chooseField.guiActiveEditor = availableInEditor;
+                    chooseField.guiActive = availableInFlight;
+
+                    //Debug.Log("updateConverter in 'ModuleAnimationGroupEvent'");
+                    Invoke("ModuleAnimationGroupEventInvoke", AnimLength);
+                }
+            }
+            catch
+            {
+                //... do nothing
+                Debug.LogError("GTI_MultiModeEngine -- ModuleAnimationGroup --- Error when handling animations");
+                //this.Events["ModuleAnimationGroupEvent"].active = false;
+                //this.Events["ModuleAnimationGroupEvent"].guiActive = false;
+                //this.Events["ModuleAnimationGroupEvent"].guiActiveEditor = false;
+            }
+        }
+        private void ModuleAnimationGroupEventInvoke()
+        {
+            //Debug.Log("Invoking in 'ModuleAnimationGroupEventInvoke'");
+            if (Anim.isPlaying == false)
+            {
+                //Debug.Log("'ModuleAnimationGroupEventInvoke': not deployed");
+                updateConverter(silentUpdate: true);
+
+                //reset invoke counter
+                _InvokeCounter = 0;
+            }
+            else
+            {
+                //Debug.Log("'ModuleAnimationGroupEventInvoke': still deployed -> Reinvoking");
+                if (_InvokeCounter < 60) { Invoke("ModuleAnimationGroupEventInvoke", 0.01f); _InvokeCounter++; } else { _InvokeCounter = 0; }
+            }
+        }
+
+        #endregion
     }
 }
-
-

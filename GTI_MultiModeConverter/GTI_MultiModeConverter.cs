@@ -11,8 +11,13 @@ namespace GTI
         private string[] converterNames;
 
         private bool _settingsInitialized = false;
-        private bool _initializing = true;
 
+        [KSPField]
+        public bool useModuleAnimationGroup = false;
+
+        private Animation Anim = new Animation();
+        //private List<ModuleAnimationGroup> MAG = new List<ModuleAnimationGroup>();
+        private ModuleAnimationGroup MAG = new ModuleAnimationGroup();
 
         /// <summary>
         /// Loads the module at scene startup
@@ -20,7 +25,6 @@ namespace GTI
         /// <param name="state"></param>
         public override void OnStart(PartModule.StartState state)
         {
-            _initializing = true;
             initializeSettings();
             initializeGUI();
 
@@ -34,7 +38,7 @@ namespace GTI
         /// <param name="state"></param>
         public override void OnStartFinished(StartState state)
         {
-            updateConverter();
+            updateConverter(silentUpdate: true);
         }
 
         /// <summary>
@@ -67,6 +71,38 @@ namespace GTI
                     //}
                 }
 
+                #region ModuleAnimationGroup
+                //Debug.Log("useModuleAnimationGroup: " + useModuleAnimationGroup);
+                if (useModuleAnimationGroup == true)
+                {
+                    //Debug.Log("useModuleAnimationGroup: Evaluated as true");
+                    
+                    MAG = part.FindModuleImplementing<ModuleAnimationGroup>();
+                    //Debug.Log("MAG.DeployAnimation " + MAG.activeAnimationName);
+                    //Debug.Log("MAG.DeployAnimation " + MAG.deployAnimationName);
+
+                    Anim = part.FindModelAnimator(MAG.deployAnimationName);
+
+                    foreach (BaseEvent e in MAG.Events)
+                    {
+                        e.active = false;
+                        e.guiActive = false;
+                        e.guiActiveEditor = false;
+                    }
+                    foreach (BaseAction a in MAG.Actions)
+                    {
+                        a.active = false;
+                    }
+
+                    //Debug.Log("Activate 'ModuleAnimationGroupEvent'");
+                    
+                    //Activate event in this module to trigger animations instead
+                    this.Events["ModuleAnimationGroupEvent"].active = true;
+                    this.Events["ModuleAnimationGroupEvent"].guiActive = true;
+                    this.Events["ModuleAnimationGroupEvent"].guiActiveEditor = true;
+                }
+                #endregion
+
                 _settingsInitialized = true;
             }
         }
@@ -74,25 +110,24 @@ namespace GTI
         /// <summary>
         /// Updates the converters with new selections. Deactivating the inactive ones, and activating the selected one.
         /// </summary>
-        private void updateConverter()
+        private void updateConverter(bool silentUpdate = false)
         {
             //Debug.Log("GTI_MultiModeConverter: updateConverter() --> Begin");
 
             //initializeSettings();
             FindSelectedConverter();
-            if (_initializing == false) { writeScreenMessage(); } else { _initializing = false; }
+            if (silentUpdate == false) writeScreenMessage(); 
 
             for (int i = 0; i < MRC.Count; i++)
             {
                 if (i == selectedConverter)
                 {
-                    Debug.Log("GTI_MultiModeConverter: Activate Converter Module [" + i + "] --> " + MRC[i].ConverterName);
+                    if (silentUpdate == false) Debug.Log("GTI_MultiModeConverter: Activate Converter Module [" + i + "] --> " + MRC[i].ConverterName);
                     MRC[i].EnableModule(); 
                 }
                 else
                 {
-                    Debug.Log("GTI_MultiModeConverter: Deactivate Converter Module [" + i + "] --> " + MRC[i].ConverterName);
-
+                    if (silentUpdate == false) Debug.Log("GTI_MultiModeConverter: Deactivate Converter Module [" + i + "] --> " + MRC[i].ConverterName);
 
                     //Deactivate the converter
                     MRC[i].DisableModule();
