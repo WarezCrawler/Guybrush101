@@ -7,8 +7,8 @@ namespace GTI.GenericFunctions
     public class PhysicsUtilities
     {
         private float _Thrust, _Density, _ISP, _fuelRate, _fuelFlow, _weightedDensity;
-        private float _gravity = 9.81f;
-        
+        private float _gravity = 9.80665f;                                                      //source: http://wiki.kerbalspaceprogram.com/wiki/1.2
+
 
         //Equations:
         //Thrust = (fuel rate in L/s) * density * g * Isp
@@ -16,24 +16,55 @@ namespace GTI.GenericFunctions
         //Isp =  Thrust / (g * (fuel rate in L/s) * density)
         //(fuel rate in L/s) = Thrust / (g * Isp * density)			, density = (Mfuel/Vfuel) = [kg/L]
 
+        /// <summary>
+        /// Thrust = (fuel rate in L/s) * density * g * Isp
+        ///  --> Thrust = L/s * kg/L * m/s^2 *s = kg * m/s^2 = N
+        /// </summary>
+        /// <param name="fuelRate"></param>
+        /// <param name="Density"></param>
+        /// <param name="ISP"></param>
+        /// <returns></returns>
         public float calcThrust(float fuelRate, float Density, float ISP)   // Thrust = L/s * kg/L * m/s^2 *s = kg * m/s^2 = N
         {
             _Thrust = fuelRate * Density * _gravity * ISP;
             return _Thrust;
         }
 
+        /// <summary>
+        /// Thrust = fuelFlow * g * ISP
+        ///  --> Thrust = Kg/s * m/s^2 * s = Kg * m/s^2 = N
+        /// </summary>
+        /// <param name="fuelFlow"></param>
+        /// <param name="ISP"></param>
+        /// <returns></returns>
         public float calcTrustFromfuelFlow(float fuelFlow, float ISP)       // Thrust = Kg/s * m/s^2 * s = Kg * m/s^2 = N
         {
             _Thrust = fuelFlow * _gravity * ISP;
             return _Thrust;
         }
 
+        /// <summary>
+        /// Isp =  Thrust / (g * (fuel rate in L/s) * density)
+        ///  --> ISP = N / (L/s * kg/L * m/s^2) = (kg * m/s^2)/(L/s * kg/L * m/s^2) = s
+        /// </summary>
+        /// <param name="Thrust"></param>
+        /// <param name="fuelRate"></param>
+        /// <param name="Density"></param>
+        /// <returns></returns>
         public float calcISP(float Thrust, float fuelRate, float Density)   //ISP = N / (L/s * kg/L * m/s^2) = (kg * m/s^2)/(L/s * kg/L * m/s^2) = s
         {
             _ISP = Thrust/(fuelRate * Density * _gravity);
             return _ISP;
         }
 
+        /// <summary>
+        /// (fuel rate in L/s) = Thrust / (g * Isp * density)			, density = (Mfuel/Vfuel) = [kg/L]
+        ///  --> fuelRate = kg * m/s^2 / (kg/L * m/s^2 * s) = L/s
+        /// </summary>
+        /// <param name="Thrust"></param>
+        /// <param name="Density"></param>
+        /// <param name="ISP"></param>
+        /// <returns></returns>
         public float calcFuelRate(float Thrust, float Density, float ISP)   //fuelRate = kg * m/s^2 / (kg/L * m/s^2 * s) = L/s
         {
             _fuelRate = Thrust / (Density * _gravity * ISP);
@@ -41,29 +72,66 @@ namespace GTI.GenericFunctions
         }
 
         //engine.maxThrust / (engine.atmosphereCurve.Evaluate(0f) * engine.g)
-        public float calcFuelFlow(float Thrust, float Density, float ISP)   //fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
+        /// <summary>
+        /// fuelFlow = Thrust / (Gravity * ISP)
+        ///  --> fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
+        ///  --> engine.maxThrust / (engine.atmosphereCurve.Evaluate(0f) * engine.g)
+        /// </summary>
+        /// <param name="Thrust"></param>
+        /// <param name="Density"></param>
+        /// <param name="ISP"></param>
+        /// <returns></returns>
+        public float calcFuelFlow(float Thrust, float ISP)   //fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
         {
             _fuelFlow = Thrust / (_gravity * ISP);                              //fuelFlow = Thrust / (Gravity * ISP)
             return _fuelFlow;
         }
 
-        public float calcFuelRateFromfuelFlow(float fuelFlow, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
+        /// <summary>
+        /// fuelRate = fuelFlow / Density
+        /// --> fuelFlow = Kg/s -- FuelRate = L/s -- Density = kg/L
+        /// </summary>
+        /// <param name="fuelFlow">fuelFlow = Kg/s</param>
+        /// <param name="Density">Density = kg/L</param>
+        /// <returns></returns>
+        public float calcFuelRateFromFuelFlow(float fuelFlow, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
         {
             _fuelRate = fuelFlow / Density;
             return _fuelRate;
         }
 
-        public float calcfuelFlowFromFuelRate(float fuelRate, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
+        /// <summary>
+        /// fuelFlow = fuelRate * Density
+        /// --> fuelFlow = Kg/s -- FuelRate = L/s -- Density = kg/L
+        /// </summary>
+        /// <param name="fuelRate"></param>
+        /// <param name="Density"></param>
+        /// <returns></returns>
+        public float calcFuelFlowFromFuelRate(float fuelRate, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
         {
             _fuelFlow = fuelRate * Density;
             return _fuelRate;
         }
 
+        /// <summary>
+        /// Density = Thrust / (fuelRate * _gravity * ISP)
+        /// --> Density = kg * m/s^2 / (L/s * m/s^2 * s) = kg/s
+        /// </summary>
+        /// <param name="Thrust"></param>
+        /// <param name="fuelRate"></param>
+        /// <param name="ISP"></param>
+        /// <returns></returns>
         public float calcDensity(float Thrust, float fuelRate, float ISP)   //Density = kg * m/s^2 / (L/s * m/s^2 * s) = kg/s
         {
             _Density = Thrust / (fuelRate * _gravity * ISP);
             return _Density;
         }
+        /// <summary>
+        /// Density = kg/L
+        /// </summary>
+        /// <param name="Resources">resource name</param>
+        /// <param name="Ratios">resource ratio</param>
+        /// <returns></returns>
         public float calcWeightedDensity(string Resources, string Ratios)
         {
             string[] arrResources, arrRatios;
@@ -86,7 +154,7 @@ namespace GTI.GenericFunctions
             {
                 //Debug.Log("calcWeightedDensity: Sum ratios");
                 weightTotal = 0;
-                //Calculate total weight for deflation of ratios
+                //Calculate total weight for deflation of ratios that does not sum to 1
                 foreach (string ratio in arrRatios)
                 {
                     weightTotal = weightTotal + Single.Parse(ratio);    //Ratios should be convertable to floats
@@ -94,7 +162,7 @@ namespace GTI.GenericFunctions
 
                 _weightedDensity = 0;
                 //Calculate the weighted Density
-                for (int i = 0; i<arrResources.Length; i++)
+                for (int i = 0; i < arrResources.Length; i++)
                 {
                     if(weightTotal == 0)
                     {
@@ -114,6 +182,10 @@ namespace GTI.GenericFunctions
             return _weightedDensity;
         }
 
+        /// <summary>
+        /// Used to override the default gravity constant of 9.80665. If set below 0 the this returns the default.
+        /// Therefore it is easy enough to reset to default by setting "gravity = -1".
+        /// </summary>
         public float gravity        //  m/s^s
         {
             get
@@ -122,7 +194,7 @@ namespace GTI.GenericFunctions
             {
                 if (value <= 0)
                 {
-                    _gravity = 9.81f;
+                    _gravity = 9.80665f;                                                      //source: http://wiki.kerbalspaceprogram.com/wiki/1.2
                 }
                 _gravity = value;
             }
@@ -138,7 +210,7 @@ namespace GTI.GenericFunctions
         /// <returns></returns>
         public ConfigNode GetPartConfig(Part part)
         {
-            AvailablePart thispart = sourcePart(part);
+            AvailablePart thispart = GetSourcePart(part);
 
             if (thispart == null)
             {
@@ -178,7 +250,7 @@ namespace GTI.GenericFunctions
         public ConfigNode GetPartConfig(Part part, out string partName)
         {
             partName = string.Empty;
-            AvailablePart thispart = sourcePart(part);
+            AvailablePart thispart = GetSourcePart(part);
 
             if (thispart == null)
             {
@@ -203,7 +275,7 @@ namespace GTI.GenericFunctions
         {
             partName = string.Empty;
             partTitle = string.Empty;
-            AvailablePart thispart = sourcePart(part);
+            AvailablePart thispart = GetSourcePart(part);
 
             if (thispart == null)
             {
@@ -218,10 +290,10 @@ namespace GTI.GenericFunctions
             }
         }
 
-        //not optimal
-        public ConfigNode[] GetPartModuleConfigs(Part part, string moduleName)
+        //public ConfigNode[] GetNodes(string name, string valueName, string value)
+        public ConfigNode[] GetPartModuleConfigs(Part part, string nodeName, string valueName ,string value)
         {
-            AvailablePart thispart = sourcePart(part);
+            AvailablePart thispart = GetSourcePart(part);
 
             if (thispart == null)
             {
@@ -230,18 +302,23 @@ namespace GTI.GenericFunctions
             }
             else
             {
-                ConfigNode resultingNodes = new ConfigNode();
-                //ConfigNode[] resultingModules = thispart.partConfig.GetNodes("MODULE");
+                ConfigNode[] resultingNodes = thispart.partConfig.GetNodes(nodeName, valueName, value);
+                return resultingNodes;
+            }
+        }
+        public ConfigNode GetPartModuleConfig(Part part, string nodeName, string valueName, string value)
+        {
+            AvailablePart thispart = GetSourcePart(part);
 
-                foreach (ConfigNode n in thispart.partConfig.GetNodes("MODULE"))
-                {
-                    if (n.GetValue("name") == moduleName)
-                    {
-                        resultingNodes.AddNode(n);
-                    }
-                }
-
-                return resultingNodes.GetNodes("MODULE");
+            if (thispart == null)
+            {
+                Debug.LogError("GetPartConfig: PART NOT FOUND");
+                return null;
+            }
+            else
+            {
+                ConfigNode resultingNode = thispart.partConfig.GetNode(nodeName, valueName, value);
+                return resultingNode;
             }
         }
 
@@ -252,7 +329,7 @@ namespace GTI.GenericFunctions
         /// <returns></returns>
         public string GetPartUrl(Part part)
         {
-            AvailablePart thispart = sourcePart(part);
+            AvailablePart thispart = GetSourcePart(part);
             string output = string.Empty;
             if (thispart == null)
             {
@@ -266,26 +343,13 @@ namespace GTI.GenericFunctions
             }
         }
         /// <summary>
-        /// Retrieves the part in partLoader (available part) based on the source part
+        /// Retrieves the part in partLoader (available part) based on the source part (object)
         /// </summary>
         /// <param name="part"></param>
         /// <returns></returns>
-        private AvailablePart sourcePart(Part part)
+        private AvailablePart GetSourcePart(Part part)
         {
-            AvailablePart GetSourcePart = new AvailablePart();
-            bool _partFound = false;
-            for (int i = 0; i < PartLoader.Instance.loadedParts.Count; i++)
-            {
-                if (part.name == PartLoader.Instance.loadedParts[i].name)
-                {
-                    GetSourcePart = PartLoader.Instance.loadedParts[i];
-                    _partFound = true;
-                    break;
-                }
-            }
-
-            if (!_partFound) { GetSourcePart = null; }
-            return GetSourcePart;
+            return GetSourcePart(part.name);
         }
         /// <summary>
         /// Retrieves the part in partLoader (available part) based on the source part name
