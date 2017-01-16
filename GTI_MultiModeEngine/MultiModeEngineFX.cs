@@ -2,6 +2,10 @@
 using UnityEngine;
 using GTI.GenericFunctions;
 
+/*
+This module targets "ModuleEnginesFX" modules for engine switching
+*/
+
 namespace GTI
 {
     partial class GTI_MultiModeEngineFX : PartModule
@@ -25,9 +29,9 @@ namespace GTI
 
         #region Arrays and Lists
         //For the engines modules
-        private List<ModuleEngines> ModuleEngines;
+        private List<ModuleEnginesFX> ModuleEngines;
 
-        private ModuleEngines currentModuleEngine;
+        private ModuleEnginesFX currentModuleEngine;
         private bool currentEngineState;
 
         private List<CustomTypes.EngineSwitchList> engineList = new List<CustomTypes.EngineSwitchList>();
@@ -61,12 +65,16 @@ namespace GTI
             //Show Debug GUI?
             if (bool.Parse(debugMode)) { Events["DEBUG_ENGINESSWITCH"].guiActive = true; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = true; Events["DEBUG_ENGINESSWITCH"].active = true; Debug.Log("GTI_MultiModeEngine debugMode activated"); }
             else { Events["DEBUG_ENGINESSWITCH"].guiActive = false; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = false; Events["DEBUG_ENGINESSWITCH"].active = false; }
-
-
         }
 
         public override void OnStartFinished(StartState state)
         {
+            //File path
+            Debug.Log("GTI_MultiModeEngineFX dll path: " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
+            //string assemblyFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            //string xmlFileName = Path.Combine(assemblyFolder, "AggregatorItems.xml");
+
+
 
             //Debug.Log("ThrottleISPCurve.maxTime\n" + ThrottleISPCurve.maxTime);
             //Debug.Log("ThrottleISPCurve.minTime\n" + ThrottleISPCurve.minTime);
@@ -304,8 +312,8 @@ namespace GTI
 
                 #region Identify ModuleEngines in Scope
                 //Find modules which is to be manipulated
-                ModuleEngines = part.FindModulesImplementing<ModuleEngines>();
-                var toBeRemoved = new List<ModuleEngines>();                      //for removal of irrelevant engine modules
+                ModuleEngines = part.FindModulesImplementing<ModuleEnginesFX>();
+                var toBeRemoved = new List<ModuleEnginesFX>();                      //for removal of irrelevant engine modules
 
                 //Remove the inteactions buttons of the engines, so that it is controlled by this mod instead
                 foreach (var moduleEngine in ModuleEngines)
@@ -334,7 +342,7 @@ namespace GTI
                 if (ModuleEngines.Count > 0) { selPropFromChooseOption(); }
 
                 //find the current engine and store it in "currentModuleEngine"
-                foreach (var moduleEngine in ModuleEngines)
+                foreach (ModuleEnginesFX moduleEngine in ModuleEngines)
                 {
                     if (moduleEngine.engineID == ChooseOption)
                     {
@@ -360,7 +368,7 @@ namespace GTI
             FindSelectedPropulsion();
             writeScreenMessage();
 
-            foreach (var moduleEngine in ModuleEngines)
+            foreach (ModuleEnginesFX moduleEngine in ModuleEngines)
             {
                 #region NOTES
                 /* Stock GUI Elements
