@@ -529,6 +529,7 @@ namespace GTI
 
                 //Get maxISP from the atmosphere curve
                 maxISP = MiscFx.KeyFrameGetMaxValue(moduleEngine.atmosphereCurve.Curve.keys);
+                //moduleEngine.atmosphereCurve.FindMinMaxValue
 
                 //Set max Thrust and the corresponding fuelflow
                 if (!MaxThrustEmpty)        { moduleEngine.maxThrust        = propList[selectedPropellant].maxThrust; }
@@ -536,7 +537,7 @@ namespace GTI
                 //maxFuelFlow = engine.maxThrust / (engine.atmosphereCurve.Evaluate(0f) * engine.g)
                 moduleEngine.maxFuelFlow = EngineCalc.calcFuelFlow(
                     Thrust: moduleEngine.maxThrust,                             //Thrust: propList[selectedPropellant].maxThrust, 
-                    Density: propList[selectedPropellant].propDensity, 
+                    //Density: propList[selectedPropellant].propDensity, 
                     ISP: maxISP
                     );
 
@@ -710,8 +711,8 @@ namespace GTI
                     "\nresultingThrust: " + moduleEngine.resultingThrust +
                     "\nmaxFuelFlow: " + moduleEngine.maxFuelFlow +
                     "\nrequestedMassFlow: " + moduleEngine.requestedMassFlow +
-                    "\nmaxFuelRate (calc): " + Calc.calcFuelRateFromfuelFlow(moduleEngine.maxFuelFlow, Density) +
-                    "\nFuelRate (calc): " + Calc.calcFuelRateFromfuelFlow(moduleEngine.requestedMassFlow, Density) +
+                    "\nmaxFuelRate (calc): " + Calc.calcFuelRateFromFuelFlow(moduleEngine.maxFuelFlow, Density) +
+                    "\nFuelRate (calc): " + Calc.calcFuelRateFromFuelFlow(moduleEngine.requestedMassFlow, Density) +
                     "\nWeighted Density of " + propList[selectedPropellant].Propellants + " is " + Density + "Kg/L"
                     );
 

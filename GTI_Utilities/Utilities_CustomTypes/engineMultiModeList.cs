@@ -38,6 +38,7 @@ namespace GTI.CustomTypes
         private string _requiredTech = string.Empty;
         public bool engineAvailable = false;
         private string _GUIengineModeNames = string.Empty;
+        private string _resourceFlowMode = string.Empty;
 
         //private ConfigNode _MultiModeConfigNode = new ConfigNode();
 
@@ -238,7 +239,46 @@ namespace GTI.CustomTypes
             //set { _propAmount = value; }  //Internally calculated
         }
 
-
+        public string resourceFlowMode
+        {
+            get { return null; }
+            set
+            {
+                switch (value)
+                {
+                    case "ALL_VESSEL":
+                        _resourceFlowMode = value;
+                        break;
+                    case "ALL_VESSEL_BALANCE":
+                        _resourceFlowMode = value;
+                        break;
+                    case "NO_FLOW":
+                        _resourceFlowMode = value;
+                        break;
+                    case "NULL":
+                        _resourceFlowMode = value;
+                        break;
+                    case "STACK_PRIORITY_SEARCH":
+                        _resourceFlowMode = value;
+                        break;
+                    case "STAGE_PRIORITY_FLOW":
+                        _resourceFlowMode = value;
+                        break;
+                    case "STAGE_PRIORITY_FLOW_BALANCE":
+                        _resourceFlowMode = value;
+                        break;
+                    case "STAGE_STACK_FLOW":
+                        _resourceFlowMode = value;
+                        break;
+                    case "STAGE_STACK_FLOW_BALANCE":
+                        _resourceFlowMode = value;
+                        break;
+                    default:
+                        _resourceFlowMode = string.Empty;
+                        break;
+                }
+            }
+        }
 
 
 

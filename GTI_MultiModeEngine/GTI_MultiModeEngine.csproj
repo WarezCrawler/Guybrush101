@@ -55,6 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiModeEngine_UI.cs" />
+    <Compile Include="MultiModeEngine.cs" />
     <Compile Include="VABInfo.cs" />
     <Compile Include="DEBUG.cs" />
     <Compile Include="MultiModeEngineFX_UI.cs" />

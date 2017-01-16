@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿//using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 using UnityEngine;
-using GTI.GenericFunctions;
-using System;
+//using GTI.GenericFunctions;
+//using System;
 
 namespace GTI
 {
@@ -23,7 +24,7 @@ namespace GTI
         public bool availableInFlight = false;
         [KSPField]
         public bool availableInEditor = true;
-        
+
         private int _InvokeCounter = 0;
         #endregion
 
@@ -60,7 +61,7 @@ namespace GTI
                 chooseField.guiActiveEditor = MAG.isDeployed ? availableInEditor : false;
                 chooseField.guiActive = MAG.isDeployed ? availableInFlight : false;
             }
-                
+
 
             //Extract options from the engineList
             //Debug.Log("GTI_MultiModeConverter: Set Options & OptionsDisplay");
@@ -308,7 +309,7 @@ namespace GTI
 
             //Debug.Log("Anim.isPlaying " + Anim.isPlaying.ToString());
 
-            try { AnimLength = Anim.clip.length + 0.1f; } catch { AnimLength = 1f; }
+            try { AnimLength = Anim.clip.length; } catch { AnimLength = 1f; }
 
             BaseField chooseField = Fields[nameof(ChooseOption)];
             try  //We only handle the  first module
@@ -337,7 +338,7 @@ namespace GTI
                     chooseField.guiActive = availableInFlight;
 
                     //Debug.Log("updateConverter in 'ModuleAnimationGroupEvent'");
-                    Invoke("ModuleAnimationGroupEventInvoke", AnimLength);
+                    StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.05f));
                 }
             }
             catch
@@ -349,24 +350,33 @@ namespace GTI
                 //this.Events["ModuleAnimationGroupEvent"].guiActiveEditor = false;
             }
         }
-        private void ModuleAnimationGroupEventInvoke()
-        {
-            //Debug.Log("Invoking in 'ModuleAnimationGroupEventInvoke'");
-            if (Anim.isPlaying == false)
-            {
-                //Debug.Log("'ModuleAnimationGroupEventInvoke': not deployed");
-                updateConverter(silentUpdate: true);
 
-                //reset invoke counter
-                _InvokeCounter = 0;
-            }
-            else
+        private IEnumerator ModuleAnimationGroupEventCoroutine(float starttime, float waitingtime)
+        {
+            //Debug.Log("Start of Coroutine");
+            yield return new WaitForSeconds(starttime);
+            _InvokeCounter = 0;
+            while (_InvokeCounter++ < 60)
             {
-                //Debug.Log("'ModuleAnimationGroupEventInvoke': still deployed -> Reinvoking");
-                if (_InvokeCounter < 60) { Invoke("ModuleAnimationGroupEventInvoke", 0.01f); _InvokeCounter++; } else { _InvokeCounter = 0; }
+                //Debug.Log("Coroutine Looping " + _InvokeCounter);
+
+                //Debug.Log("Invoking in 'ModuleAnimationGroupEventInvoke'");
+                if (Anim.isPlaying == false)
+                {
+                    //Debug.Log("'ModuleAnimationGroupEventInvoke': not deployed");
+                    updateConverter(silentUpdate: true);
+
+                    //Debug.Log("Coroutine should stop here");
+                    break;
+                }
+                else
+                {
+                    //Debug.Log("Coroutine will wait for " + waitingtime + " sec and run again");
+                    yield return new WaitForSeconds(waitingtime);
+                    //Debug.Log("Coroutine have waited for " + waitingtime + " sec and continue");
+                }
             }
         }
-
         #endregion
     }
 }

@@ -16,12 +16,14 @@ namespace GTI
             initializeSettings();
             PhysicsUtilities Calc = new PhysicsUtilities();
             Utilities MiscFx = new Utilities();
+
             //System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
             //float Density = propList[selectedPropellant].propDensity;
             //int i = 0;
 
             foreach (var moduleEngine in ModuleEngines)
             {
+                Debug.Log("moduleEngine.g: " + moduleEngine.g);
 
                 //Debug.Log("CGF velCurveKeys: " + velCurveKeys);
                 //Debug.Log("CGF atmCurveKeys: " + atmCurveKeys);

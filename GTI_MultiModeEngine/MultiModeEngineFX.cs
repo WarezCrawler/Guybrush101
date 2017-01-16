@@ -293,6 +293,11 @@ namespace GTI
             //Debug.Log("GTI_MultiModeEngineFX - Load to FloatCurve");
             //ThrottleISPFloatCurve.Load(ThrottleISPCurveNode);
             //Debug.Log("GTI_MultiModeEngineFX - Load to FloatCurve - DONE");
+
+
+            //other tests with resources, and available resources
+            //vessel.resourcePartSet.GetConnectedResourceTotals(int id, out double amount, out double maxAmount, [bool pulling = True]);
+            //PartResourceLibrary.Instance.GetDefinition(arrResources[i]).id
         }
 
         /// <summary>
