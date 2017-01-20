@@ -14,7 +14,7 @@ namespace GTI.CustomTypes
         public string minReqTech = string.Empty;
         public string maxReqTech = string.Empty;
         public string GUIengineID = string.Empty;
-        
+        public float AddedCost = 0;
         
 
 

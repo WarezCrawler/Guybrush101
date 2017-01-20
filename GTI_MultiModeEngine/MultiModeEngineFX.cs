@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using GTI.GenericFunctions;
+//using System;
 
 /*
 This module targets "ModuleEnginesFX" modules for engine switching
@@ -8,7 +9,7 @@ This module targets "ModuleEnginesFX" modules for engine switching
 
 namespace GTI
 {
-    partial class GTI_MultiModeEngineFX : PartModule
+    partial class GTI_MultiModeEngineFX : PartModule                //, IPartCostModifier
     {
         //private string _thismoduleName = "GTI_MultiModeEngineFX";
 
@@ -16,6 +17,10 @@ namespace GTI
         public string engineID = string.Empty;
         [KSPField]
         public string GUIengineID = string.Empty;
+
+        //[KSPField]
+        //public string AddedCost = string.Empty;
+        //private bool AddedCostEmpty;
 
         //[KSPField]
         //public string addedCost = string.Empty;
@@ -308,11 +313,13 @@ namespace GTI
             if (!_settingsInitialized)
             {
                 Utilities Util = new Utilities();
-                string[] arrEngineID, arrGUIengineID;   //, arrMinReqTech, arrMaxReqTech;  //, arrEngineAvailable;
+                string[] arrEngineID, arrGUIengineID;        //, arrAddedCosts;   //, arrMinReqTech, arrMaxReqTech;  //, arrEngineAvailable;
 
                 #region Split into Arrays
                 arrEngineID = engineID.Trim().Split(';');
                 GUIengineIDEmpty = Util.ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
+                //AddedCostEmpty = Util.ArraySplitEvaluate(AddedCost, out arrAddedCosts, ';');
+                //AddedCostEmpty = arrAddedCosts.Length == arrEngineID.Length ? AddedCostEmpty : false;       //Check if costs have been defined as expected
                 #endregion
 
                 #region Identify ModuleEngines in Scope
@@ -340,6 +347,7 @@ namespace GTI
                     {
                         engineID = arrEngineID[i],
                         GUIengineID = GUIengineIDEmpty ? arrEngineID[i] : arrGUIengineID[i],
+                        //AddedCost = AddedCostEmpty ? 0f : float.Parse(arrAddedCosts[i])
                     });
                 }
 
@@ -372,6 +380,7 @@ namespace GTI
 
             FindSelectedPropulsion();
             writeScreenMessage();
+            //UpdateCost();
 
             foreach (ModuleEnginesFX moduleEngine in ModuleEngines)
             {
@@ -435,5 +444,28 @@ namespace GTI
                 }
             }
         }
+
+        //public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
+        //{
+        //    return UpdateCost();
+        //    //part.GetModuleCosts(10000f);
+        //    //throw new NotImplementedException();
+        //}
+        //public float UpdateCost()
+        //{
+        //    try
+        //    {
+        //        return engineList[selectedPropulsion].AddedCost;
+        //    }
+        //    catch
+        //    {
+        //        return 0f;
+        //    }
+        //}
+
+        //public ModifierChangeWhen GetModuleCostChangeWhen()
+        //{
+        //    return ModifierChangeWhen.FIXED;
+        //}
     }
 }

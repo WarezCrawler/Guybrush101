@@ -127,7 +127,7 @@ namespace GTI
                 ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
 
                 #region Parse Arrays
-                Debug.Log("MultiModeIntake: Parse Arrays");
+                //Debug.Log("MultiModeIntake: Parse Arrays");
                 resourceNamesEmpty = Util.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
                 checkForOxygenEmpty = Util.ArraySplitEvaluate(checkForOxygen, out arrcheckForOxygen, ';');
                 #endregion
@@ -135,7 +135,7 @@ namespace GTI
                 resMaxAmountEmpty = Util.StringEvaluate(resMaxAmount, out resMaxAmount);
 
                 //If the resMaxAmount is empty, try getting the maxAmount of first intake. If fails, then return a simple 2 Units.
-                Debug.Log("MultiModeIntake: resMaxAmount");
+                //Debug.Log("MultiModeIntake: resMaxAmount");
                 try
                 { resMaxAmount = resMaxAmountEmpty ? ModuleIntakes[0].res.maxAmount.ToString() : resMaxAmount; }
                 catch
@@ -143,7 +143,7 @@ namespace GTI
                 #endregion
 
                 #region GUI Update
-                Debug.Log("MultiModeIntake: Decide to initializeGUI");
+                //Debug.Log("MultiModeIntake: Decide to initializeGUI");
                 if (!resourceNamesEmpty) { initializeGUI(); }
                 else { Debug.LogError("GTI_IntakeSwitch is missing settings for intake names."); return; }
                 #endregion
@@ -206,7 +206,7 @@ namespace GTI
             ConfigNode IntakeResource = newIntakeNode;
 
             //Clean out any previous resources in the intake
-            Debug.Log("MultiModeIntake: currentPart.Resources.Clear()");
+            //Debug.Log("MultiModeIntake: currentPart.Resources.Clear()");
             currentPart.Resources.Clear();
             //Debug.Log("Cleanout old resources");
 
@@ -215,15 +215,15 @@ namespace GTI
             //List<PartResource> resourcesDeleteList = new List<PartResource>();
 
             //currentPart.symmetryCounterparts;
-            Debug.Log("MultiModeIntake: Update Resources");
+            //Debug.Log("MultiModeIntake: Update Resources");
             removethis = false;
             foreach (PartResource resource in currentPart.Resources)
             {
                 //Check if the resource is part of the switching resources, so that we do not destroy resources which are not intended for this switching
-                Debug.Log("MultiModeIntake: foreach (string inIntakeResource in arrIntakeNames)");
+                //Debug.Log("MultiModeIntake: foreach (string inIntakeResource in arrIntakeNames)");
                 foreach (string inIntakeResource in arrIntakeNames)
                 {
-                    Debug.Log("MultiModeIntake: inIntakeResource - " + inIntakeResource);
+                    //Debug.Log("MultiModeIntake: inIntakeResource - " + inIntakeResource);
                     if (inIntakeResource == resource.resourceName)
                     {
                         removethis = true;
@@ -231,7 +231,7 @@ namespace GTI
                     }
                 }
                 //If the resource belongs to the intake, then remove it
-                Debug.Log("MultiModeIntake: currentPart.Resources.Remove - " + removethis);
+                //Debug.Log("MultiModeIntake: currentPart.Resources.Remove - " + removethis);
                 if (removethis == true) { currentPart.Resources.Remove(resource); }
                 removethis = false;
             }
@@ -245,7 +245,7 @@ namespace GTI
             IntakeResource.AddValue("maxAmount", Single.Parse(resMaxAmount));
 
             //Add the resources
-            Debug.Log("MultiModeIntake: Add Resource");
+            //Debug.Log("MultiModeIntake: Add Resource");
             currentPart.AddResource(IntakeResource);
             IntakeResource.ClearNodes();
             IntakeResource.ClearValues();
