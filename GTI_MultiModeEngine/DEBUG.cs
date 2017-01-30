@@ -20,6 +20,10 @@ namespace GTI
             //System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
             //float Density = propList[selectedPropellant].propDensity;
             //int i = 0;
+            
+            
+            
+            
 
             foreach (var moduleEngine in ModuleEngines)
             {

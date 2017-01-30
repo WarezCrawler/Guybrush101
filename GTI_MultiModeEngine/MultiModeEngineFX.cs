@@ -9,7 +9,7 @@ This module targets "ModuleEnginesFX" modules for engine switching
 
 namespace GTI
 {
-    partial class GTI_MultiModeEngineFX : PartModule                //, IPartCostModifier
+    partial class GTI_MultiModeEngineFX : PartModule, IPartCostModifier
     {
         //private string _thismoduleName = "GTI_MultiModeEngineFX";
 
@@ -75,7 +75,7 @@ namespace GTI
         public override void OnStartFinished(StartState state)
         {
             //File path
-            Debug.Log("GTI_MultiModeEngineFX dll path: " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
+            //Debug.Log("GTI_MultiModeEngineFX dll path: " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
             //string assemblyFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             //string xmlFileName = Path.Combine(assemblyFolder, "AggregatorItems.xml");
 
@@ -238,6 +238,9 @@ namespace GTI
 
         public override void OnLoad(ConfigNode node)
         {
+
+            //onTestEvent = new EventData<>
+
             //base.OnLoad(node);
             //ConfigNode ThrottleISPCurveNode = node.GetNode("ThrottleISPCurve");
             //FloatCurve ThrottleISPFloatCurve = new FloatCurve();
@@ -416,6 +419,7 @@ namespace GTI
                 }
             }
 
+
         } //END OF updatePropulsion()
 
 
@@ -445,27 +449,60 @@ namespace GTI
             }
         }
 
-        //public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
-        //{
-        //    return UpdateCost();
-        //    //part.GetModuleCosts(10000f);
-        //    //throw new NotImplementedException();
-        //}
-        //public float UpdateCost()
-        //{
-        //    try
-        //    {
-        //        return engineList[selectedPropulsion].AddedCost;
-        //    }
-        //    catch
-        //    {
-        //        return 0f;
-        //    }
-        //}
+        public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
+        {
+            Debug.Log("System.Environment.StackTrace\n" + System.Environment.StackTrace);
+            Debug.Log("UnityEngine.StackTraceUtility.ExtractStackTrace()\n" + UnityEngine.StackTraceUtility.ExtractStackTrace());
+            return UpdateCost();
+            //part.GetModuleCosts(10000f);
+            //throw new NotImplementedException();
+        }
+        public float UpdateCost()
+        {
+            try
+            {
+                if (HighLogic.LoadedSceneIsEditor)
+                {
+                    Debug.Log("UpdateCost() in LoadedSceneIsEditor");
+                    //return engineList[selectedPropulsion].AddedCost;
+                    return 100000f + selectedPropulsion;
+                }
+                else
+                {
+                    Debug.Log("UpdateCost() in NOT LoadedSceneIsEditor");
+                    return 11f;
+                }
+            }
+            catch
+            {
+                Debug.LogError("UpdateCost() Error Catch");
+                return 11111f;
+            }
+        }
 
-        //public ModifierChangeWhen GetModuleCostChangeWhen()
-        //{
-        //    return ModifierChangeWhen.FIXED;
-        //}
+        public ModifierChangeWhen GetModuleCostChangeWhen()
+        {
+            Debug.Log("GetModuleCostChangeWhen()");
+            return ModifierChangeWhen.FIXED;
+            //try
+            //{
+            //    if (HighLogic.LoadedSceneIsEditor)
+            //    {
+            //        Debug.Log("GetModuleCostChangeWhen() in LoadedSceneIsEditor");
+            //        //return ModifierChangeWhen.CONSTANTLY;
+            //        return ModifierChangeWhen.FIXED;
+            //    }
+            //    else
+            //    {
+            //        Debug.Log("GetModuleCostChangeWhen() in NOT LoadedSceneIsEditor");
+            //        return ModifierChangeWhen.FIXED;
+            //    }
+            //}
+            //catch
+            //{
+            //    Debug.LogError("GetModuleCostChangeWhen() Error Catch");
+            //    return ModifierChangeWhen.FIXED;
+            //}
+        }
     }
 }

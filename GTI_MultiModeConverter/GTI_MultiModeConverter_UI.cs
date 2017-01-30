@@ -1,6 +1,7 @@
 ﻿//using System.Collections.Generic;
 using System.Collections;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 //using GTI.GenericFunctions;
 //using System;
@@ -134,7 +135,7 @@ namespace GTI
                 strOutInfo.AppendLine(output.ResourceName + " (" + output.Ratio + ")");
             }
 
-            Debug.Log("\nGTI_MultiModeConverter:\n" + strOutInfo.ToString());
+            //Debug.Log("\nGTI_MultiModeConverter:\n" + strOutInfo.ToString());
 
             //Default position and switch to user defined position
             ScreenMessageStyle position = ScreenMessageStyle.UPPER_CENTER;
@@ -293,11 +294,14 @@ namespace GTI
         #endregion
 
         #region ModuleAnimationGroup UI
+        //private float AnimLength;
+
         [KSPEvent(active = false, guiActive = false, guiActiveEditor = false, guiName = "Deploy")]
         public void ModuleAnimationGroupEvent()
         {
             float AnimLength;
 
+            #region tests
             //Debug.Log("ModuleAnimationGroupEvent fired");
             //Animation Anim = part.FindModelAnimator("Deploy");            //Hardcoded animation
             //Debug.Log("Animation exists: " + (Anim != null));
@@ -308,6 +312,7 @@ namespace GTI
             //try { Debug.Log(".isPlaying " + Anim.isPlaying); } catch { Debug.LogError(".isPlaying failed"); }
 
             //Debug.Log("Anim.isPlaying " + Anim.isPlaying.ToString());
+            #endregion
 
             try { AnimLength = Anim.clip.length; } catch { AnimLength = 1f; }
 
@@ -338,7 +343,13 @@ namespace GTI
                     chooseField.guiActive = availableInFlight;
 
                     //Debug.Log("updateConverter in 'ModuleAnimationGroupEvent'");
-                    StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.05f));
+                    //StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.05f));
+                    //Thread parallelThread = new Thread(new ThreadStart(threadExecution));
+
+                    //Thread parallelThread = new Thread(new ThreadStart(threadExecution));
+
+                    Thread parallelThread = new Thread(() => threadExecution(AnimLength, 0.005f));
+                    parallelThread.Start();
                 }
             }
             catch
@@ -351,12 +362,19 @@ namespace GTI
             }
         }
 
+        //private void threadExecution()
+        private void threadExecution(float starttime, float waitingtime)
+        {
+            //StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.005f));
+            StartCoroutine(ModuleAnimationGroupEventCoroutine(starttime, waitingtime));
+        }
+
         private IEnumerator ModuleAnimationGroupEventCoroutine(float starttime, float waitingtime)
         {
             //Debug.Log("Start of Coroutine");
             yield return new WaitForSeconds(starttime);
             _InvokeCounter = 0;
-            while (_InvokeCounter++ < 60)
+            while (_InvokeCounter++ < 600)
             {
                 //Debug.Log("Coroutine Looping " + _InvokeCounter);
 

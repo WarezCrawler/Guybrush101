@@ -308,7 +308,7 @@ namespace GTI
             arrtargetDrawGuage      = engineModeList[selectedMode].propDrawGauge.Split(',');
             //Debug.Log("arrtargetResourceFlowMode");
             arrtargetResourceFlowMode = ResourceFlowModeEmpty ? new string[0] : engineModeList[selectedMode].resourceFlowMode.Split(',');
-
+            
 
             //Debug.Log("BEFORE for (int i = 0; i < arrtargetPropellants.Length; i++)");
             //Create new propellent nodes by looping them in.

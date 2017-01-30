@@ -24,7 +24,7 @@ namespace GTI.GenericFunctions
         /// <param name="Density"></param>
         /// <param name="ISP"></param>
         /// <returns></returns>
-        public float calcThrust(float fuelRate, float Density, float ISP)   // Thrust = L/s * kg/L * m/s^2 *s = kg * m/s^2 = N
+        public float calcThrustFromFuelRate(float fuelRate, float Density, float ISP)   // Thrust = L/s * kg/L * m/s^2 *s = kg * m/s^2 = N
         {
             _Thrust = fuelRate * Density * _gravity * ISP;
             return _Thrust;
