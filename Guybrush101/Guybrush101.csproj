@@ -62,21 +62,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\EngineClassSwitch_2_Debug.cs" />
-    <Compile Include="Core\EngineClassSwitch_2_UI.cs" />
-    <Compile Include="Core\EngineClassSwitch_2.cs" />
-    <Compile Include="Core\EngineClassSwitch_Effects.cs" />
+    <None Include="Core\EngineClassSwitch_2_Debug.cs" />
+    <None Include="Core\EngineClassSwitch_2_UI.cs" />
+    <None Include="Core\EngineClassSwitch_2.cs" />
+    <None Include="Core\EngineClassSwitch_Effects.cs" />
     <None Include="Other\DockingAlignmentIndicator.cs" />
-    <Compile Include="ISRU\ISRUSwitch.cs" />
-    <Compile Include="Scenarios\GTES_ScenarioModule.cs" />
-    <Compile Include="UI_Examples\TEST_MODULE.cs" />
-    <Compile Include="UI_Examples\UI_CHOOSEOPTION.cs" />
-    <Compile Include="Core\IntakeSwitch_UI.cs" />
-    <Compile Include="Core\IntakeSwitch.cs" />
-    <Compile Include="Core\EngineClassSwitch_UI.cs" />
+    <None Include="ISRU\ISRUSwitch.cs" />
+    <None Include="Scenarios\GTES_ScenarioModule.cs" />
+    <None Include="UI_Examples\TEST_MODULE.cs" />
+    <None Include="UI_Examples\UI_CHOOSEOPTION.cs" />
+    <None Include="Core\IntakeSwitch_UI.cs" />
+    <None Include="Core\IntakeSwitch.cs" />
+    <None Include="Core\EngineClassSwitch_UI.cs" />
     <None Include="Utilities\GenericFunctions.cs" />
     <None Include="Utilities_CustomTypes\PropellantList.cs" />
-    <Compile Include="Core\EngineClassSwitch.cs" />
+    <None Include="Core\EngineClassSwitch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,8 +86,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program SSD\KSP 1.2.2_Cur\GameData\GTIndustries\Plugins\$(TargetName).dll"
-copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTIndustries\Plugins\$(TargetName).dll"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
