@@ -1,8 +1,9 @@
 ﻿//using System.Collections.Generic;
 using System.Collections;
 using System.Text;
-using System.Threading;
 using UnityEngine;
+using System.Threading;
+//using System.Threading.Tasks;     //Needs .Net 4.0+
 //using GTI.GenericFunctions;
 //using System;
 
@@ -344,11 +345,8 @@ namespace GTI
 
                     //Debug.Log("updateConverter in 'ModuleAnimationGroupEvent'");
                     //StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.05f));
-                    //Thread parallelThread = new Thread(new ThreadStart(threadExecution));
 
-                    //Thread parallelThread = new Thread(new ThreadStart(threadExecution));
-
-                    Thread parallelThread = new Thread(() => threadExecution(AnimLength, 0.005f));
+                    Thread parallelThread = new Thread(() => threadExecution(AnimLength, 0.001f));
                     parallelThread.Start();
                 }
             }
@@ -376,7 +374,7 @@ namespace GTI
             _InvokeCounter = 0;
             while (_InvokeCounter++ < 600)
             {
-                //Debug.Log("Coroutine Looping " + _InvokeCounter);
+                Debug.Log("Coroutine Looping " + _InvokeCounter);
 
                 //Debug.Log("Invoking in 'ModuleAnimationGroupEventInvoke'");
                 if (Anim.isPlaying == false)
