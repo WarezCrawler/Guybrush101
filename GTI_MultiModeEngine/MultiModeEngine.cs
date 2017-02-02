@@ -139,12 +139,14 @@ namespace GTI
             }
             */
 
+            /*
             for (int i = 0; i < engineModeList.Count; i++)
             {
                 try { Debug.Log("engineModeList[" + i + "] - atmosphereCurve:\n" + engineModeList[i].atmosphereCurve.ToString()); } catch (System.Exception) { Debug.LogError("engineModeList[" + i + "] - atmosphereCurve:\n" + engineModeList[i].atmosphereCurve.ToString() + " throw"); }
                 if (engineModeList[i].velCurve != null) { try { Debug.Log("engineModeList[" + i + "] - velCurve:\n" + engineModeList[i].velCurve.ToString()); } catch (System.Exception) { Debug.LogError("engineModeList[" + i + "] - velCurve:\n engineModeList[i].velCurve.ToString() throw"); } } else { Debug.Log("null value detected"); }
                 try { Debug.Log("engineModeList[" + i + "] - atmCurve:\n" + engineModeList[i].atmCurve.ToString()); } catch (System.Exception) { Debug.LogError("engineModeList[" + i + "] - atmCurve:\n engineModeList[i].atmCurve.ToString() throw"); }
             }
+            */
 
         }
 
@@ -348,7 +350,7 @@ namespace GTI
             }
             //Update the engine with new propellant configuration
             //NOTICE: The original propellant nodes are overwritten, so we do not need to delete them
-            Debug.Log("Before ConfigNode Load\n" + newPropNode.ToString());
+            //Debug.Log("Before ConfigNode Load\n" + newPropNode.ToString());
             ModuleEngines.Load(newPropNode);
             #endregion
 
