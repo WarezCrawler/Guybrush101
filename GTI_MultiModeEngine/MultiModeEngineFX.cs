@@ -9,7 +9,7 @@ This module targets "ModuleEnginesFX" modules for engine switching
 
 namespace GTI
 {
-    partial class GTI_MultiModeEngineFX : PartModule, IPartCostModifier
+    partial class GTI_MultiModeEngineFX : PartModule        //, IPartCostModifier
     {
         //private string _thismoduleName = "GTI_MultiModeEngineFX";
 
@@ -451,8 +451,8 @@ namespace GTI
 
         public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
         {
-            Debug.Log("System.Environment.StackTrace\n" + System.Environment.StackTrace);
-            Debug.Log("UnityEngine.StackTraceUtility.ExtractStackTrace()\n" + UnityEngine.StackTraceUtility.ExtractStackTrace());
+            Debug.Log("[GTI] System.Environment.StackTrace\n" + System.Environment.StackTrace);
+            Debug.Log("[GTI] UnityEngine.StackTraceUtility.ExtractStackTrace()\n" + UnityEngine.StackTraceUtility.ExtractStackTrace());
             return UpdateCost();
             //part.GetModuleCosts(10000f);
             //throw new NotImplementedException();
@@ -463,26 +463,26 @@ namespace GTI
             {
                 if (HighLogic.LoadedSceneIsEditor)
                 {
-                    Debug.Log("UpdateCost() in LoadedSceneIsEditor");
+                    Debug.Log("[GTI] UpdateCost() in LoadedSceneIsEditor");
                     //return engineList[selectedPropulsion].AddedCost;
                     return 100000f + selectedPropulsion;
                 }
                 else
                 {
-                    Debug.Log("UpdateCost() in NOT LoadedSceneIsEditor");
+                    Debug.Log("[GTI] UpdateCost() in NOT LoadedSceneIsEditor");
                     return 11f;
                 }
             }
             catch
             {
-                Debug.LogError("UpdateCost() Error Catch");
+                Debug.LogError("[GTI] UpdateCost() Error Catch");
                 return 11111f;
             }
         }
 
         public ModifierChangeWhen GetModuleCostChangeWhen()
         {
-            Debug.Log("GetModuleCostChangeWhen()");
+            Debug.Log("[GTI] GetModuleCostChangeWhen()");
             return ModifierChangeWhen.FIXED;
             //try
             //{

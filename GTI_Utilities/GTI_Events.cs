@@ -17,7 +17,7 @@ namespace GTI.Events
 
         private void Awake()
         {
-            Debug.Log("GTI Event 'onThrottleChange' Created");
+            Debug.Log("[GTI] Event 'onThrottleChange' Created");
             if (onThrottleChange == null) onThrottleChange = new EventVoid("onThrottleChange");
         }
     }
@@ -44,7 +44,7 @@ namespace GTI.Events
 
             if (onThrottleChangeEvent != null)
             {
-                Debug.Log("Adding GTI (debug) to onThrottleChange");
+                Debug.Log("[GTI] Adding GTI (debug) to onThrottleChange");
                 onThrottleChangeEvent.Add(EventDebugger);
             }
             else Destroy(this.gameObject);
@@ -188,7 +188,7 @@ namespace GTI.Events
 
         private void EventDebugger()
         {
-            Debug.Log("GTI onThrottle Event Raised");
+            Debug.Log("[GTI] onThrottle Event Raised");
         }
         #endregion
 
