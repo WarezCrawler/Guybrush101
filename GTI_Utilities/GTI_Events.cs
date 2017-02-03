@@ -43,7 +43,8 @@ namespace GTI.Events
             if (!bool.TryParse(EventConfig.GetValue("initEvent"), out initEvent)) initEvent = true;
 
             onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
-            
+
+            #region previous subscription to event and debugging
             //if (onThrottleChangeEvent != null)
             //{
             //    Debug.Log("[GTI] Adding GTI (debug) to onThrottleChange");
@@ -51,7 +52,7 @@ namespace GTI.Events
             //}
             //else Destroy(this.gameObject);
 
-            #region previous subscription to event
+
             //onSceneChange = GameEvents.FindEvent<EventData<GameScenes>>("onGameSceneLoadRequested");
             //if (onSceneChange != null)
             //{
@@ -92,6 +93,8 @@ namespace GTI.Events
         private void GTI_inFlightEventDetector()        //For threaded execution --> Detects the basis for event
         {
             Debug.Log("[GTI] GTI_inFlightEventDetector Started in new thread");
+
+            //Declarations and get configs
             int EventCheckFreqIdle, EventCheckFreqActive;
             if (!int.TryParse(EventConfig.GetValue("EventCheckFreqIdle"),   out EventCheckFreqIdle  ))      EventCheckFreqIdle   = 500;
             if (!int.TryParse(EventConfig.GetValue("EventCheckFreqActive"), out EventCheckFreqActive))      EventCheckFreqActive = 100;
@@ -101,7 +104,7 @@ namespace GTI.Events
             System.Diagnostics.Stopwatch stopwatch;
             stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            Debug.Log("[GTI] Event thread GTI_inFlightEventDetector started\nEventCheckFreqIdle: " + EventCheckFreqIdle + "\nEventCheckFreqActive: " + EventCheckFreqActive);
+            Debug.Log("[GTI] Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: " + EventCheckFreqIdle + "\n\tEventCheckFreqActive: " + EventCheckFreqActive);
             while (EventDetectorRunning)
             {
                 if (savedThrottle != FlightInputHandler.state.mainThrottle)
@@ -117,6 +120,7 @@ namespace GTI.Events
                 //if (!HighLogic.LoadedSceneIsFlight) EventDetectorRunning = false;
                 Thread.Sleep(wait);
             }
+
             stopwatch.Stop();
             var ts = stopwatch.Elapsed;
             string elapsedTime = string.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
@@ -208,11 +212,20 @@ namespace GTI.Events
 
         private ConfigNode GetConfigurationsCFG()
         {
-            ConfigNode node = ConfigNode.Load(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg");
+            ConfigNode node;
+            try
+            {
+                node = ConfigNode.Load(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg");
 
-            //Debug.Log("GTI ConfigNode\n" + node.ToString());
-            node = node.GetNode("EventConfig");
-            //Debug.Log("GTI ConfigNode\n" + node.ToString());
+                //Debug.Log("GTI ConfigNode\n" + node.ToString());
+                node = node.GetNode("EventConfig");
+                //Debug.Log("GTI ConfigNode\n" + node.ToString());
+            }
+            catch
+            {
+                Debug.LogError("[GTI] " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg NOT FOUND");
+                node = new ConfigNode();
+            }
 
             return node;
         }
