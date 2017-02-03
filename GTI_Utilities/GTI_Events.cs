@@ -34,21 +34,25 @@ namespace GTI.Events
         //private EventData<GameScenes> onSceneChange;
         public static bool EventDetectorRunning = false;
         private bool initEvent;
+        private ConfigNode EventConfig;
 
         private void Awake()
         {
-            ConfigNode EventConfig;
+            //Load Config
+            EventConfig = GetConfigurationsCFG();
+            if (!bool.TryParse(EventConfig.GetValue("initEvent"), out initEvent)) initEvent = true;
 
-            //onSceneChange = GameEvents.FindEvent<EventData<GameScenes>>("onGameSceneLoadRequested");
             onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
+            
+            //if (onThrottleChangeEvent != null)
+            //{
+            //    Debug.Log("[GTI] Adding GTI (debug) to onThrottleChange");
+            //    onThrottleChangeEvent.Add(EventDebugger);
+            //}
+            //else Destroy(this.gameObject);
 
-            if (onThrottleChangeEvent != null)
-            {
-                Debug.Log("[GTI] Adding GTI (debug) to onThrottleChange");
-                onThrottleChangeEvent.Add(EventDebugger);
-            }
-            else Destroy(this.gameObject);
-
+            #region previous subscription to event
+            //onSceneChange = GameEvents.FindEvent<EventData<GameScenes>>("onGameSceneLoadRequested");
             //if (onSceneChange != null)
             //{
             //    Debug.Log("Adding GTI to onGameSceneLoadRequested");
@@ -56,11 +60,8 @@ namespace GTI.Events
             //}
 
             //Thread EventThread = new Thread(() => UpdateEvent());
+            #endregion
 
-            //Load Config
-            EventConfig = GetConfigurationsCFG();
-
-            if (!bool.TryParse(EventConfig.GetValue("initEvent"), out initEvent)) initEvent = true;
             //Starting the thread which will continuously check and raise the Throttle Event if interaction was detected
             startThread();
         }
@@ -91,22 +92,27 @@ namespace GTI.Events
         private void GTI_inFlightEventDetector()        //For threaded execution --> Detects the basis for event
         {
             Debug.Log("[GTI] GTI_inFlightEventDetector Started in new thread");
-            int wait = 500;
+            int EventCheckFreqIdle, EventCheckFreqActive;
+            if (!int.TryParse(EventConfig.GetValue("EventCheckFreqIdle"),   out EventCheckFreqIdle  ))      EventCheckFreqIdle   = 500;
+            if (!int.TryParse(EventConfig.GetValue("EventCheckFreqActive"), out EventCheckFreqActive))      EventCheckFreqActive = 100;
+            int wait = EventCheckFreqIdle;
+
+            //Stopwatch for timing how long the event checking is running
             System.Diagnostics.Stopwatch stopwatch;
-            //EventDetectorRunning = true;
             stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            Debug.Log("[GTI] Event thread GTI_inFlightEventDetector started");
+            Debug.Log("[GTI] Event thread GTI_inFlightEventDetector started\nEventCheckFreqIdle: " + EventCheckFreqIdle + "\nEventCheckFreqActive: " + EventCheckFreqActive);
             while (EventDetectorRunning)
             {
                 if (savedThrottle != FlightInputHandler.state.mainThrottle)
                 {
                     //run code on throttle change here.
                     savedThrottle = FlightInputHandler.state.mainThrottle;
-                    Debug.Log("[GTI] Throttle Changed to " + savedThrottle);
+                    //Debug.Log("[GTI] Throttle Changed to " + savedThrottle);
                     onThrottleChangeEvent.Fire();
-                    wait = 100;
+                    wait = EventCheckFreqActive;
                 }
+                else { wait = EventCheckFreqIdle; }
 
                 //if (!HighLogic.LoadedSceneIsFlight) EventDetectorRunning = false;
                 Thread.Sleep(wait);
@@ -191,11 +197,7 @@ namespace GTI.Events
             Debug.Log("[GTI] onThrottle Event Raised");
         }
         #endregion
-
-
-
-
-
+        
         private void OnDestroy()
         {
             Debug.Log("[GTI] GTI_Events destroyed");
@@ -209,9 +211,7 @@ namespace GTI.Events
             ConfigNode node = ConfigNode.Load(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg");
 
             //Debug.Log("GTI ConfigNode\n" + node.ToString());
-
             node = node.GetNode("EventConfig");
-
             //Debug.Log("GTI ConfigNode\n" + node.ToString());
 
             return node;

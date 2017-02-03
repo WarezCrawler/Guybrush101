@@ -71,6 +71,11 @@
     <Compile Include="Utilities_CustomTypes\engineMultiModeList.cs" />
     <Compile Include="Utilities_CustomTypes\PropellantList.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="GTI_Config.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program SSD\KSP 1.2.2_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
