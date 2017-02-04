@@ -320,7 +320,7 @@ namespace GTI
 
                 #region Split into Arrays
                 arrEngineID = engineID.Trim().Split(';');
-                GUIengineIDEmpty = Util.ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
+                GUIengineIDEmpty = Utilities.ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
                 //AddedCostEmpty = Util.ArraySplitEvaluate(AddedCost, out arrAddedCosts, ';');
                 //AddedCostEmpty = arrAddedCosts.Length == arrEngineID.Length ? AddedCostEmpty : false;       //Check if costs have been defined as expected
                 #endregion

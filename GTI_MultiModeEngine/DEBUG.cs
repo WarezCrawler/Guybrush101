@@ -68,13 +68,13 @@ namespace GTI
                     if (CurveTimeValue < key.value) { CurveTimeValue = key.value;  }
                     i++;
                 }*/
-                Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.atmosphereCurve.Curve.keys, "atmosphereKeys --> "));
+                Debug.Log(Utilities.KeyFrameGetToCFG(moduleEngine.atmosphereCurve.Curve.keys, "atmosphereKeys --> "));
                 /*Debug.Log(
                     "ISP: " + CurveTimeValue +
                     "\nmaxFuelRate should be: " + Calc.calcFuelFlow(moduleEngine.maxThrust, Density, CurveTimeValue)
                 );*/
-                Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.atmCurve.Curve.keys, "atmCurveKeys --> "));
-                Debug.Log(MiscFx.KeyFrameGetToCFG(moduleEngine.velCurve.Curve.keys, "velCurveKeys --> "));
+                Debug.Log(Utilities.KeyFrameGetToCFG(moduleEngine.atmCurve.Curve.keys, "atmCurveKeys --> "));
+                Debug.Log(Utilities.KeyFrameGetToCFG(moduleEngine.velCurve.Curve.keys, "velCurveKeys --> "));
 
                 Debug.Log(
                     "Events for the following engine" +

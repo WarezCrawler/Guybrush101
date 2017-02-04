@@ -159,7 +159,7 @@ namespace GTI.CustomTypes
 
             try
             { 
-                PhysicsUtilities fx = new PhysicsUtilities();
+                //PhysicsUtilities fx = new PhysicsUtilities();
                 //Debug.Log("Running _propDensity = fx.calcWeightedDensity(_propellants, _propRatios)");
 
                 //Create strings for the calculation
@@ -180,7 +180,7 @@ namespace GTI.CustomTypes
                 }
 
                 //Calculate the weighted density of the propellants
-                _propDensity = fx.calcWeightedDensity(inPropellants, inRatios);
+                _propDensity = PhysicsUtilities.calcWeightedDensity(inPropellants, inRatios);
                 if ( _propDensity > 0 ) { returnSuccessStatus = true; } else { returnSuccessStatus = false; }
 
                 //Debug.Log("_propDensity = fx.calcWeightedDensity(_propellants, _propRatios) is successfull");

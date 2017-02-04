@@ -6,8 +6,8 @@ namespace GTI.GenericFunctions
 {
     public class PhysicsUtilities
     {
-        private float _Thrust, _Density, _ISP, _fuelRate, _fuelFlow, _weightedDensity;
-        private float _gravity = 9.80665f;                                                      //source: http://wiki.kerbalspaceprogram.com/wiki/1.2
+        //private static float _Thrust, _Density, _ISP, _fuelRate, _fuelFlow, _weightedDensity;
+        private static float _gravity = 9.80665f;                                                      //source: http://wiki.kerbalspaceprogram.com/wiki/1.2
 
 
         //Equations:
@@ -24,9 +24,9 @@ namespace GTI.GenericFunctions
         /// <param name="Density"></param>
         /// <param name="ISP"></param>
         /// <returns></returns>
-        public float calcThrustFromFuelRate(float fuelRate, float Density, float ISP)   // Thrust = L/s * kg/L * m/s^2 *s = kg * m/s^2 = N
+        public static float calcThrustFromFuelRate(float fuelRate, float Density, float ISP)   // Thrust = L/s * kg/L * m/s^2 *s = kg * m/s^2 = N
         {
-            _Thrust = fuelRate * Density * _gravity * ISP;
+            float _Thrust = fuelRate * Density * _gravity * ISP;
             return _Thrust;
         }
 
@@ -37,9 +37,9 @@ namespace GTI.GenericFunctions
         /// <param name="fuelFlow"></param>
         /// <param name="ISP"></param>
         /// <returns></returns>
-        public float calcTrustFromfuelFlow(float fuelFlow, float ISP)       // Thrust = Kg/s * m/s^2 * s = Kg * m/s^2 = N
+        public static float calcTrustFromfuelFlow(float fuelFlow, float ISP)       // Thrust = Kg/s * m/s^2 * s = Kg * m/s^2 = N
         {
-            _Thrust = fuelFlow * _gravity * ISP;
+            float _Thrust = fuelFlow * _gravity * ISP;
             return _Thrust;
         }
 
@@ -51,9 +51,9 @@ namespace GTI.GenericFunctions
         /// <param name="fuelRate"></param>
         /// <param name="Density"></param>
         /// <returns></returns>
-        public float calcISP(float Thrust, float fuelRate, float Density)   //ISP = N / (L/s * kg/L * m/s^2) = (kg * m/s^2)/(L/s * kg/L * m/s^2) = s
+        public static float calcISP(float Thrust, float fuelRate, float Density)   //ISP = N / (L/s * kg/L * m/s^2) = (kg * m/s^2)/(L/s * kg/L * m/s^2) = s
         {
-            _ISP = Thrust/(fuelRate * Density * _gravity);
+            float _ISP = Thrust/(fuelRate * Density * _gravity);
             return _ISP;
         }
 
@@ -65,9 +65,9 @@ namespace GTI.GenericFunctions
         /// <param name="Density"></param>
         /// <param name="ISP"></param>
         /// <returns></returns>
-        public float calcFuelRate(float Thrust, float Density, float ISP)   //fuelRate = kg * m/s^2 / (kg/L * m/s^2 * s) = L/s
+        public static float calcFuelRate(float Thrust, float Density, float ISP)   //fuelRate = kg * m/s^2 / (kg/L * m/s^2 * s) = L/s
         {
-            _fuelRate = Thrust / (Density * _gravity * ISP);
+            float _fuelRate = Thrust / (Density * _gravity * ISP);
             return _fuelRate;
         }
 
@@ -81,14 +81,14 @@ namespace GTI.GenericFunctions
         /// <param name="Density"></param>
         /// <param name="ISP"></param>
         /// <returns></returns>
-        public float calcFuelFlow(float Thrust, float ISP)   //fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
+        public static float calcFuelFlow(float Thrust, float ISP)   //fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
         {
-            _fuelFlow = Thrust / (_gravity * ISP);                              //fuelFlow = Thrust / (Gravity * ISP)
+            float _fuelFlow = Thrust / (_gravity * ISP);                              //fuelFlow = Thrust / (Gravity * ISP)
             return _fuelFlow;
         }
-        public float calcFuelFlow(float Thrust, float ISP, float Gravity)   //fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
+        public static float calcFuelFlow(float Thrust, float ISP, float Gravity)   //fuelFlow = kg * m/s^2 / (m/s^2 * s) = kg/s
         {
-            _fuelFlow = Thrust / (Gravity * ISP);                              //fuelFlow = Thrust / (Gravity * ISP)
+            float _fuelFlow = Thrust / (Gravity * ISP);                              //fuelFlow = Thrust / (Gravity * ISP)
             return _fuelFlow;
         }
 
@@ -99,9 +99,9 @@ namespace GTI.GenericFunctions
         /// <param name="fuelFlow">fuelFlow = Kg/s</param>
         /// <param name="Density">Density = kg/L</param>
         /// <returns></returns>
-        public float calcFuelRateFromFuelFlow(float fuelFlow, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
+        public static float calcFuelRateFromFuelFlow(float fuelFlow, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
         {
-            _fuelRate = fuelFlow / Density;
+            float _fuelRate = fuelFlow / Density;
             return _fuelRate;
         }
 
@@ -112,10 +112,10 @@ namespace GTI.GenericFunctions
         /// <param name="fuelRate"></param>
         /// <param name="Density"></param>
         /// <returns></returns>
-        public float calcFuelFlowFromFuelRate(float fuelRate, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
+        public static float calcFuelFlowFromFuelRate(float fuelRate, float Density)    //fuelFlow = Kg/s   //FuelRate = L/s    //Density = kg/L
         {
-            _fuelFlow = fuelRate * Density;
-            return _fuelRate;
+            float _fuelFlow = fuelRate * Density;
+            return _fuelFlow;
         }
 
         /// <summary>
@@ -126,9 +126,9 @@ namespace GTI.GenericFunctions
         /// <param name="fuelRate"></param>
         /// <param name="ISP"></param>
         /// <returns></returns>
-        public float calcDensity(float Thrust, float fuelRate, float ISP)   //Density = kg * m/s^2 / (L/s * m/s^2 * s) = kg/s
+        public static float calcDensity(float Thrust, float fuelRate, float ISP)   //Density = kg * m/s^2 / (L/s * m/s^2 * s) = kg/s
         {
-            _Density = Thrust / (fuelRate * _gravity * ISP);
+            float _Density = Thrust / (fuelRate * _gravity * ISP);
             return _Density;
         }
         /// <summary>
@@ -137,10 +137,10 @@ namespace GTI.GenericFunctions
         /// <param name="Resources">resource name</param>
         /// <param name="Ratios">resource ratio</param>
         /// <returns></returns>
-        public float calcWeightedDensity(string Resources, string Ratios)
+        public static float calcWeightedDensity(string Resources, string Ratios)
         {
             string[] arrResources, arrRatios;
-            float weightTotal;
+            float weightTotal, _weightedDensity;
 
             //Debug.Log("calcWeightedDensity: split arrays");
             //Parse strings into arrays
@@ -191,7 +191,7 @@ namespace GTI.GenericFunctions
         /// Used to override the default gravity constant of 9.80665. If set below 0 the this returns the default.
         /// Therefore it is easy enough to reset to default by setting "gravity = -1".
         /// </summary>
-        public float gravity        //  m/s^s
+        public static float gravity        //  m/s^s
         {
             get
             { return _gravity; }
@@ -208,17 +208,13 @@ namespace GTI.GenericFunctions
 
     public partial class Utilities
     {
-
-
-
-
         /// <summary>
         /// Function for creating correctly formatted KeyFrames from specifically formatted strings. Format of inKey is "0 0 0 0;1 1 1 1;2 2 2 2" -- (float time, float value, float inTangent, float outTangent)
         /// </summary>
         /// <param name="inKeys"></param>
         /// <param name="iniKeys"></param>
         /// <returns></returns>
-        public Keyframe[] KeyFrameFromString(string inKeys, Keyframe[] iniKeys)
+        public static Keyframe[] KeyFrameFromString(string inKeys, Keyframe[] iniKeys)
         {
             //Format of inKey is
             // "0 0 0 0;1 1 1 1;2 2 2 2"
@@ -265,7 +261,7 @@ namespace GTI.GenericFunctions
         /// <param name="inKeyFrameKeys"></param>
         /// <param name="Heading"></param>
         /// <returns></returns>
-        public string KeyFrameGetToCFG(Keyframe[] inKeyFrameKeys, string Heading = "")
+        public static string KeyFrameGetToCFG(Keyframe[] inKeyFrameKeys, string Heading = "")
         {
             System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
 
@@ -290,7 +286,7 @@ namespace GTI.GenericFunctions
         /// </summary>
         /// <param name="inKeyFrameKeys"></param>
         /// <returns></returns>
-        public float KeyFrameGetMaxValue(Keyframe[] inKeyFrameKeys)
+        public static float KeyFrameGetMaxValue(Keyframe[] inKeyFrameKeys)
         {
             float MaxValue = 0;
 
@@ -312,7 +308,7 @@ namespace GTI.GenericFunctions
         /// <param name="_outputArray"></param>
         /// <param name="_separator"></param>
         /// <returns></returns>
-        public bool ArraySplitEvaluate(string _input, out string[] _outputArray, char _separator)
+        public static bool ArraySplitEvaluate(string _input, out string[] _outputArray, char _separator)
         {
             bool isEmpty;
 
@@ -335,7 +331,7 @@ namespace GTI.GenericFunctions
         /// <param name="_input"></param>
         /// <param name="_output"></param>
         /// <returns></returns>
-        public bool StringEvaluate(string _input, out string _output)
+        public static bool StringEvaluate(string _input, out string _output)
         {
             bool isEmpty;
 

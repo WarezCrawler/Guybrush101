@@ -87,11 +87,11 @@ namespace GTI
         //        ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
 
         //        #region Parse Arrays
-        //        resourceNamesEmpty = Util.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
-        //        checkForOxygenEmpty = Util.ArraySplitEvaluate(checkForOxygen, out arrcheckForOxygen, ';');
+        //        resourceNamesEmpty = Utilities.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
+        //        checkForOxygenEmpty = Utilities.ArraySplitEvaluate(checkForOxygen, out arrcheckForOxygen, ';');
         //        #endregion
         //        #region Parse Strings
-        //        resMaxAmountEmpty = Util.StringEvaluate(resMaxAmount, out resMaxAmount);
+        //        resMaxAmountEmpty = Utilities.StringEvaluate(resMaxAmount, out resMaxAmount);
 
         //        //If the resMaxAmount is empty, try getting the maxAmount of first intake. If fails, then return a simple 2 Units.
         //        Debug.Log("MultiModeIntake: resMaxAmount");
@@ -123,16 +123,16 @@ namespace GTI
             if (!_settingsInitialized)
             {
                 //Debug.Log("MultiModeIntake: Loading Settings (2)");
-                Utilities Util = new Utilities();
+                //Utilities Util = new Utilities();
                 ModuleIntakes = part.FindModulesImplementing<ModuleResourceIntake>();
 
                 #region Parse Arrays
                 //Debug.Log("MultiModeIntake: Parse Arrays");
-                resourceNamesEmpty = Util.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
-                checkForOxygenEmpty = Util.ArraySplitEvaluate(checkForOxygen, out arrcheckForOxygen, ';');
+                resourceNamesEmpty = Utilities.ArraySplitEvaluate(resourceNames, out arrIntakeNames, ';');
+                checkForOxygenEmpty = Utilities.ArraySplitEvaluate(checkForOxygen, out arrcheckForOxygen, ';');
                 #endregion
                 #region Parse Strings
-                resMaxAmountEmpty = Util.StringEvaluate(resMaxAmount, out resMaxAmount);
+                resMaxAmountEmpty = Utilities.StringEvaluate(resMaxAmount, out resMaxAmount);
 
                 //If the resMaxAmount is empty, try getting the maxAmount of first intake. If fails, then return a simple 2 Units.
                 //Debug.Log("MultiModeIntake: resMaxAmount");

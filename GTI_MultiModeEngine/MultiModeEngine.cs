@@ -154,9 +154,9 @@ namespace GTI
         {
             if (!_settingsInitialized)
             {
-                Utilities Util = new Utilities();
+                //Utilities Util = new Utilities();
                 //Load the part module configurations for GTI_MultiModeEngine
-                if (MultiModeConfigNode == null && loadConfigNode == true) { MultiModeConfigNode = Util.GetPartModuleConfig(this.part, "MODULE", "name", "GTI_MultiModeEngine"); /*Debug.Log("\n" + MultiModeConfigNode.ToString());*/ } else { Debug.Log("Allready loaded\n" + MultiModeConfigNode.ToString()); }
+                if (MultiModeConfigNode == null && loadConfigNode == true) { MultiModeConfigNode = Utilities.GetPartModuleConfig(this.part, "MODULE", "name", "GTI_MultiModeEngine"); /*Debug.Log("\n" + MultiModeConfigNode.ToString());*/ } else { Debug.Log("Allready loaded\n" + MultiModeConfigNode.ToString()); }
                 //Debug.Log("GTI_MultiModeEngine - ConfigNode Loaded");
 
                 #region Parse settings
@@ -167,27 +167,27 @@ namespace GTI
                 string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
 
                 //Propellant level
-                GUIengineModeNamesEmpty     = Util.ArraySplitEvaluate(GUIengineModeNames    , out arrGUIengineModeNames     , ';');
-                PropellantNamesEmpty        = Util.ArraySplitEvaluate(propellantNames       , out arrPropellantNames        , ';');
-                PropellantRatiosEmpty       = Util.ArraySplitEvaluate(propellantRatios      , out arrPropellantRatios       , ';');
+                GUIengineModeNamesEmpty     = Utilities.ArraySplitEvaluate(GUIengineModeNames    , out arrGUIengineModeNames     , ';');
+                PropellantNamesEmpty        = Utilities.ArraySplitEvaluate(propellantNames       , out arrPropellantNames        , ';');
+                PropellantRatiosEmpty       = Utilities.ArraySplitEvaluate(propellantRatios      , out arrPropellantRatios       , ';');
 
-                PropIgnoreForISPEmpty       = Util.ArraySplitEvaluate(propIgnoreForISP      , out arrPropIgnoreForISP       , ';');
-                PropDrawGaugeEmpty          = Util.ArraySplitEvaluate(propDrawGauge         , out arrPropDrawGauge          , ';');
-                ResourceFlowModeEmpty       = Util.ArraySplitEvaluate(resourceFlowMode      , out arrResourceFlowMode       , ';');
+                PropIgnoreForISPEmpty       = Utilities.ArraySplitEvaluate(propIgnoreForISP      , out arrPropIgnoreForISP       , ';');
+                PropDrawGaugeEmpty          = Utilities.ArraySplitEvaluate(propDrawGauge         , out arrPropDrawGauge          , ';');
+                ResourceFlowModeEmpty       = Utilities.ArraySplitEvaluate(resourceFlowMode      , out arrResourceFlowMode       , ';');
 
-                MaxThrustEmpty              = Util.ArraySplitEvaluate(maxThrust             , out arrMaxThrust              , ';');
+                MaxThrustEmpty              = Utilities.ArraySplitEvaluate(maxThrust             , out arrMaxThrust              , ';');
 
-                HeatProdEmpty               = Util.ArraySplitEvaluate(heatProduction        , out arrHeatProd               , ';');
-                atmChangeFlowsEmpty         = Util.ArraySplitEvaluate(atmChangeFlows        , out arratmChangeFlows         , ';');
+                HeatProdEmpty               = Utilities.ArraySplitEvaluate(heatProduction        , out arrHeatProd               , ';');
+                atmChangeFlowsEmpty         = Utilities.ArraySplitEvaluate(atmChangeFlows        , out arratmChangeFlows         , ';');
 
-                UseEngineResponseTimeEmpty      = Util.ArraySplitEvaluate(useEngineResponseTime     , out arrUseEngineResponseTime      , ';');
-                EngineAccelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineAccelerationSpeed   , out arrEngineAccelerationSpeed    , ';');
-                EngineDecelerationSpeedEmpty    = Util.ArraySplitEvaluate(engineDecelerationSpeed   , out arrEngineDecelerationSpeed    , ';');
+                UseEngineResponseTimeEmpty      = Utilities.ArraySplitEvaluate(useEngineResponseTime     , out arrUseEngineResponseTime      , ';');
+                EngineAccelerationSpeedEmpty    = Utilities.ArraySplitEvaluate(engineAccelerationSpeed   , out arrEngineAccelerationSpeed    , ';');
+                EngineDecelerationSpeedEmpty    = Utilities.ArraySplitEvaluate(engineDecelerationSpeed   , out arrEngineDecelerationSpeed    , ';');
 
-                EngineTypesEmpty            = Util.ArraySplitEvaluate(EngineTypes           , out arrEngineTypes            , ';');
+                EngineTypesEmpty            = Utilities.ArraySplitEvaluate(EngineTypes           , out arrEngineTypes            , ';');
 
-                useVelCurvesEmpty           = Util.ArraySplitEvaluate(useVelCurves, out arruseVelCurves, ';');
-                useAtmCurvesEmpty           = Util.ArraySplitEvaluate(useAtmCurves, out arruseAtmCurves, ';');
+                useVelCurvesEmpty           = Utilities.ArraySplitEvaluate(useVelCurves, out arruseVelCurves, ';');
+                useAtmCurvesEmpty           = Utilities.ArraySplitEvaluate(useAtmCurves, out arruseAtmCurves, ';');
 
                 //Get FloatCurves from the part
                 ConfigNode[] atmosphereCurves   = MultiModeConfigNode.GetNodes("atmosphereCurve");
@@ -263,7 +263,7 @@ namespace GTI
         private void updatePropulsion(bool silentUpdate = false)
         {
             #region declarations
-            PhysicsUtilities EngineCalc = new PhysicsUtilities();
+            //PhysicsUtilities EngineCalc = new PhysicsUtilities();
             Utilities Util = new Utilities();
 
             //Derive selectedMode from ChooseOption
@@ -360,13 +360,13 @@ namespace GTI
             #endregion
 
             //Get maxISP from the atmosphere curve
-            maxISP = Util.KeyFrameGetMaxValue(ModuleEngines.atmosphereCurve.Curve.keys);
+            maxISP = Utilities.KeyFrameGetMaxValue(ModuleEngines.atmosphereCurve.Curve.keys);
 
             //Set max Thrust and the corresponding fuelflow
             if (!MaxThrustEmpty) { ModuleEngines.maxThrust = engineModeList[selectedMode].maxThrust; }
 
             //ModuleEngines.maxFuelFlow = ModuleEngines.maxThrust / (ModuleEngines.atmosphereCurve.Evaluate(0f) * ModuleEngines.g);
-            ModuleEngines.maxFuelFlow = EngineCalc.calcFuelFlow(
+            ModuleEngines.maxFuelFlow = PhysicsUtilities.calcFuelFlow(
                 Thrust: ModuleEngines.maxThrust,                             //Thrust: propList[selectedPropellant].maxThrust, 
                                                                              //Density: propList[selectedPropellant].propDensity, 
                 ISP: ModuleEngines.atmosphereCurve.Evaluate(0f),         //maxISP
