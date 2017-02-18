@@ -22,8 +22,8 @@ namespace GTI
         public void DEBUG_EVENT()
         {
             initializeSettings();
-            PhysicsUtilities Calc = new PhysicsUtilities();
-            Utilities MiscFx = new Utilities();
+            //PhysicsUtilities Calc = new PhysicsUtilities();
+            //Utilities MiscFx = new Utilities();
 
             foreach (var converter in MRC)
             {

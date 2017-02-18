@@ -26,7 +26,11 @@ namespace GTI
         [UI_ChooseOption(affectSymCounterparts = UI_Scene.Editor, scene = UI_Scene.All, suppressEditorShipModified = false, options = new[] { "None" }, display = new[] { "None" })]
         public string ChooseOption = string.Empty;
         private int selectedMode;
-        
+
+        [KSPField(guiActive = true, guiActiveEditor = true, isPersistant = true, guiName = "Thrust Limiter [GTI]")]
+        [UI_FloatRange(affectSymCounterparts = UI_Scene.Editor, scene = UI_Scene.All, suppressEditorShipModified = false, minValue = 0, maxValue = 100, stepIncrement = 0.5f)]
+        float thrustPercentage = 100;
+
         #endregion
 
         private void initializeGUI()
@@ -64,11 +68,26 @@ namespace GTI
             chooseOption.display = OptionsDisplay;
             chooseOption.onFieldChanged = selectPropulsion;
 
+            #region thrustPercentage of moduleEngines
+            BaseField thrustPercentageField = ModuleEngines.Fields[fieldName: "thrustPercentage"];
+            thrustPercentageField.guiActive = false;
+            thrustPercentageField.guiActiveEditor = false;
+            thrustPercentage = ModuleEngines.thrustPercentage;
+            Fields[nameof(thrustPercentage)].OnValueModified += thrustPercentage_callback;
+            //Fields[nameof(thrustPercentage)].OnValueModified -= thrustPercentage_callback;
+            #endregion
         } // END OF private void initializeGUI()
 
         private void selectPropulsion(BaseField field, object oldValueObj)
         {
             updatePropulsion();
+        }
+        private void thrustPercentage_callback(object oldValueObj)
+        {
+            //Debug.Log("[GTI] Setting thrustPercentage");
+            ModuleEngines.thrustPercentage = thrustPercentage;
+
+            onThrottleChange(); //Recalc ISP when limiter is changed, same as for throttle
         }
         private void FindSelectedPropulsion()
         {

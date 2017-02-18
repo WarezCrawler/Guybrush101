@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using GTI.GenericFunctions;
+using GTI.Config;
 
 namespace GTI
 {
@@ -10,20 +8,20 @@ namespace GTI
     {
 
         #region --------------------------------Debugging---------------------------------------
-        [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "DEBUG")]
+        [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "[GTI] DEBUG")]
         public void DEBUG_ENGINESSWITCH()
         {
             initializeSettings();
-            PhysicsUtilities Calc = new PhysicsUtilities();
-            Utilities MiscFx = new Utilities();
+            //PhysicsUtilities Calc = new PhysicsUtilities();
+            //Utilities MiscFx = new Utilities();
 
             //System.Text.StringBuilder BuildString = new System.Text.StringBuilder();
             //float Density = propList[selectedPropellant].propDensity;
             //int i = 0;
-            
-            
-            
-            
+
+
+
+
 
             foreach (var moduleEngine in ModuleEngines)
             {
@@ -189,6 +187,103 @@ namespace GTI
                 //BuildString.Capacity = 16;
             }
             */
+        }
+
+
+        #endregion
+    }
+
+    partial class GTI_MultiModeEngine : PartModule
+    {
+        #region --------------------------------Debugging---------------------------------------
+        [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "[GTI] DEBUG")]
+        public void DEBUG_ENGINESSWITCH()
+        {
+            initializeSettings();
+
+            Debug.Log(
+                "\nSome key information on ModuleEngines: " + ModuleEngines.GUIName +
+                "\nrequestedThrottle: " + ModuleEngines.requestedThrottle * 100 + "%" +
+                "\nmaxThrust: " + ModuleEngines.maxThrust +
+                "\nresultingThrust: " + ModuleEngines.resultingThrust +
+                "\nmaxFuelFlow: " + ModuleEngines.maxFuelFlow +
+                "\nrequestedMassFlow: " + ModuleEngines.requestedMassFlow +
+                "ModuleEngines.g: " + ModuleEngines.g
+                );
+
+            foreach (var propellant in ModuleEngines.propellants)
+            {
+                Debug.Log(
+                 "\nforeach(var propellant in ModuleEngines.propellants)" +
+                 "\nPropellant: " + propellant.name +
+                 "\nratio: " + propellant.ratio +
+                 "\ndrawStackGauge: " + propellant.drawStackGauge +
+                 "\nignoreForISP: " + propellant.ignoreForIsp);
+            }
+
+            Debug.Log(
+                "Events for the following engine" +
+                "\nModuleEngines.GUIName" + ModuleEngines.GUIName
+                );
+
+            GTIDebug.LogEvents(ModuleEngines);
+
+            //foreach (var engineEvent in ModuleEngines.Events)
+            //{
+            //    Debug.Log(
+            //        "\nModuleEngines.Events" +
+            //        "\nGUIName: " + engineEvent.GUIName +
+            //        "\nid: " + engineEvent.id +
+            //        "\nname: " + engineEvent.name +
+            //        "\nactive: " + engineEvent.active +
+            //        "\nassigned: " + engineEvent.assigned +
+            //        "\ncategory: " + engineEvent.category +
+            //        "\nexternalToEVAOnly: " + engineEvent.externalToEVAOnly +
+            //        "\nguiActive: " + engineEvent.guiActive +
+            //        "\nguiActiveEditor: " + engineEvent.guiActiveEditor +
+            //        "\nguiActiveUncommand: " + engineEvent.guiActiveUncommand +
+            //        "\nguiActiveUnfocused: " + engineEvent.guiActiveUnfocused +
+            //        "\nguiIcon: " + engineEvent.guiIcon +
+            //        "\nunfocusedRange: " + engineEvent.unfocusedRange +
+            //        "\n");
+            //}
+
+            for (int i = 0; i < ModuleEngines.Fields.Count; i++)
+            {
+                if (ModuleEngines.Fields[i].guiActive)
+                {
+                    Debug.Log(
+                        "\nModuleEngines.Fields[" + i + "]" +
+                        "\nguiName: " + ModuleEngines.Fields[i].guiName +
+                        "\nname: " + ModuleEngines.Fields[i].name +
+                        "\noriginalValue: " + ModuleEngines.Fields[i].originalValue +
+                        "\nisPersistant: " + ModuleEngines.Fields[i].isPersistant +
+                        "\nguiActive: " + ModuleEngines.Fields[i].guiActive +
+                        "\nguiActiveEditor: " + ModuleEngines.Fields[i].guiActiveEditor +
+                        "\nguiFormat: " + ModuleEngines.Fields[i].guiFormat +
+                        "\nguiUnits: " + ModuleEngines.Fields[i].guiUnits +
+                        "\nHasInterface: " + ModuleEngines.Fields[i].HasInterface +
+                        "\nhost: " + ModuleEngines.Fields[i].host +
+                        "\nuiControlEditor: " + ModuleEngines.Fields[i].uiControlEditor +
+                        "\nuiControlFlight: " + ModuleEngines.Fields[i].uiControlFlight +
+                        "\nuiControlOnly: " + ModuleEngines.Fields[i].uiControlOnly +
+                        "\n");
+                }
+            }
+            for (int i = 0; i < ModuleEngines.Actions.Count; i++)
+            {
+                Debug.Log(
+                    "\nModuleEngines.Actions[" + i + "]" +
+                    "\nguiName: " + ModuleEngines.Actions[i].guiName +
+                    "\nname: " + ModuleEngines.Actions[i].name +
+                    "\noriginalValue: " + ModuleEngines.Actions[i].actionGroup +
+                    "\nisPersistant: " + ModuleEngines.Actions[i].active +
+                    "\nguiActive: " + ModuleEngines.Actions[i].defaultActionGroup +
+                    "\nguiActiveEditor: " + ModuleEngines.Actions[i].listParent +
+                    "\n");
+            }
+
+            Debug.Log("[GTI] Part ConfigNode (prefab)\n" + Utilities.GetPartConfig(this.part).ToString());
         }
         #endregion
     }

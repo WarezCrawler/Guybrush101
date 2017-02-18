@@ -67,6 +67,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ConfigNode.cs" />
     <Compile Include="Utilities\GenericFunctions.cs" />
+    <Compile Include="Utilities\GTIConfig.cs" />
+    <Compile Include="Utilities\GTIDebug.cs" />
     <Compile Include="Utilities_CustomTypes\EngineSwitchList.cs" />
     <Compile Include="Utilities_CustomTypes\engineMultiModeList.cs" />
     <Compile Include="Utilities_CustomTypes\PropellantList.cs" />

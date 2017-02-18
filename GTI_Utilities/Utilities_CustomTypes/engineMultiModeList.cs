@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine;
 using GTI.GenericFunctions;
+using GTI.Config;
+using static GTI.Config.GTIConfig;
 
 namespace GTI.CustomTypes
 {
@@ -23,13 +25,22 @@ namespace GTI.CustomTypes
         //private string _velCurve = string.Empty;
         //private string _atmCurve = string.Empty;
 
-        public ConfigNode atmosphereCurve = new ConfigNode();
+
+        private ConfigNode _atmosphereCurve = new ConfigNode();
+        private FloatCurve atmosphereFloatCurve = new FloatCurve();
         public ConfigNode velCurve = new ConfigNode();
         public ConfigNode atmCurve = new ConfigNode();
+        //public ConfigNode throttleISPCurve = new ConfigNode();
+        private ConfigNode _GTIthrottleISPCurve = new ConfigNode();
+        private FloatCurve GTIthrottleISPFloatCurve = new FloatCurve();
+
 
         private string _atmChangeFlow = string.Empty;
         private string _useVelCurve = string.Empty;
         private string _useAtmCurve = string.Empty;
+        //private bool _usethrottleISPCurve = false;
+        public bool useGTIthrottleISPCurve { get; set; } = false;
+        //public string usethrottleISPCurve { get; set; } = "false";
 
         public string useEngineResponseTime;
         public string engineAccelerationSpeed;
@@ -49,9 +60,53 @@ namespace GTI.CustomTypes
         private float _maxThrust;           //  Kg * m/s^2 = N
                                             //private float _maxFuelFlow;         //  Kg/s
 
+        public FloatCurve GetGTIthrottleISPFloatCurve
+        {
+            get { return GTIthrottleISPFloatCurve; }
+        }
 
+        public ConfigNode GTIthrottleISPCurve
+        {
+            get { return _GTIthrottleISPCurve; }
+            set
+            {
+                _GTIthrottleISPCurve = value;
 
-        
+                if (value != null)
+                {
+                    GTIDebug.Log("Before load of throttleISPFloatCurve", iDebugLevel.DebugInfo);
+                    GTIthrottleISPFloatCurve.Load(value);
+                }
+            }
+        }
+
+        public string SetUseGTIthrottleISPCurve
+        {
+            set
+            {
+                bool result;
+                if (bool.TryParse(value, out result)) useGTIthrottleISPCurve = result; else useGTIthrottleISPCurve = false;
+            }
+        }
+
+        public FloatCurve GetatmosphereFloatCurve
+        {
+            get { return atmosphereFloatCurve; }
+        }
+        public ConfigNode atmosphereCurve
+        {
+            get { return _atmosphereCurve; }
+            set
+            {
+                _atmosphereCurve = value;
+
+                if (value != null)
+                {
+                    GTIDebug.Log("Before load of atmosphereFloatCurve", iDebugLevel.DebugInfo);
+                    atmosphereFloatCurve.Load(value);
+                }
+            }
+        }
 
 
         //For storing and retrieving propellants
@@ -101,10 +156,10 @@ namespace GTI.CustomTypes
                         float numvalue;
                         booparse = Single.TryParse(item, out numvalue);
                         if (!booparse)
-                                Debug.LogWarning("CustomTypes.PropellantList -> Could not parse propellant ratio " + item + " into integer.");
+                                GTIDebug.LogWarning("CustomTypes.PropellantList -> Could not parse propellant ratio " + item + " into integer.", iDebugLevel.Low);
                     }
                 }
-                catch (Exception e) { Debug.LogError("CustomTypes.PropellantList -> Could not parse propellant ratio into integer.\n" + value + "\nError trown:\n" + e);throw e; }
+                catch (Exception e) { GTIDebug.LogError("CustomTypes.PropellantList -> Could not parse propellant ratio into integer.\n" + value + "\nError trown:\n" + e, iDebugLevel.Low);throw e; }
                 CalcDensity(_propellants,_propRatios, _ignoreForIsp);
             }
         }
@@ -143,7 +198,7 @@ namespace GTI.CustomTypes
             try
             { 
                 //PhysicsUtilities fx = new PhysicsUtilities();
-                //Debug.Log("Running _propDensity = fx.calcWeightedDensity(_propellants, _propRatios)");
+                //GTIDebug.Log("Running _propDensity = fx.calcWeightedDensity(_propellants, _propRatios)");
 
                 //Create strings for the calculation
                 if (useIgnoreForISP)                    //Is IgnoreForISP to be used
@@ -153,7 +208,7 @@ namespace GTI.CustomTypes
                     //loop the arrays and recreate cleaned arrays
                     for (int i = 0; i < arrInPropellants.Length; i++)
                     {
-                        //Debug.Log("if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)");
+                        //GTIDebug.Log("if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)");
                         if ( !bool.TryParse(arrIgnoreForIsp[i], out IgnoreForISP) || IgnoreForISP == false)
                         {
                             inPropellants = inPropellants + "," + arrInPropellants[i];
@@ -166,11 +221,11 @@ namespace GTI.CustomTypes
                 _propDensity = PhysicsUtilities.calcWeightedDensity(inPropellants, inRatios);
                 if ( _propDensity > 0 ) { returnSuccessStatus = true; } else { returnSuccessStatus = false; }
 
-                //Debug.Log("_propDensity = fx.calcWeightedDensity(_propellants, _propRatios) is successfull");
+                //GTIDebug.Log("_propDensity = fx.calcWeightedDensity(_propellants, _propRatios) is successfull");
             }
             catch
             {
-                Debug.LogError("Guybrush101.CustomTypes.CalcDensity Failed By Exception");
+                GTIDebug.LogError("Guybrush101.CustomTypes.CalcDensity Failed By Exception");
                 returnSuccessStatus = false;
                 //throw;
             }

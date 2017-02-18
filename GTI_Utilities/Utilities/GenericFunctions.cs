@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GTI.GenericFunctions
 {
-    public class PhysicsUtilities
+    public static class PhysicsUtilities
     {
         //private static float _Thrust, _Density, _ISP, _fuelRate, _fuelFlow, _weightedDensity;
         private static float _gravity = 9.80665f;                                                      //source: http://wiki.kerbalspaceprogram.com/wiki/1.2
@@ -347,6 +347,34 @@ namespace GTI.GenericFunctions
             }
             //Return of the input is an empty or null string
             return isEmpty;
+        }
+
+        public static EngineType GetEngineType(string engineType)
+        {
+            switch (engineType)
+            {
+                case "LiquidFuel":
+                    return EngineType.LiquidFuel;
+                case "Nuclear":
+                    return EngineType.Nuclear;
+                case "SolidBooster":
+                    return EngineType.SolidBooster;
+                case "Turbine":
+                    return EngineType.Turbine;
+                case "MonoProp":
+                    return EngineType.MonoProp;
+                case "ScramJet":
+                    return EngineType.ScramJet;
+                case "Electric":
+                    return EngineType.Electric;
+                case "Generic":
+                    return EngineType.Generic;
+                case "Piston":
+                    return EngineType.Piston;
+                default:
+                    //Do nothing
+                    return EngineType.LiquidFuel;
+            }
         }
     }
 }

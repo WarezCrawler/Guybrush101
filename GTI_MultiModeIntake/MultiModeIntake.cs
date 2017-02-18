@@ -260,7 +260,7 @@ namespace GTI
             //Debug.Log("MultiModeIntake: ResourceDisplay update");
             try
             { if (HighLogic.LoadedSceneIsFlight && calledByPlayer) { KSP.UI.Screens.ResourceDisplay.Instance.Refresh(); } }
-            catch { Debug.LogError("Update of resource panel failed" + "\ncallingFunction: " + callingFunction + "\ncalledByPlayer: " + calledByPlayer); }
+            catch { Debug.LogError("[GTI] Update of resource panel failed" + "\tcallingFunction: " + callingFunction + "\tcalledByPlayer: " + calledByPlayer); }
             //Debug.Log("Confignode Loaded");
         }
 

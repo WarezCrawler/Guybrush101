@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿//using System.Collections;
 using System.Threading;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-
+using GTI.Config;
+using static GTI.Config.GTIConfig;
 
 namespace GTI.Events
 {
@@ -33,14 +34,15 @@ namespace GTI.Events
         private EventVoid onThrottleChangeEvent;
         //private EventData<GameScenes> onSceneChange;
         public static bool EventDetectorRunning = false;
-        private bool initEvent;
-        private ConfigNode EventConfig;
+        //private bool initEvent;
+        //private ConfigNode EventConfig;
+        //private static Vessel CurrentVessel;
 
         private void Awake()
         {
             //Load Config
-            EventConfig = GetConfigurationsCFG();
-            if (!bool.TryParse(EventConfig.GetValue("initEvent"), out initEvent)) initEvent = true;
+            //EventConfig = GetConfigurationsCFG();
+            //if (!bool.TryParse(EventConfig.GetValue("initEvent"), out initEvent)) initEvent = true;
 
             onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
 
@@ -65,11 +67,15 @@ namespace GTI.Events
 
             //Starting the thread which will continuously check and raise the Throttle Event if interaction was detected
             startThread();
+
+            //vessel.ctrlStat.mainThrottle;
+
+            
         }
 
         private void startThread()
         {
-            if (initEvent)
+            if (GTIConfig.initEvent)
             {
                 if (!EventDetectorRunning)
                 {
@@ -79,43 +85,44 @@ namespace GTI.Events
                         EventDetectorRunning = true;
                         GTI_inFlightEventDetector();
                     });
-                    Debug.Log("[GTI] Starting GTI Event thread");
+                    GTIDebug.Log("Starting GTI Event thread", iDebugLevel.High);
+                    EventThread.Priority = System.Threading.ThreadPriority.BelowNormal;     //new 16/2-2017
                     EventThread.Start();
                 }
-                else Debug.Log("[GTI] GTI onThrottle event detector allready runnning. New Activation Cancelled.");
+                else GTIDebug.Log("GTI onThrottle event detector allready runnning. New Activation Cancelled.", iDebugLevel.DebugInfo);
             }
             else
             {
-                Debug.Log("[GTI] The GTI Event 'onThrottleChange' deactivated. initEvent was set to 'false'");
+                GTIDebug.Log("The GTI Event 'onThrottleChange' deactivated. initEvent was set to 'false'", iDebugLevel.Low);
                 Destroy(this.gameObject);
             }
         }
         private void GTI_inFlightEventDetector()        //For threaded execution --> Detects the basis for event
         {
-            Debug.Log("[GTI] GTI_inFlightEventDetector Started in new thread");
+            GTIDebug.Log("GTI_inFlightEventDetector Started in new thread", iDebugLevel.DebugInfo);
 
-            //Declarations and get configs
-            int EventCheckFreqIdle, EventCheckFreqActive;
-            if (!int.TryParse(EventConfig.GetValue("EventCheckFreqIdle"),   out EventCheckFreqIdle  ))      EventCheckFreqIdle   = 500;
-            if (!int.TryParse(EventConfig.GetValue("EventCheckFreqActive"), out EventCheckFreqActive))      EventCheckFreqActive = 100;
-            int wait = EventCheckFreqIdle;
+            int wait = GTIConfig.EventCheckFreqIdle;
 
             //Stopwatch for timing how long the event checking is running
             System.Diagnostics.Stopwatch stopwatch;
             stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            Debug.Log("[GTI] Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: " + EventCheckFreqIdle + "\n\tEventCheckFreqActive: " + EventCheckFreqActive);
+            GTIDebug.Log("[GTI] Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: " + GTIConfig.EventCheckFreqIdle + "\n\tEventCheckFreqActive: " + GTIConfig.EventCheckFreqActive, iDebugLevel.High);
             while (EventDetectorRunning)
             {
                 if (savedThrottle != FlightInputHandler.state.mainThrottle)
                 {
+                    //if (FlightGlobals.ActiveVessel != null)     //Are any vessel active
+                    //{
+                    //    //CurrentVessel = FlightGlobals.ActiveVessel;
+                    //}
                     //run code on throttle change here.
                     savedThrottle = FlightInputHandler.state.mainThrottle;
-                    //Debug.Log("[GTI] Throttle Changed to " + savedThrottle);
+                    GTIDebug.Log("Throttle Changed to " + savedThrottle, iDebugLevel.DebugInfo);
                     onThrottleChangeEvent.Fire();
-                    wait = EventCheckFreqActive;
+                    wait = GTIConfig.EventCheckFreqActive;
                 }
-                else { wait = EventCheckFreqIdle; }
+                else { wait = GTIConfig.EventCheckFreqIdle; }
 
                 //if (!HighLogic.LoadedSceneIsFlight) EventDetectorRunning = false;
                 Thread.Sleep(wait);
@@ -124,7 +131,7 @@ namespace GTI.Events
             stopwatch.Stop();
             var ts = stopwatch.Elapsed;
             string elapsedTime = string.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            Debug.Log("[GTI] GTI_inFlightEventDetector Stopped.\tRuntime = " + elapsedTime);
+            GTIDebug.Log("GTI_inFlightEventDetector Stopped.\tRuntime = " + elapsedTime, iDebugLevel.High);
         }
 
         #region Update()
@@ -198,36 +205,37 @@ namespace GTI.Events
 
         private void EventDebugger()
         {
-            Debug.Log("[GTI] onThrottle Event Raised");
+            GTIDebug.Log("[GTI] onThrottle Event Raised", iDebugLevel.DebugInfo);
         }
         #endregion
         
         private void OnDestroy()
         {
-            Debug.Log("[GTI] GTI_Events destroyed");
+            GTIDebug.Log("[GTI] GTI_Events destroyed", iDebugLevel.Low);
             EventDetectorRunning = false;
             if (onThrottleChangeEvent != null) onThrottleChangeEvent.Remove(EventDebugger);
             //onSceneChange.Remove(onEventSceneChange);
         }
 
-        private ConfigNode GetConfigurationsCFG()
-        {
-            ConfigNode node;
-            try
-            {
-                node = ConfigNode.Load(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg");
+        //private ConfigNode GetConfigurationsCFG()
+        //{
+        //    ConfigNode node;
+        //    try
+        //    {
+        //        //node = ConfigNode.Load(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg");
+        //        //node = GTIConfig.GTIConfigurationNode;
 
-                //Debug.Log("GTI ConfigNode\n" + node.ToString());
-                node = node.GetNode("EventConfig");
-                //Debug.Log("GTI ConfigNode\n" + node.ToString());
-            }
-            catch
-            {
-                Debug.LogError("[GTI] " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg NOT FOUND");
-                node = new ConfigNode();
-            }
+        //        //Debug.Log("GTI ConfigNode\n" + node.ToString());
+        //        node = GTIConfig.GTIConfigurationNode.GetNode("EventConfig");
+        //        //Debug.Log("GTI ConfigNode\n" + node.ToString());
+        //    }
+        //    catch
+        //    {
+        //        Debug.LogError("[GTI] " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg NOT FOUND");
+        //        node = new ConfigNode();
+        //    }
 
-            return node;
-        }
+        //    return node;
+        //}
     }
 }
