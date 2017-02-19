@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GTI.GenericFunctions
 {
-    public partial class Utilities
+    public static partial class Utilities
     {
         /// <summary>
         /// Retrieves the part configuration node trought available part in partloader

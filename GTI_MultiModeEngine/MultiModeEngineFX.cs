@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using GTI.Config;
+using static GTI.Config.GTIConfig;
+using static GTI.GenericFunctions.Utilities;
+using GTI.CustomTypes;
+using System.Collections.Generic;
 using UnityEngine;
-using GTI.GenericFunctions;
+
 //using System;
 
 /*
@@ -39,7 +43,7 @@ namespace GTI
         private ModuleEnginesFX currentModuleEngine;
         private bool currentEngineState;
 
-        private List<CustomTypes.EngineSwitchList> engineList = new List<CustomTypes.EngineSwitchList>();
+        private List<EngineSwitchList> engineList = new List<EngineSwitchList>();
 
         //[KSPField(isPersistant = false)]
         //public FloatCurve ThrottleISPCurve = new FloatCurve();
@@ -57,8 +61,8 @@ namespace GTI
         private bool _settingsInitialized = false;
         //[KSPField]
         //public string _startDelay = "2";
-        [KSPField]
-        public string debugMode = "false";
+        //[KSPField]
+        //public string debugMode = "false";
         #endregion
 
         public override void OnStart(PartModule.StartState state)
@@ -68,7 +72,7 @@ namespace GTI
             updatePropulsion();
 
             //Show Debug GUI?
-            if (bool.Parse(debugMode)) { Events["DEBUG_ENGINESSWITCH"].guiActive = true; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = true; Events["DEBUG_ENGINESSWITCH"].active = true; Debug.Log("GTI_MultiModeEngine debugMode activated"); }
+            if (DebugActive) { Events["DEBUG_ENGINESSWITCH"].guiActive = true; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = true; Events["DEBUG_ENGINESSWITCH"].active = true; GTIDebug.Log("GTI_MultiModeEngine debugMode activated",iDebugLevel.DebugInfo); }
             else { Events["DEBUG_ENGINESSWITCH"].guiActive = false; Events["DEBUG_ENGINESSWITCH"].guiActiveEditor = false; Events["DEBUG_ENGINESSWITCH"].active = false; }
         }
 
@@ -315,12 +319,12 @@ namespace GTI
         {
             if (!_settingsInitialized)
             {
-                Utilities Util = new Utilities();
+                //Utilities Util = new Utilities();
                 string[] arrEngineID, arrGUIengineID;        //, arrAddedCosts;   //, arrMinReqTech, arrMaxReqTech;  //, arrEngineAvailable;
 
                 #region Split into Arrays
                 arrEngineID = engineID.Trim().Split(';');
-                GUIengineIDEmpty = Utilities.ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
+                GUIengineIDEmpty = ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
                 //AddedCostEmpty = Util.ArraySplitEvaluate(AddedCost, out arrAddedCosts, ';');
                 //AddedCostEmpty = arrAddedCosts.Length == arrEngineID.Length ? AddedCostEmpty : false;       //Check if costs have been defined as expected
                 #endregion
@@ -346,7 +350,7 @@ namespace GTI
                 //Populated engineList with the settings
                 for (int i = 0; i < arrEngineID.Length; i++)
                 {
-                    engineList.Add(new CustomTypes.EngineSwitchList()
+                    engineList.Add(new EngineSwitchList()
                     {
                         engineID = arrEngineID[i],
                         GUIengineID = GUIengineIDEmpty ? arrEngineID[i] : arrGUIengineID[i],
@@ -377,7 +381,7 @@ namespace GTI
         private void updatePropulsion()
         {
             initializeSettings();
-            //Debug.Log("GTI_MultiModeEngine: updatePropulsion() --> ChooseOption = " + ChooseOption);
+            GTIDebug.Log("GTI_MultiModeEngine: updatePropulsion() --> ChooseOption = " + ChooseOption, iDebugLevel.High);
 
             currentEngineState = currentModuleEngine.getIgnitionState;
 
@@ -399,12 +403,12 @@ namespace GTI
 
                 if (moduleEngine.engineID == ChooseOption)
                 {
-                    //Debug.Log("GTI_MultiModeEngine: Set currentModuleEngine " + moduleEngine.engineID);
+                    GTIDebug.Log("GTI_MultiModeEngine: Set currentModuleEngine " + moduleEngine.engineID, iDebugLevel.High);
                     currentModuleEngine = moduleEngine;
                     //Reactivate engine if it was active
                     if (currentEngineState)
                     {
-                        //Debug.Log("GTI_MultiModeEngine: Activate() " + moduleEngine.engineID);
+                        GTIDebug.Log("GTI_MultiModeEngine: Activate() " + moduleEngine.engineID, iDebugLevel.High);
                         moduleEngine.Activate();
                     }
                     moduleEngine.manuallyOverridden = false;
@@ -412,7 +416,7 @@ namespace GTI
                 }
                 else
                 {
-                    //Debug.Log("GTI_MultiModeEngine: Shutdown() " + moduleEngine.engineID);
+                    GTIDebug.Log("GTI_MultiModeEngine: Shutdown() " + moduleEngine.engineID,iDebugLevel.High);
                     moduleEngine.Shutdown();
                     moduleEngine.manuallyOverridden = true;
                     moduleEngine.isEnabled = false;

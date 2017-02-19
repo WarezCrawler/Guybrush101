@@ -32,7 +32,7 @@ namespace GTI.Config
             {
                 GTIConfigurationNode = new ConfigNode();
                 GTIConfigurationNode = ConfigNode.Load(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/GTI_Config.cfg");
-                GTIDebug.Log("Loading Settings -- public static class GTIConfig", iDebugLevel.Low);
+                Debug.Log("[GTI] Loading Settings -- public static class GTIConfig");
             }
             catch
             {

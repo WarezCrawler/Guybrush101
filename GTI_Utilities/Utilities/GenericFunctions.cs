@@ -206,7 +206,7 @@ namespace GTI.GenericFunctions
         }
     }
 
-    public partial class Utilities
+    public static partial class Utilities
     {
         /// <summary>
         /// Function for creating correctly formatted KeyFrames from specifically formatted strings. Format of inKey is "0 0 0 0;1 1 1 1;2 2 2 2" -- (float time, float value, float inTangent, float outTangent)
