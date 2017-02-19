@@ -2,7 +2,8 @@
 //using System.Collections.Generic;
 //using System.Linq;
 using UnityEngine;
-using GTI.GenericFunctions;
+//using GTI.GenericFunctions;
+using static GTI.Config.GTIConfig;
 
 namespace GTI
 {
@@ -13,7 +14,7 @@ namespace GTI
 
         private void debugActivator()
         {
-            if (bool.Parse(debugMode)) { Events["DEBUG_EVENT"].guiActive = true; Events["DEBUG_EVENT"].guiActiveEditor = true; Events["DEBUG_EVENT"].active = true; Debug.Log("GTI_MultiModeConverter debugMode activated"); }
+            if (DebugActive) { Events["DEBUG_EVENT"].guiActive = true; Events["DEBUG_EVENT"].guiActiveEditor = true; Events["DEBUG_EVENT"].active = true; Debug.Log("GTI_MultiModeConverter debugMode activated"); }
             else { Events["DEBUG_EVENT"].guiActive = false; Events["DEBUG_EVENT"].guiActiveEditor = false; Events["DEBUG_EVENT"].active = false; }
         }
 

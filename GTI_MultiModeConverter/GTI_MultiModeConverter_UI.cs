@@ -3,6 +3,8 @@ using System.Collections;
 using System.Text;
 using UnityEngine;
 using System.Threading;
+using GTI.Config;
+using static GTI.Config.GTIConfig;
 //using System.Threading.Tasks;     //Needs .Net 4.0+
 //using GTI.GenericFunctions;
 //using System;
@@ -136,7 +138,7 @@ namespace GTI
                 strOutInfo.AppendLine(output.ResourceName + " (" + output.Ratio + ")");
             }
 
-            //Debug.Log("\nGTI_MultiModeConverter:\n" + strOutInfo.ToString());
+            GTIDebug.Log("\nGTI_MultiModeConverter:\n" + strOutInfo.ToString(), iDebugLevel.DebugInfo);
 
             //Default position and switch to user defined position
             ScreenMessageStyle position = ScreenMessageStyle.UPPER_CENTER;
@@ -261,7 +263,7 @@ namespace GTI
                     selectedConverter = inActionSelect;
 
                     ChooseOption = converterNames[selectedConverter];
-                    //Debug.Log("ActionPropulsion_" + inActionSelect + " Executed");
+                    GTIDebug.Log("ActionPropulsion_" + inActionSelect + " Executed", iDebugLevel.DebugInfo);
                     updateConverter();
                 }
             }
@@ -353,7 +355,7 @@ namespace GTI
             catch
             {
                 //... do nothing
-                Debug.LogError("GTI_MultiModeEngine -- ModuleAnimationGroup --- Error when handling animations");
+                GTIDebug.LogError("GTI_MultiModeEngine -- ModuleAnimationGroup --- Error when handling animations", iDebugLevel.Low);
                 //this.Events["ModuleAnimationGroupEvent"].active = false;
                 //this.Events["ModuleAnimationGroupEvent"].guiActive = false;
                 //this.Events["ModuleAnimationGroupEvent"].guiActiveEditor = false;
@@ -374,7 +376,7 @@ namespace GTI
             _InvokeCounter = 0;
             while (_InvokeCounter++ < 600)
             {
-                Debug.Log("Coroutine Looping " + _InvokeCounter);
+                GTIDebug.Log("Coroutine Looping " + _InvokeCounter, iDebugLevel.DebugInfo);
 
                 //Debug.Log("Invoking in 'ModuleAnimationGroupEventInvoke'");
                 if (Anim.isPlaying == false)
