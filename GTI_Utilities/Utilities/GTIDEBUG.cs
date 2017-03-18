@@ -27,7 +27,7 @@ namespace GTI.Config
             if (message != null) Debug.Log("[GTI] " + message);
             for (int i = 0; i < module.Events.Count; i++)
             {
-                GTIDebug.Log(
+                Debug.Log("[GTI]" +
                      "\ni: [" + i + "]" +
                      "\nGUIName: " + module.Events[i].GUIName +
                      "\nid: " + module.Events[i].id +
@@ -42,7 +42,7 @@ namespace GTI.Config
                      "\nguiActiveUnfocused: " + module.Events[i].guiActiveUnfocused +
                      "\nguiIcon: " + module.Events[i].guiIcon +
                      "\nunfocusedRange: " + module.Events[i].unfocusedRange +
-                     "\n", iDebugLevel.None);
+                     "\n");
             }
         }
     }

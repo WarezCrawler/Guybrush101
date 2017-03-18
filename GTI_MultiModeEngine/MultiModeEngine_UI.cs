@@ -2,6 +2,8 @@
 //using UnityEngine;
 //using GTI.GenericFunctions;
 using System.Text;
+using GTI.Config;
+using static GTI.Config.GTIConfig;
 
 /*
 This module targets "ModuleEngines" modules for engine switching
@@ -11,7 +13,6 @@ namespace GTI
 {
     partial class GTI_MultiModeEngine : PartModule
     {
-
         //Availability of the functionality
         [KSPField]
         public bool availableInFlight = false;
@@ -35,6 +36,8 @@ namespace GTI
 
         private void initializeGUI()
         {
+            GTIDebug.Log("MultiModeEngine -- initializeGUI()", iDebugLevel.DebugInfo);
+
             BaseField chooseField;
             string[] Options = new string[engineModeList.Count];
             string[] OptionsDisplay = new string[engineModeList.Count];
@@ -91,6 +94,7 @@ namespace GTI
         }
         private void FindSelectedPropulsion()
         {
+            GTIDebug.Log("FindSelectedPropulsion() --> Parsing ChooseOption as integer", iDebugLevel.DebugInfo);
             selectedMode = int.Parse(ChooseOption);
         }
         /// <summary>
@@ -102,11 +106,13 @@ namespace GTI
         {
             if (ChooseOption == string.Empty)
             {
+                GTIDebug.Log("selPropFromChooseOption() --> setting chooseoption to 0", iDebugLevel.DebugInfo);
                 ChooseOption = "0";
                 selectedMode = 0;
             }
             else
             {
+                GTIDebug.Log("selPropFromChooseOption() --> FindSelectedPropulsion()", iDebugLevel.DebugInfo);
                 FindSelectedPropulsion();
             }
         }

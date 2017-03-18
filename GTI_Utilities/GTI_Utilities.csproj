@@ -69,6 +69,7 @@
     <Compile Include="Utilities\GenericFunctions.cs" />
     <Compile Include="Utilities\GTIConfig.cs" />
     <Compile Include="Utilities\GTIDebug.cs" />
+    <Compile Include="Utilities\GTISettings.cs" />
     <Compile Include="Utilities_CustomTypes\EngineSwitchList.cs" />
     <Compile Include="Utilities_CustomTypes\engineMultiModeList.cs" />
     <Compile Include="Utilities_CustomTypes\PropellantList.cs" />

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Text;
 using UnityEngine;
-using System.Threading;
+//using System.Threading;
 using GTI.Config;
 using static GTI.Config.GTIConfig;
 //using System.Threading.Tasks;     //Needs .Net 4.0+
@@ -347,9 +347,9 @@ namespace GTI
 
                     //Debug.Log("updateConverter in 'ModuleAnimationGroupEvent'");
                     //StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.05f));
-
-                    Thread parallelThread = new Thread(() => threadExecution(AnimLength, 0.001f));
-                    parallelThread.Start();
+                    StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.001f));
+                    //Thread parallelThread = new Thread(() => threadExecution(AnimLength, 0.001f));
+                    //parallelThread.Start();
                 }
             }
             catch
@@ -363,11 +363,11 @@ namespace GTI
         }
 
         //private void threadExecution()
-        private void threadExecution(float starttime, float waitingtime)
-        {
-            //StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.005f));
-            StartCoroutine(ModuleAnimationGroupEventCoroutine(starttime, waitingtime));
-        }
+        //private void threadExecution(float starttime, float waitingtime)
+        //{
+        //    //StartCoroutine(ModuleAnimationGroupEventCoroutine(AnimLength, 0.005f));
+        //    StartCoroutine(ModuleAnimationGroupEventCoroutine(starttime, waitingtime));
+        //}
 
         private IEnumerator ModuleAnimationGroupEventCoroutine(float starttime, float waitingtime)
         {

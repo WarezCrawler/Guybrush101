@@ -94,18 +94,21 @@ namespace GTI
 
         public override void OnLoad(ConfigNode node)
         {
-            GTIDebug.Log("[GTI] GTI_MultiModeEngine : OnLoad() : " + part.vessel.GetName(), iDebugLevel.DebugInfo);
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                GTIDebug.Log("GTI_MultiModeEngine : OnLoad() : " + part.vessel.GetName(), iDebugLevel.DebugInfo);
 
-            GTIDebug.Log("Before adding GTI_MultiModeEngine to onThrottleChange Event : " + part.vessel.GetName(), iDebugLevel.DebugInfo);
-            onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
-            if (onThrottleChangeEvent != null)
-            {
-                GTIDebug.Log("Adding GTI_MultiModeEngine to onThrottleChange Event : " + part.vessel.GetName(), iDebugLevel.High);
-                onThrottleChangeEvent.Add(onThrottleChange);
-            }
-            else
-            {
-                GTIDebug.Log("GTI_MultiModeEngine failed to be added to onThrottleChange Event : Event was null", iDebugLevel.Low);
+                GTIDebug.Log("Before adding GTI_MultiModeEngine to onThrottleChange Event : " + part.vessel.GetName(), iDebugLevel.DebugInfo);
+                onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
+                if (onThrottleChangeEvent != null)
+                {
+                    GTIDebug.Log("Adding GTI_MultiModeEngine to onThrottleChange Event : " + part.vessel.GetName(), iDebugLevel.High);
+                    onThrottleChangeEvent.Add(onThrottleChange);
+                }
+                else
+                {
+                    GTIDebug.Log("GTI_MultiModeEngine failed to be added to onThrottleChange Event : Event was null", iDebugLevel.Low);
+                }
             }
         }
 
@@ -119,7 +122,7 @@ namespace GTI
         }
         public override void OnStartFinished(StartState state)
         {
-            GTIDebug.Log("[GTI] GTI_MultiModeEngine : OnStartFinished() : " + part.vessel.GetName(), iDebugLevel.DebugInfo);
+            GTIDebug.Log("GTI_MultiModeEngine : OnStartFinished() : " + part.vessel.GetName(), iDebugLevel.DebugInfo);
             updatePropulsion(silentUpdate: true);
 
             //part.GetModuleCosts(10000f);
@@ -190,7 +193,7 @@ namespace GTI
 
         private void initializeSettings(bool loadConfigNode = false)
         {
-            Debug.Log("[GTI] GTI_MultiModeEngine : initializeSettings() " + !_settingsInitialized);
+            GTIDebug.Log("GTI_MultiModeEngine : initializeSettings() " + !_settingsInitialized, iDebugLevel.High);
             if (!_settingsInitialized)
             {
                 //Utilities Util = new Utilities();
@@ -298,13 +301,16 @@ namespace GTI
 
                 #region Identify ModuleEngines in Scope
                 //Find module which is to be manipulated - NOTE: Only the first one is being handled. There should not be multiple when using this module
+                GTIDebug.Log("part.FindModuleImplementing<ModuleEngines>()");
                 ModuleEngines = part.FindModuleImplementing<ModuleEngines>();
+                GTIDebug.Log("part.FindModuleImplementing<ModuleEngines>() DONE");
                 #endregion
 
-                if (ModuleEngines != null) { selPropFromChooseOption(); }
+                if (ModuleEngines != null) { selPropFromChooseOption(); GTIDebug.Log("ModuleEngines != null --> selPropFromChooseOption()"); }
 
                 initializeGUI();
                 _settingsInitialized = true;
+                GTIDebug.Log("GTI_MultiModeEngine : initializeSettings() DONE", iDebugLevel.VeryHigh);
             }
         } // END OF -- initializeSettings()
 
@@ -313,6 +319,8 @@ namespace GTI
         /// </summary>
         private void updatePropulsion(bool silentUpdate = false)
         {
+            GTIDebug.Log("MultiModeEngine -- updatePropulsion()", iDebugLevel.High);
+
             #region declarations
             //Derive selectedMode from ChooseOption
             FindSelectedPropulsion();
@@ -548,10 +556,10 @@ namespace GTI
 
         private void OnDestroy()
         {
-            GTIDebug.Log("[GTI] GTI_MultiModeEngine destroyed", iDebugLevel.Medium);
+            GTIDebug.Log("GTI_MultiModeEngine destroyed", iDebugLevel.VeryHigh);
             if (onThrottleChangeEvent != null)
             {
-                GTIDebug.Log("[GTI] Removing GTI_MultiModeEngine from onThrottleChange Event", iDebugLevel.Medium);
+                GTIDebug.Log("Removing GTI_MultiModeEngine from onThrottleChange Event", iDebugLevel.VeryHigh);
                 onThrottleChangeEvent.Remove(onThrottleChange);
             }
         }

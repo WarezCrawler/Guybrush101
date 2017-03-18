@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using GTI.GenericFunctions;
-using System;
+//using GTI.GenericFunctions;
+//using System;
 
 namespace GTI
 {
