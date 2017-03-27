@@ -94,6 +94,8 @@ namespace GTI
             //Update Actions GUI texts and hide the ones not applicable
             initializeActions();
 
+            //GameEvents.OnAnimationGroupStateChanged.Add(SetModuleState);
+
             //Load the previous selected Option, and sync up with the selectedConverter number
             //ChooseOption = selectedChooseOption;
             selConverterFromChooseOption();
@@ -355,7 +357,7 @@ namespace GTI
             catch
             {
                 //... do nothing
-                GTIDebug.LogError("GTI_MultiModeEngine -- ModuleAnimationGroup --- Error when handling animations", iDebugLevel.Low);
+                GTIDebug.LogError("GTI_MultiModeEngine -- ModuleAnimationGroup --- Error when handling animations");
                 //this.Events["ModuleAnimationGroupEvent"].active = false;
                 //this.Events["ModuleAnimationGroupEvent"].guiActive = false;
                 //this.Events["ModuleAnimationGroupEvent"].guiActiveEditor = false;

@@ -159,7 +159,7 @@ namespace GTI.CustomTypes
                                 GTIDebug.LogWarning("CustomTypes.PropellantList -> Could not parse propellant ratio " + item + " into integer.", iDebugLevel.Low);
                     }
                 }
-                catch (Exception e) { GTIDebug.LogError("CustomTypes.PropellantList -> Could not parse propellant ratio into integer.\n" + value + "\nError trown:\n" + e, iDebugLevel.Low);throw e; }
+                catch (Exception e) { GTIDebug.LogError("CustomTypes.PropellantList -> Could not parse propellant ratio into integer.\n" + value + "\nError trown:\n" + e);throw e; }
                 CalcDensity(_propellants,_propRatios, _ignoreForIsp);
             }
         }

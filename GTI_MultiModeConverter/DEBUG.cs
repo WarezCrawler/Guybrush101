@@ -14,7 +14,7 @@ namespace GTI
 
         private void debugActivator()
         {
-            if (DebugActive) { Events["DEBUG_EVENT"].guiActive = true; Events["DEBUG_EVENT"].guiActiveEditor = true; Events["DEBUG_EVENT"].active = true; Debug.Log("GTI_MultiModeConverter debugMode activated"); }
+            if (DebugActive && DebugLevel == iDebugLevel.DebugInfo) { Events["DEBUG_EVENT"].guiActive = true; Events["DEBUG_EVENT"].guiActiveEditor = true; Events["DEBUG_EVENT"].active = true; Debug.Log("GTI_MultiModeConverter debugMode activated"); }
             else { Events["DEBUG_EVENT"].guiActive = false; Events["DEBUG_EVENT"].guiActiveEditor = false; Events["DEBUG_EVENT"].active = false; }
         }
 

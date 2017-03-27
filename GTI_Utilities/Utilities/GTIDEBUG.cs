@@ -10,15 +10,15 @@ namespace GTI.Config
     {
         public static void Log(object message, iDebugLevel useDebugLevel = iDebugLevel.Low)
         {
-            if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel ) Debug.Log("[GTI] " + message);
+            if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel) Debug.Log("[GTI] " + message);
         }
-        public static void LogError(object message, iDebugLevel useDebugLevel = iDebugLevel.Low)
+        public static void LogError(object message)
         {
             if (GTIConfig.DebugActive) Debug.LogError("[GTI error] " + message);
         }
         public static void LogWarning(object message, iDebugLevel useDebugLevel = iDebugLevel.Low)
         {
-            if (GTIConfig.DebugActive) Debug.LogWarning("[GTI warning] " + message);
+            if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel) Debug.LogWarning("[GTI warning] " + message);
         }
 
         public static void LogEvents(PartModule module, object message = null)

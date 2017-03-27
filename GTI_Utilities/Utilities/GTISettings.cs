@@ -4,20 +4,25 @@ using UnityEngine;
 
 namespace GTI.Config
 {
-    public class GTISettings : GameParameters.CustomParameterNode
+    public abstract class GTISettingsBase : GameParameters.CustomParameterNode
     {
         #region CustomParameterNode
         public override string Section { get { return "GTIndustries"; } }
-        public override string Title { get { return "Settings"; } }
-
-        public override int SectionOrder { get { return 1; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override bool HasPresets { get { return false; } }
         #endregion
+    }
+    
+    public class GTISettings : GTISettingsBase
+    {
+        #region CustomParameterNode
+        public override string Title { get { return "Settings"; } }
+        public override int SectionOrder { get { return 0; } }
+        #endregion
 
         #region Events
-        [GameParameters.CustomStringParameterUI("Events", autoPersistance = true, title = "Event", toolTip = "change GTI custom event settings")]
-        public string stringEvents { get; set; } = "";
+        //[GameParameters.CustomStringParameterUI("Events", autoPersistance = true, title = "Event", toolTip = "change GTI custom event settings")]
+        //public string stringEvents { get; set; } = "";
 
         [GameParameters.CustomParameterUI("Activate Events", toolTip = "Activate GTI custom events.", autoPersistance = true)]
         public bool initEvent
@@ -40,10 +45,24 @@ namespace GTI.Config
             set { GTIConfig.EventCheckFreqActive = value; }
         }
         #endregion
+        public override void OnLoad(ConfigNode node)
+        {
+            GTIDebug.Log("GTISettings --> OnLoad() --> GameParameters.CustomParameterNode", iDebugLevel.DebugInfo);
+            GTIDebug.Log("initEvent: " + initEvent, iDebugLevel.Medium);
+            GTIDebug.Log("EventCheckFreqIdle: " + EventCheckFreqIdle, iDebugLevel.Medium);
+            GTIDebug.Log("EventCheckFreqActive: " + EventCheckFreqActive, iDebugLevel.Medium);
+        }
+    }
+    public class GTISettingsDebug : GTISettingsBase
+    {
+        #region CustomParameterNode
+        public override string Title { get { return "Debugging"; } }
+        public override int SectionOrder { get { return 2; } }
+        #endregion
 
         #region Debugging
-        [GameParameters.CustomStringParameterUI("Debug", autoPersistance = true, title = "Debug Settings", toolTip = "change debugging settings")]
-        public string stringDebug { get; set; } = "";
+        //[GameParameters.CustomStringParameterUI("Debug", autoPersistance = true, title = "Debug Settings", toolTip = "change debugging settings")]
+        //public string stringDebug { get; set; } = "";
 
         [GameParameters.CustomParameterUI("Activate Debugging", toolTip = "If enabled, debugging logs will be generated.", autoPersistance = true)]
         public bool DebugActive
@@ -56,22 +75,15 @@ namespace GTI.Config
         public iDebugLevel DebugLevel
         {
             get { return GTIConfig.DebugLevel; }
-            set { GTIConfig.DebugLevel = value;  }
+            set { GTIConfig.DebugLevel = value; }
         }
         #endregion
 
         public override void OnLoad(ConfigNode node)
         {
-            GTIDebug.Log("GTISettings --> OnLoad() --> GameParameters.CustomParameterNode", iDebugLevel.DebugInfo);
-            GTIDebug.Log("DebugActive: " + DebugActive, iDebugLevel.DebugInfo);
-            GTIDebug.Log("DebugLevel: " + DebugLevel, iDebugLevel.DebugInfo);
-            GTIDebug.Log("initEvent: " + initEvent, iDebugLevel.DebugInfo);
-            GTIDebug.Log("EventCheckFreqIdle: " + EventCheckFreqIdle, iDebugLevel.DebugInfo);
-            GTIDebug.Log("EventCheckFreqActive: " + EventCheckFreqActive, iDebugLevel.DebugInfo);
-
-            //Apply settings the GTIconfig class
-            //if (!GTIConfig.SetDebugActive(DebugActive)) GTIDebug.LogError("Loading of DebugActive Failed");
-            //if (!GTIConfig.SetDebugLevel(DebugLevel)) GTIDebug.LogError("Loading of DebugLevel Failed");
+            GTIDebug.Log("GTISettingsDebug --> OnLoad()", iDebugLevel.DebugInfo);
+            GTIDebug.Log("DebugActive: " + DebugActive, iDebugLevel.Medium);
+            GTIDebug.Log("DebugLevel: " + DebugLevel, iDebugLevel.Medium);
         }
     }
 }

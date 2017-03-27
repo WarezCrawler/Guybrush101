@@ -93,7 +93,7 @@ namespace GTI.Config
                 "\nDebug Settings" +
                 "\n- DebugActive: " + DebugActive +
                 "\n- DebugLevel: " + DebugLevel.ToString()
-                , iDebugLevel.Low);
+                , iDebugLevel.DebugInfo);
 
             //Activate loading of settings from the in game settings menu
             //SetOnGameSettingsApplied();

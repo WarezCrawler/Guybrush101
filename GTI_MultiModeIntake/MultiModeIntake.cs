@@ -351,7 +351,7 @@ namespace GTI
 
         public override string GetInfo()
         {
-            return "AirIntake Switcher:\n" + resourceNames;
+            return "GTI Multi Mode Intakes:\n" + resourceNames;
         }
 
     }

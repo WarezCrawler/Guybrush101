@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_MultiModeIntake", "GTI_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_MultiModeConverter", "GTI_MultiModeConverter\GTI_MultiModeConverter.csproj", "{8A0E42C1-0A7D-4652-A5B4-C1AA4D923A49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTI_MultiModeHarvester", "GTI_MultiModeHarvester\GTI_MultiModeHarvester.csproj", "{BCF58708-4484-4CDE-9F2E-233794D0E144}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,18 +45,12 @@ Global
 		{8A0E42C1-0A7D-4652-A5B4-C1AA4D923A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A0E42C1-0A7D-4652-A5B4-C1AA4D923A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A0E42C1-0A7D-4652-A5B4-C1AA4D923A49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCF58708-4484-4CDE-9F2E-233794D0E144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCF58708-4484-4CDE-9F2E-233794D0E144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCF58708-4484-4CDE-9F2E-233794D0E144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCF58708-4484-4CDE-9F2E-233794D0E144}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(AutomaticVersions) = postSolution
-		AssemblyInfoFilePath = Properties\AssemblyInfo.cs
-		PrimaryVersionType = AssemblyInfoVersionAttribute
-		UpdateAssemblyVersion = True
-		UpdateAssemblyFileVersion = True
-		UpdateAssemblyInfoVersion = True
-		AssemblyVersionSettings = None.None.Increment.None
-		AssemblyFileVersionSettings = None.None.Increment.None
-		AssemblyInfoVersionSettings = None.None.Increment.None
 	EndGlobalSection
 EndGlobal

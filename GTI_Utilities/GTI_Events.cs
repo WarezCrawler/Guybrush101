@@ -88,6 +88,7 @@ namespace GTI.Events
                     });
                     GTIDebug.Log("Starting GTI Event thread", iDebugLevel.High);
                     EventThread.Priority = System.Threading.ThreadPriority.BelowNormal;     //new 16/2-2017
+                    GTIDebug.Log("GTI_inFlightEventDetector Started in new thread", iDebugLevel.DebugInfo);
                     EventThread.Start();
                     return;
                 }
@@ -101,8 +102,6 @@ namespace GTI.Events
         }
         private void GTI_inFlightEventDetector()        //For threaded execution --> Detects the basis for event
         {
-            GTIDebug.Log("GTI_inFlightEventDetector Started in new thread", iDebugLevel.DebugInfo);
-
             int wait = GTIConfig.EventCheckFreqIdle;
 
             //Stopwatch for timing how long the event checking is running
