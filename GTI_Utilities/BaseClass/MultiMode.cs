@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
+//using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+//using UnityEngine;
 using GTI.Config;
 using static GTI.Config.GTIConfig;
 
@@ -57,6 +57,10 @@ namespace GTI
         {
             GTIDebug.Log("GTI_MultiMode baseclass --> OnStart()", iDebugLevel.DebugInfo);
             initialize();
+
+            //Assign update method to delegate
+            OnUpdateMultiMode = (dummyBool) => { FindSelectedMode(); };
+            OnUpdateMultiMode += updateMultiMode;
         }
 
         /// <summary>
@@ -107,7 +111,9 @@ namespace GTI
         /// Updates the module with new selections. Deactivating the inactive ones, and activating the selected one.
         /// </summary>
         public abstract void updateMultiMode(bool silentUpdate = false);
-
+        protected delegate void OnUpdateMultiModeModule(bool silentUpdate = false);
+        protected OnUpdateMultiModeModule OnUpdateMultiMode;
+        //public updateMultiModeModule updateMultiMode;
 
         #region UI
         [KSPField(guiActive = true, guiActiveEditor = true, isPersistant = true, guiName = "MultiMode")]
@@ -175,6 +181,9 @@ namespace GTI
                 //ChooseOption = selectedChooseOption;
                 selModeFromChooseOption();
 
+                //If it's possible to switch mode in flight, then it natural that a Kerbal can do it manually as well.
+                externalToEVAOnly = availableInFlight ? true : externalToEVAOnly;
+
                 _GUIsettingsInitialized = true;
 
                 GTIDebug.Log("GTI_MultiMode: initializeGUI() --> end", iDebugLevel.DebugInfo);
@@ -186,7 +195,13 @@ namespace GTI
         /// </summary>
         /// <param name="field"></param>
         /// <param name="oldValueObj"></param>
-        protected virtual void selectMode(BaseField field, object oldValueObj) { updateMultiMode(); }
+        protected virtual void selectMode(BaseField field, object oldValueObj)
+        {
+            //FindSelectedMode();
+            
+            /*updateMultiMode();*/
+            OnUpdateMultiMode();
+        }
 
         /// <summary>
         /// Derives the selected converter as integer from the ChooseOption value
@@ -234,8 +249,11 @@ namespace GTI
         }
 
 
+        /// <summary>
+        /// This is where you implement the on screen message function which you can then call in you updateMultiMode method like "if (silentUpdate == false) writeScreenMessage();" 
+        /// </summary>
         protected abstract void writeScreenMessage();
-        protected virtual void writeScreenMessage(string messagePosition, string Message, float duration = 3f)
+        protected virtual void writeScreenMessage(string Message, float duration = 3f, string messagePosition = "UPPER_RIGHT")
         {
             //Default position and switch to user defined position
             ScreenMessageStyle position = ScreenMessageStyle.UPPER_RIGHT;
@@ -254,9 +272,9 @@ namespace GTI
                     position = ScreenMessageStyle.LOWER_CENTER;
                     break;
             }
-            writeScreenMessage(position, Message, duration);
+            writeScreenMessage(Message, duration, position);
         }
-        protected void writeScreenMessage(ScreenMessageStyle messagePosition, string Message, float duration = 3f)
+        protected void writeScreenMessage(string Message, float duration = 3f, ScreenMessageStyle messagePosition = ScreenMessageStyle.UPPER_RIGHT)
         {
             ScreenMessages.PostScreenMessage(Message, duration, messagePosition);
         }
@@ -327,7 +345,9 @@ namespace GTI
 
                     ChooseOption = mode[selectedMode].ID;        //converterNames[selectedConverter];
                     GTIDebug.Log("MultiModeAction_" + inActionSelect + " Executed", iDebugLevel.DebugInfo);
-                    updateMultiMode();
+
+                    //updateMultiMode();
+                    OnUpdateMultiMode();
                 }
             }
             GTIDebug.Log("Action MultiModeAction_" + inActionSelect + " (after): " + ChooseOption, iDebugLevel.Medium);
@@ -340,7 +360,8 @@ namespace GTI
             selectedMode++;
             if (selectedMode > mode.Count - 1) { selectedMode = 0; }
             ChooseOption = mode[selectedMode].ID;
-            updateMultiMode();
+            //updateMultiMode();
+            OnUpdateMultiMode();
         }
         [KSPAction("Previous mode")]
         public void ActionPreviousMode(KSPActionParam param) { ActionPreviousMode(); }
@@ -350,7 +371,8 @@ namespace GTI
             //Check if selected proplusion was the first one, and return the last one instead
             if (selectedMode < 0) { selectedMode = mode.Count - 1; }
             ChooseOption = mode[selectedMode].ID;
-            updateMultiMode();
+            //updateMultiMode();
+            OnUpdateMultiMode();
         }
         #endregion
 
@@ -498,7 +520,8 @@ namespace GTI
             {
                 this.Fields["ChooseOption"].guiActiveEditor = availableInEditor;
                 this.Fields["ChooseOption"].guiActive = availableInFlight;
-                updateMultiMode(silentUpdate: true);
+                //updateMultiMode(silentUpdate: true);
+                OnUpdateMultiMode(silentUpdate: true);
             }
             else
             {

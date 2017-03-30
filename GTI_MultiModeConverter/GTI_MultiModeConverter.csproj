@@ -54,11 +54,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DEBUG.cs" />
+    <None Include="OLD_DEBUG.cs" />
     <Compile Include="GTI_MultiModeConverter.cs" />
-    <Compile Include="GTI_MultiModeConverter_UI.cs" />
+    <None Include="OLD_GTI_MultiModeConverter.cs" />
+    <None Include="OLD_GTI_MultiModeConverter_UI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VABInfo.cs" />
+    <None Include="OLD_VABInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

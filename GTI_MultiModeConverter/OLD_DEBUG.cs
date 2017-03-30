@@ -7,7 +7,7 @@ using static GTI.Config.GTIConfig;
 
 namespace GTI
 {
-    partial class GTI_MultiModeConverter : PartModule
+    partial class OLD_GTI_MultiModeConverter : PartModule
     {
         [KSPField]
         public string debugMode = "false";
@@ -28,28 +28,47 @@ namespace GTI
 
             foreach (var converter in MRC)
             {
-                Debug.Log("\nconverter.Events");
-                for (int i = 0; i < converter.Events.Count; i++)
+                Debug.Log("converter.Events");
+                //for (int i = 0; i < converter.Events.Count; i++)
+                //{
+                //    Debug.Log(
+                //         "\ni: [" + i + "]" +
+                //         "\nGUIName: " + converter.Events[i].GUIName +
+                //         "\nid: " + converter.Events[i].id +
+                //         "\nname: " + converter.Events[i].name +
+                //         "\nactive: " + converter.Events[i].active +
+                //         "\nassigned: " + converter.Events[i].assigned +
+                //         "\ncategory: " + converter.Events[i].category +
+                //         "\nexternalToEVAOnly: " + converter.Events[i].externalToEVAOnly +
+                //         "\nguiActive: " + converter.Events[i].guiActive +
+                //         "\nguiActiveEditor: " + converter.Events[i].guiActiveEditor +
+                //         "\nguiActiveUncommand: " + converter.Events[i].guiActiveUncommand +
+                //         "\nguiActiveUnfocused: " + converter.Events[i].guiActiveUnfocused +
+                //         "\nguiIcon: " + converter.Events[i].guiIcon +
+                //         "\nunfocusedRange: " + converter.Events[i].unfocusedRange +
+                //         "\n");
+                //}
+                foreach (BaseEvent e in converter.Events)
                 {
                     Debug.Log(
-                         "\ni: [" + i + "]" +
-                         "\nGUIName: " + converter.Events[i].GUIName +
-                         "\nid: " + converter.Events[i].id +
-                         "\nname: " + converter.Events[i].name +
-                         "\nactive: " + converter.Events[i].active +
-                         "\nassigned: " + converter.Events[i].assigned +
-                         "\ncategory: " + converter.Events[i].category +
-                         "\nexternalToEVAOnly: " + converter.Events[i].externalToEVAOnly +
-                         "\nguiActive: " + converter.Events[i].guiActive +
-                         "\nguiActiveEditor: " + converter.Events[i].guiActiveEditor +
-                         "\nguiActiveUncommand: " + converter.Events[i].guiActiveUncommand +
-                         "\nguiActiveUnfocused: " + converter.Events[i].guiActiveUnfocused +
-                         "\nguiIcon: " + converter.Events[i].guiIcon +
-                         "\nunfocusedRange: " + converter.Events[i].unfocusedRange +
+                         //"\ni: [" + i + "]" +
+                         "\nGUIName: " + e.GUIName +
+                         "\nid: " + e.id +
+                         "\nname: " + e.name +
+                         "\nactive: " + e.active +
+                         "\nassigned: " + e.assigned +
+                         "\ncategory: " + e.category +
+                         "\nexternalToEVAOnly: " + e.externalToEVAOnly +
+                         "\nguiActive: " + e.guiActive +
+                         "\nguiActiveEditor: " + e.guiActiveEditor +
+                         "\nguiActiveUncommand: " + e.guiActiveUncommand +
+                         "\nguiActiveUnfocused: " + e.guiActiveUnfocused +
+                         "\nguiIcon: " + e.guiIcon +
+                         "\nunfocusedRange: " + e.unfocusedRange +
                          "\n");
                 }
 
-                Debug.Log("\nconverter.Fields");
+                Debug.Log("converter.Fields");
                 for (int i = 0; i < converter.Fields.Count; i++)
                 {
                     if (converter.Fields[i].guiActive)
@@ -72,6 +91,7 @@ namespace GTI
                             "\n");
                     }
                 }
+                Debug.Log("converter.Actions");
                 for (int i = 0; i < converter.Actions.Count; i++)
                 {
                     Debug.Log(

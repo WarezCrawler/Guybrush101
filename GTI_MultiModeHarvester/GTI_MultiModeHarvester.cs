@@ -24,7 +24,7 @@ namespace GTI
                 GTIDebug.Log("GTI_MultiModeHarvester --> initializeSettings()", iDebugLevel.DebugInfo);
                 MRH = part.FindModulesImplementing<ModuleResourceHarvester>();
 
-                mode = new List<MultiMode>();
+                mode = new List<MultiMode>(MRH.Count);
                 for (int i = 0; i < MRH.Count; i++)
                 {
                     mode.Add(new MultiMode()
@@ -48,14 +48,15 @@ namespace GTI
                 //initializeGUI();
 
                 //_settingsInitialized = true;
+                //updateMultiMode = update;         --> Delegate testing
             }
         }
 
         public override void updateMultiMode(bool silentUpdate = false)
         {
-            GTIDebug.Log("GTI_MultiModeConverter: updateConverter() --> Begin", iDebugLevel.High);
+            GTIDebug.Log("GTI_MultiModeConverter: updateMultiMode() --> Begin", iDebugLevel.High);
 
-            FindSelectedMode();
+            //FindSelectedMode();
             if (silentUpdate == false) writeScreenMessage();
 
             for (int i = 0; i < mode.Count; i++)
@@ -76,7 +77,7 @@ namespace GTI
                 }
             }
             MonoUtilities.RefreshContextWindows(part);
-            //Debug.Log("GTI_MultiModeConverter: updateConverter() --> Finished");
+            GTIDebug.Log("GTI_MultiModeHarvester: updateMultiMode() --> Finished", iDebugLevel.DebugInfo);
         }
 
 
@@ -93,21 +94,12 @@ namespace GTI
             }
             strOutInfo.AppendLine("Outputs:");
             strOutInfo.AppendLine(MRH[selectedMode].ResourceName);
-            //foreach (ResourceRatio output in MRH[selectedMode].outputList)
-            //{
-            //    strOutInfo.AppendLine(output.ResourceName + " (" + output.Ratio + ")");
-            //}
 
-            GTIDebug.Log("\nGTI_MultiModeConverter:\n" + strOutInfo.ToString(), iDebugLevel.DebugInfo);
+            GTIDebug.Log("\nGTI_MultiModeHarvester:\n" + strOutInfo.ToString(), iDebugLevel.DebugInfo);
 
             writeScreenMessage(
                 Message: strOutInfo.ToString(),
                 messagePosition: messagePosition,
-                duration: 3f
-                );
-            writeScreenMessage(
-                Message: strOutInfo.ToString(),
-                messagePosition: ScreenMessageStyle.UPPER_RIGHT,
                 duration: 3f
                 );
         }

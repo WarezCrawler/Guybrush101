@@ -11,7 +11,7 @@ using static GTI.Config.GTIConfig;
 
 namespace GTI
 {
-    partial class GTI_MultiModeConverter : PartModule
+    partial class OLD_GTI_MultiModeConverter : PartModule
     {
         #region KSPFields and supporting settings
 
