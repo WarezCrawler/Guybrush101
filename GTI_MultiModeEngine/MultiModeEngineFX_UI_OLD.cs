@@ -1,4 +1,6 @@
-﻿
+﻿//Obsolete --> Converted to using the multimode base class
+
+
 namespace GTI
 {
     partial class GTI_MultiModeEngineFX : PartModule

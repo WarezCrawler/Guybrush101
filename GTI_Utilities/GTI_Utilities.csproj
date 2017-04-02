@@ -73,7 +73,7 @@
     <Compile Include="Utilities\GTISettings.cs" />
     <Compile Include="Utilities_CustomTypes\EngineSwitchList.cs" />
     <Compile Include="Utilities_CustomTypes\engineMultiModeList.cs" />
-    <Compile Include="Utilities_CustomTypes\PropellantList.cs" />
+    <None Include="Utilities_CustomTypes\PropellantList.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="GTI_Config.cfg">

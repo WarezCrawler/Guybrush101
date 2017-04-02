@@ -6,7 +6,7 @@ using System.Text;
 
 namespace GTI
 {
-    class GTI_MultiModeConverter : GTI_MultiMode
+    class GTI_MultiModeConverter : GTI_MultiMode<MultiMode>
     {
         protected List<ModuleResourceConverter> MRC;
 
@@ -19,18 +19,18 @@ namespace GTI
                 //Find all converters in the part, and order thier names into an array for reference
                 MRC = part.FindModulesImplementing<ModuleResourceConverter>();
 
-                mode = new List<MultiMode>(MRC.Count);
+                modes = new List<MultiMode>(MRC.Count);
                 for (int i = 0; i < MRC.Count; i++)
                 {
                     //converterNames[i] = MRC[i].ConverterName;
-                    mode.Add(new MultiMode()
+                    modes.Add(new MultiMode()
                     {
                         moduleIndex = i,
                         ID = i.ToString(),
                         Name = MRC[i].ConverterName
                     });
-                    GTIDebug.Log("mode[" + i + "].ID --> " + mode[i].ID, iDebugLevel.DebugInfo);
-                    GTIDebug.Log("mode[" + i + "].Name --> " + mode[i].Name, iDebugLevel.DebugInfo);
+                    GTIDebug.Log("mode[" + i + "].ID --> " + modes[i].ID, iDebugLevel.DebugInfo);
+                    GTIDebug.Log("mode[" + i + "].Name --> " + modes[i].Name, iDebugLevel.DebugInfo);
                 }
 
                 //Disable converter actions, as these should be handled by the multimodeconverter module
@@ -50,21 +50,21 @@ namespace GTI
             //FindSelectedMode();
             if (silentUpdate == false) writeScreenMessage();
 
-            for (int i = 0; i < mode.Count; i++)
+            for (int i = 0; i < modes.Count; i++)
             {
                 if (i == selectedMode)
                 {
-                    GTIDebug.Log("GTI_MultiModeHarvester (" + (silentUpdate ? "silent" : "non-silent") + "): Activate Module [" + mode[i].moduleIndex + "] --> " + MRC[mode[i].moduleIndex].ConverterName, iDebugLevel.High);
-                    MRC[mode[i].moduleIndex].EnableModule();
+                    GTIDebug.Log("GTI_MultiModeHarvester (" + (silentUpdate ? "silent" : "non-silent") + "): Activate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
+                    MRC[modes[i].moduleIndex].EnableModule();
                 }
                 else
                 {
-                    GTIDebug.Log("GTI_MultiModeConverter (" + (silentUpdate ? "silent" : "non-silent") + "): Deactivate Module [" + mode[i].moduleIndex + "] --> " + MRC[mode[i].moduleIndex].ConverterName, iDebugLevel.High);
+                    GTIDebug.Log("GTI_MultiModeConverter (" + (silentUpdate ? "silent" : "non-silent") + "): Deactivate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
 
                     //Deactivate the converter
-                    MRC[mode[i].moduleIndex].DisableModule();
+                    MRC[modes[i].moduleIndex].DisableModule();
                     //Stop the converter
-                    MRC[mode[i].moduleIndex].StopResourceConverter();
+                    MRC[modes[i].moduleIndex].StopResourceConverter();
                 }
             }
             MonoUtilities.RefreshContextWindows(part);
@@ -76,11 +76,11 @@ namespace GTI
             //for (int i = 0; i < mode.Count; i++)
             for (int i = 0; i < MRC.Count; i++)     //Disable all modules
             {
-                GTIDebug.Log("GTI_MultiModeConverter: Deactivate Converter Module [" + mode[i].moduleIndex + "] --> " + MRC[mode[i].moduleIndex].ConverterName, iDebugLevel.High);
+                GTIDebug.Log("GTI_MultiModeConverter: Deactivate Converter Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                 //Deactivate the converter
-                MRC[mode[i].moduleIndex].DisableModule();
+                MRC[modes[i].moduleIndex].DisableModule();
                 //Stop the converter
-                MRC[mode[i].moduleIndex].StopResourceConverter();
+                MRC[modes[i].moduleIndex].StopResourceConverter();
             }
         }
 
@@ -89,7 +89,7 @@ namespace GTI
             //string strOutInfo = string.Empty;
             StringBuilder strOutInfo = new StringBuilder();
 
-            strOutInfo.AppendLine("Converter mode changed to " + mode[selectedMode]);
+            strOutInfo.AppendLine("Converter mode changed to " + modes[selectedMode]);
             strOutInfo.AppendLine("Inputs:");
             foreach (ResourceRatio input in MRC[selectedMode].Recipe.Inputs)
             {

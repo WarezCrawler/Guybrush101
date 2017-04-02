@@ -1,21 +1,35 @@
 ﻿using System;
-//using System.Collections;
 using System.Collections.Generic;
-//using UnityEngine;
 using GTI.Config;
 using static GTI.Config.GTIConfig;
 
 
 namespace GTI
 {
-    public struct MultiMode
+    public class MultiMode
     {
-        public int moduleIndex;
+        public int moduleIndex { get; set; }
         public string ID;
         public string Name;
+        //public bool modeDisabled = false;
     }
+    //public class MultiMode2
+    //{
+    //    public List<modeProperties> modes;
+    //    public MultiMode2(int capacity)
+    //    {
+    //        List<modeProperties> mode = new List<modeProperties>(capacity);
+    //    }
+    //    public class modeProperties
+    //    {
+    //        public int moduleIndex;
+    //        public string ID;
+    //        public string Name;
+    //        public bool modeDisabled = false;
+    //    }      
+    //}
 
-    public abstract class GTI_MultiMode : PartModule
+    public abstract class GTI_MultiMode<T> : PartModule where T : MultiMode
     {
         protected bool _settingsInitialized = false;
         protected bool _GUIsettingsInitialized = false;
@@ -24,7 +38,8 @@ namespace GTI
         //public string[] MultiModeID;
         //public string[] MultiModeNames;
 
-        public List<MultiMode> mode;
+        //public List<MultiMode> mode { get; protected set; }
+        public List<T> modes { get; protected set; }
 
         //protected string txtDeploy = "Deploy";
         //protected string txtRetract = "Retract";
@@ -51,16 +66,17 @@ namespace GTI
         /// <summary>
         /// Currently selected mode in integer format for use in the arrays
         /// </summary>
-        protected int selectedMode = 0;
+        public int selectedMode { get; protected set; } = 0;
 
         public override void OnStart(PartModule.StartState state)
         {
             GTIDebug.Log("GTI_MultiMode baseclass --> OnStart()", iDebugLevel.DebugInfo);
-            initialize();
 
             //Assign update method to delegate
             OnUpdateMultiMode = (dummyBool) => { FindSelectedMode(); };
             OnUpdateMultiMode += updateMultiMode;
+            
+            initialize();
         }
 
         /// <summary>
@@ -72,6 +88,15 @@ namespace GTI
             updateMultiMode(silentUpdate: true);
         }
 
+
+        /// <summary>
+        /// Updates the module with new selections. Deactivating the inactive ones, and activating the selected one.
+        /// </summary>
+        public abstract void updateMultiMode(bool silentUpdate = false);
+
+        public delegate void OnUpdateAction(bool silentUpdate = false);
+        public event OnUpdateAction OnUpdateMultiMode;
+        //public updateMultiModeModule updateMultiMode;
 
         /// <summary>
         /// initializeSettings() method is for custom settings initialization, and will automatically be called from the OnStart() method unless it is overridden.
@@ -106,14 +131,6 @@ namespace GTI
                 if (GameEvents.onVesselSwitching != null) GameEvents.onVesselSwitching.Add(onVesselSwitching);
             //}
         }
-
-        /// <summary>
-        /// Updates the module with new selections. Deactivating the inactive ones, and activating the selected one.
-        /// </summary>
-        public abstract void updateMultiMode(bool silentUpdate = false);
-        protected delegate void OnUpdateMultiModeModule(bool silentUpdate = false);
-        protected OnUpdateMultiModeModule OnUpdateMultiMode;
-        //public updateMultiModeModule updateMultiMode;
 
         #region UI
         [KSPField(guiActive = true, guiActiveEditor = true, isPersistant = true, guiName = "MultiMode")]
@@ -151,17 +168,17 @@ namespace GTI
 
                 //Extract options from the engineList
                 GTIDebug.Log("GTI_MultiMode: Set Options & OptionsDisplay", iDebugLevel.DebugInfo);
-                Options = new string[mode.Count];
-                OptionsDisplay = new string[mode.Count];
-                for (int i = 0; (i < mode.Count); i++)
+                Options = new string[modes.Count];
+                OptionsDisplay = new string[modes.Count];
+                for (int i = 0; (i < modes.Count); i++)
                 {
                     //Debug.Log("GTI_MultiModeConverter: i --> " + i);
-                    Options[i] = mode[i].ID;
-                    OptionsDisplay[i] = mode[i].Name;
+                    Options[i] = modes[i].ID;
+                    OptionsDisplay[i] = modes[i].Name;
                 }
-                //If there is only one converter available, then hide the selector menu --> It yields null ref errors if used in flight!!!
+                //If there is only one mode available, then hide the selector menu --> It yields null ref errors if used in flight!!!
                 //Debug.Log("engineList.Count: " + engineList.Count);
-                if (mode.Count < 2)
+                if (modes.Count < 2)
                 {
                     chooseField.guiActive = false;
                     chooseField.guiActiveEditor = false;
@@ -179,6 +196,7 @@ namespace GTI
 
                 //Load the previous selected Option, and sync up with the selectedConverter number
                 //ChooseOption = selectedChooseOption;
+                GTIDebug.Log("Find selected mode from ChooseOption", iDebugLevel.DebugInfo);
                 selModeFromChooseOption();
 
                 //If it's possible to switch mode in flight, then it natural that a Kerbal can do it manually as well.
@@ -200,7 +218,14 @@ namespace GTI
             //FindSelectedMode();
             
             /*updateMultiMode();*/
-            OnUpdateMultiMode();
+            
+
+            foreach (Delegate d in OnUpdateMultiMode.GetInvocationList())
+            {
+                GTIDebug.Log(d.Method);
+                
+            }
+            OnUpdateMultiMode.Invoke();
         }
 
         /// <summary>
@@ -208,13 +233,13 @@ namespace GTI
         /// </summary>
         protected virtual void FindSelectedMode()
         {
-            for (int i = 0; i < mode.Count; i++)
+            for (int i = 0; i < modes.Count; i++)
             {
-                if (mode[i].ID == ChooseOption)
+                if (modes[i].ID == ChooseOption)
                 {
                     selectedMode = i;
                     //this.Fields["EVAChangeMode"].guiName = "Change mode: " + mode[selectedMode].Name;
-                    this.Events[nameof(EVAChangeMode)].guiName = "Change mode: " + mode[selectedMode].Name;
+                    this.Events[nameof(EVAChangeMode)].guiName = "Change mode: " + modes[selectedMode].Name;
                     return;
                 }
             }
@@ -227,23 +252,28 @@ namespace GTI
         /// </summary>
         protected virtual void selModeFromChooseOption()
         {
+            GTIDebug.Log("selModeFromChooseOption() start", iDebugLevel.DebugInfo);
             if (ChooseOption == string.Empty)
             {
-                ChooseOption = mode[0].ID;
+                GTIDebug.Log("selModeFromChooseOption() --> ChooseOption == string.Empty", iDebugLevel.DebugInfo);
+                ChooseOption = modes[0].ID;
                 selectedMode = 0;
+                return;
             }
             else
             {
-                for (int i = 0; i < mode.Count; i++)
+                for (int i = 0; i < modes.Count; i++)
                 {
-                    if (ChooseOption == mode[i].ID)
+                    if (ChooseOption == modes[i].ID)
                     {
+                        GTIDebug.Log("selModeFromChooseOption() --> ChooseOption == mode[i].ID", iDebugLevel.DebugInfo);
                         selectedMode = i;
                         return;
                     }
                 }
                 //If mode not found, revert to first setting
-                ChooseOption = mode[0].ID;
+                GTIDebug.Log("selModeFromChooseOption() --> Default", iDebugLevel.DebugInfo);
+                ChooseOption = modes[0].ID;
                 selectedMode = 0;
             }
         }
@@ -286,10 +316,10 @@ namespace GTI
             for (int i = 1; i <= numberOfSpecificActions; i++)
             {
                 //if (MultiModeID.Length != MultiModeNames.Length) GTIDebug.LogError("MultiMode class implementation failed. MultiModeID and MultiModeNames arrays are inconsistent. Please fix the issue.");
-                if (mode.Count < i)
+                if (modes.Count < i)
                 { this.Actions["MultiModeAction_" + i].active = false; }
                 else
-                { this.Actions["MultiModeAction_" + i].guiName = "Activate: " + mode[i - 1].Name; }
+                { this.Actions["MultiModeAction_" + i].guiName = "Activate: " + modes[i - 1].Name; }
             }
         }
 
@@ -336,14 +366,14 @@ namespace GTI
             GTIDebug.Log("Action ActionPropulsion_" + inActionSelect + " (before): " + ChooseOption, iDebugLevel.Medium);
 
             //Check if the selected mode is possible
-            if (inActionSelect < mode.Count)
+            if (inActionSelect < modes.Count)
             {
                 //Check if the selected mode is a change
                 if (!(selectedMode == inActionSelect))
                 {
                     selectedMode = inActionSelect;
 
-                    ChooseOption = mode[selectedMode].ID;        //converterNames[selectedConverter];
+                    ChooseOption = modes[selectedMode].ID;        //converterNames[selectedConverter];
                     GTIDebug.Log("MultiModeAction_" + inActionSelect + " Executed", iDebugLevel.DebugInfo);
 
                     //updateMultiMode();
@@ -358,8 +388,8 @@ namespace GTI
         public virtual void ActionNextMode()
         {
             selectedMode++;
-            if (selectedMode > mode.Count - 1) { selectedMode = 0; }
-            ChooseOption = mode[selectedMode].ID;
+            if (selectedMode > modes.Count - 1) { selectedMode = 0; }
+            ChooseOption = modes[selectedMode].ID;
             //updateMultiMode();
             OnUpdateMultiMode();
         }
@@ -369,8 +399,8 @@ namespace GTI
         {
             selectedMode--;
             //Check if selected proplusion was the first one, and return the last one instead
-            if (selectedMode < 0) { selectedMode = mode.Count - 1; }
-            ChooseOption = mode[selectedMode].ID;
+            if (selectedMode < 0) { selectedMode = modes.Count - 1; }
+            ChooseOption = modes[selectedMode].ID;
             //updateMultiMode();
             OnUpdateMultiMode();
         }

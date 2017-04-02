@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace GTI.CustomTypes
 {
-    public class EngineSwitchList : CollectionBase
+    public class EngineSwitchList
     {
         //private string _names;            //New name of part in event of new propellant
         public string engineID { get; set; } = string.Empty;        //The propellants

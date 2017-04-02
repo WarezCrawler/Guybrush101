@@ -18,7 +18,7 @@ namespace GTI.Events
 
         private void Awake()
         {
-            Debug.Log("[GTI] Event 'onThrottleChange' Created");
+            GTIDebug.Log("Event 'onThrottleChange' Created", iDebugLevel.Low);
             if (onThrottleChange == null) onThrottleChange = new EventVoid("onThrottleChange");
         }
     }
@@ -108,7 +108,7 @@ namespace GTI.Events
             System.Diagnostics.Stopwatch stopwatch;
             stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            GTIDebug.Log("[GTI] Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: " + GTIConfig.EventCheckFreqIdle + "\n\tEventCheckFreqActive: " + GTIConfig.EventCheckFreqActive, iDebugLevel.Medium);
+            GTIDebug.Log("Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: " + GTIConfig.EventCheckFreqIdle + "\n\tEventCheckFreqActive: " + GTIConfig.EventCheckFreqActive, iDebugLevel.Medium);
             while (EventDetectorRunning)
             {
                 if (savedThrottle != FlightInputHandler.state.mainThrottle)
@@ -206,13 +206,13 @@ namespace GTI.Events
 
         private void EventDebugger()
         {
-            GTIDebug.Log("[GTI] onThrottle Event Raised", iDebugLevel.DebugInfo);
+            GTIDebug.Log("onThrottle Event Raised", iDebugLevel.DebugInfo);
         }
         #endregion
         
         private void OnDestroy()
         {
-            GTIDebug.Log("[GTI] GTI_Events destroyed", iDebugLevel.Medium);
+            GTIDebug.Log("GTI_Events destroyed", iDebugLevel.Medium);
             EventDetectorRunning = false;
             if (onThrottleChangeEvent != null) onThrottleChangeEvent.Remove(EventDebugger);
             //onSceneChange.Remove(onEventSceneChange);
