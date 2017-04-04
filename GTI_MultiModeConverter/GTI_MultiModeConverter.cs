@@ -54,12 +54,12 @@ namespace GTI
             {
                 if (i == selectedMode)
                 {
-                    GTIDebug.Log("GTI_MultiModeHarvester (" + (silentUpdate ? "silent" : "non-silent") + "): Activate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
+                    GTIDebug.Log("GTI_MultiMode (" + (silentUpdate ? "silent" : "non-silent") + "): Activate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                     MRC[modes[i].moduleIndex].EnableModule();
                 }
                 else
                 {
-                    GTIDebug.Log("GTI_MultiModeConverter (" + (silentUpdate ? "silent" : "non-silent") + "): Deactivate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
+                    GTIDebug.Log("GTI_MultiMode (" + (silentUpdate ? "silent" : "non-silent") + "): Deactivate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
 
                     //Deactivate the converter
                     MRC[modes[i].moduleIndex].DisableModule();

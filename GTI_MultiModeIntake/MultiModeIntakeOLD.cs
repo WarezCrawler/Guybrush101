@@ -5,7 +5,7 @@ using GTI.GenericFunctions;
 
 namespace GTI
 {
-    partial class GTI_MultiModeIntake : PartModule
+    partial class GTI_MultiModeIntakeOLD : PartModule
     {
         /* Example on an Intake Module
         name = ModuleResourceIntake

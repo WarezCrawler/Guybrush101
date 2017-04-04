@@ -97,7 +97,7 @@ namespace GTI.GenericFunctions
         //public ConfigNode[] GetNodes(string name, string valueName, string value)
 
         /// <summary>
-        /// Retrieves the ConfigNode of the specified node in a part.
+        /// Retrieves the ConfigNodes of the specified node in a part.
         /// </summary>
         /// <param name="part"></param>
         /// <param name="nodeName"></param>
@@ -116,6 +116,27 @@ namespace GTI.GenericFunctions
             else
             {
                 ConfigNode[] resultingNodes = thispart.partConfig.GetNodes(nodeName, valueName, value);
+                return resultingNodes;
+            }
+        }
+        /// <summary>
+        /// Retrieves the ConfigNodes of the specified node in a part.
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public static ConfigNode[] GetPartModuleConfigs(Part part, string nodeName)
+        {
+            AvailablePart thispart = GetSourcePart(part);
+
+            if (thispart == null)
+            {
+                Debug.LogError("GetPartConfig: PART NOT FOUND");
+                return null;
+            }
+            else
+            {
+                ConfigNode[] resultingNodes = thispart.partConfig.GetNodes(nodeName);
                 return resultingNodes;
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace GTI
 {
-    partial class GTI_MultiModeIntake : PartModule
+    partial class GTI_MultiModeIntakeOLD : PartModule
     {
         #region KSPFields and supporting settings
 

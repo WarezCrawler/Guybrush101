@@ -73,7 +73,7 @@ namespace GTI
             GTIDebug.Log("GTI_MultiMode baseclass --> OnStart()", iDebugLevel.DebugInfo);
 
             //Assign update method to delegate
-            OnUpdateMultiMode = (dummyBool) => { FindSelectedMode(); };
+            OnUpdateMultiMode = FindSelectedMode;
             OnUpdateMultiMode += updateMultiMode;
             
             initialize();
@@ -85,9 +85,13 @@ namespace GTI
         /// <param name="state"></param>
         public override void OnStartFinished(StartState state)
         {
-            updateMultiMode(silentUpdate: true);
+            //updateMultiMode(silentUpdate: true);
+            OnUpdateMultiMode.Invoke(silentUpdate: true);
         }
-
+        protected void InvokeOnUpdateMultiMode(bool silentUpdate = false)
+        {
+            OnUpdateMultiMode.Invoke(silentUpdate);
+        }
 
         /// <summary>
         /// Updates the module with new selections. Deactivating the inactive ones, and activating the selected one.
@@ -244,6 +248,7 @@ namespace GTI
                 }
             }
         }
+        private void FindSelectedMode(bool boo = false) { FindSelectedMode(); }
 
         /// <summary>
         /// selModeFromChooseOption set selectedMode from ChooseOption.
@@ -614,12 +619,20 @@ namespace GTI
             GTIDebug.Log("isEVA: " + toVessel.isEVA, iDebugLevel.DebugInfo);
         }
 
-        public void OnDestroy()
+        public virtual void OnDestroy()
         {
-            if (GameEvents.OnAnimationGroupStateChanged != null)    GameEvents.OnAnimationGroupStateChanged.Remove(OnModuleAnimationGroupStateChanged);
-            if (GameEvents.onCrewOnEva != null)                     GameEvents.onCrewOnEva.Remove(onEVA);
-            if (GameEvents.onCrewBoardVessel != null)               GameEvents.onCrewBoardVessel.Remove(onEVABoard);
-            if (GameEvents.onVesselSwitching != null)               GameEvents.onVesselSwitching.Remove(onVesselSwitching);
+            try
+            {
+                if (this.vessel.vesselName != null)
+                    GTIDebug.Log(this.vessel.vesselName + " --> " + this.GetType().Name + " --> OnDestroy()");
+            }
+            catch { /* DO NOTHING */ }
+            
+
+            if (GameEvents.OnAnimationGroupStateChanged != null) GameEvents.OnAnimationGroupStateChanged.Remove(OnModuleAnimationGroupStateChanged);
+            if (GameEvents.onCrewOnEva != null) GameEvents.onCrewOnEva.Remove(onEVA);
+            if (GameEvents.onCrewBoardVessel != null) GameEvents.onCrewBoardVessel.Remove(onEVABoard);
+            if (GameEvents.onVesselSwitching != null) GameEvents.onVesselSwitching.Remove(onVesselSwitching);
         }
     }
 }
