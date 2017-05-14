@@ -2,15 +2,23 @@
 //using System.Collections.Generic;
 //using System.Text;
 using UnityEngine;
-using static GTI.Config.GTIConfig;
+using static GTI.GTIConfig;
 
-namespace GTI.Config
+namespace GTI
 {
     public static class GTIDebug
     {
         public static void Log(object message, iDebugLevel useDebugLevel = iDebugLevel.Low)
         {
+            //if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel) Debug.Log("[GTI] " + message);
+            //this.GetType().Name
             if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel) Debug.Log("[GTI] " + message);
+        }
+        public static void Log(object message, string tag, iDebugLevel useDebugLevel = iDebugLevel.Low)
+        {
+            //if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel) Debug.Log("[GTI] " + message);
+            //this.GetType().Name
+            if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel) Debug.Log("[" + tag + "] " + message);
         }
         public static void LogError(object message)
         {
@@ -19,6 +27,19 @@ namespace GTI.Config
         public static void LogWarning(object message, iDebugLevel useDebugLevel = iDebugLevel.Low)
         {
             if (GTIConfig.DebugActive && DebugLevel >= useDebugLevel) Debug.LogWarning("[GTI warning] " + message);
+        }
+
+        public static string GetVesselName(Part part)
+        {
+            try
+            {
+                return part.vessel.GetName();
+            }
+            catch
+            {
+                return "'vessel name null'";
+            }
+            
         }
 
         public static void LogEvents(PartModule module, object message = null)

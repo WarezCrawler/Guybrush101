@@ -1,27 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using GTI.Config;
-using static GTI.Config.GTIConfig;
-using GTI.GenericFunctions;
-using static GTI.GenericFunctions.Utilities;
+using static GTI.GTIConfig;
+//using GTI.GenericFunctions;
+using static GTI.Utilities;
 //using static GTI.GenericFunctions.PhysicsUtilities;
 
 namespace GTI
 {
     public class IntakeModes : MultiMode
     {
-        //public int moduleIndex { get; set; }
-        //public string ID;
-        //public string Name;
         //public bool modeDisabled = false;
         public string resourceName;
-        //public bool checkForOxygen;
-        //public float areas;
-        //public float intakeSpeed;
-        //public string intakeTransformNames;
-        //public ConfigNode machCurves;
-        //public float resMaxAmount;
 
+        public override string ToString()
+        {
+            return base.ToString() + "\t" + resourceName;
+        }
     }
     class GTI_MultiModeIntake : GTI_MultiMode<IntakeModes>
     {
@@ -51,19 +45,23 @@ namespace GTI
         [KSPField]
         public string resMaxAmount = string.Empty;
 
+        [KSPField]
+        public bool preserveResourceNodes = false;
+
         public List<ModuleResourceIntake> ModuleIntakes;
 
         protected override void initializeSettings()
         {
             GTIDebug.Log("GTI_MultiModeIntake --> initializeSettings()", iDebugLevel.DebugInfo);
-            GTIDebug.Log(GetPartModuleConfig(this.part, "MODULE", "name", "GTI_MultiModeIntake").ToString(), iDebugLevel.DebugInfo);
+            GTIDebug.Log(part.GetPartModuleConfig("MODULE", "name", "GTI_MultiModeIntake").ToString(), iDebugLevel.DebugInfo);
 
-            ConfigNode[] ResourceNodes = GetPartModuleConfigs(this.part, "RESOURCE");
-            foreach(ConfigNode n in ResourceNodes)
-            {
-                GTIDebug.Log(n.ToString(), iDebugLevel.DebugInfo);
-                GTIDebug.Log(n.values.GetValue("name"), iDebugLevel.DebugInfo);
-            }
+            ConfigNode[] ResourceNodes = part.GetPartModuleConfigs("RESOURCE");
+            GTIDebug.Log(ResourceNodes.ToStringExt(), iDebugLevel.DebugInfo);
+            //foreach(ConfigNode n in ResourceNodes)
+            //{
+            //    GTIDebug.Log(n.ToString(), iDebugLevel.DebugInfo);
+            //    GTIDebug.Log(n.values.GetValue("name"), iDebugLevel.DebugInfo);
+            //}
 
             //GetPartModuleConfig(this.part, "MODULE", "name", "GTI_MultiModeEngine")
 
@@ -97,10 +95,6 @@ namespace GTI
 
                 ModuleIntakes[i].Actions["ToggleAction"].active = false;
             }
-
-            //Moved to updateMultiMode
-            //this.Events["IntakeActivate"].active = !selectedModeStatus;
-            //this.Events["IntakeDeactivate"].active = selectedModeStatus;
             
             //force no use af animation groups (it's not imlpemented, I don't believe it's relevant)
             useModuleAnimationGroup = false;
@@ -111,7 +105,6 @@ namespace GTI
         {
             GTIDebug.Log(this.GetType().Name + " --> GTI_MultiModeIntake: updateMultiMode() --> Begin", iDebugLevel.High);
             Part currentPart = this.part;
-            //ConfigNode IntakeNode = new ConfigNode();
 
             if (silentUpdate == false) writeScreenMessage();
 
@@ -136,56 +129,84 @@ namespace GTI
                 else
                 {
                     GTIDebug.Log("GTI_MultiMode (" + (silentUpdate ? "silent" : "non-silent") + "): Deactivate Module [" + modes[i].moduleIndex + "] --> " + ModuleIntakes[modes[i].moduleIndex].resourceName, iDebugLevel.High);
-
-                    //ModuleIntakes[modes[selectedMode].moduleIndex].Deactivate();
                     ModuleIntakes[i].enabled = false;
-                    ModuleIntakes[i].isEnabled = false;
+                    ModuleIntakes[i].isEnabled = false;         //=> FixedUpdate() will update status = "Closed" and exit
                     ModuleIntakes[i].intakeEnabled = false;
                 }
             }
             this.Events["IntakeActivate"].active = !selectedModeStatus;
             this.Events["IntakeDeactivate"].active = selectedModeStatus;
 
-            //bool removethis = false;
-            //foreach (PartResource resource in currentPart.Resources)
-            //{
-            //    //Check if the resource is part of the switching resources, so that we do not destroy resources which are not intended for this switching
-            //    //Debug.Log("MultiModeIntake: foreach (string inIntakeResource in arrIntakeNames)");
-            //    //foreach (string inIntakeResource in arrIntakeNames)
-            //    for (int i = 0; i < modes.Count; i++)
-            //    {
-            //        if (modes[i].resourceName == resource.resourceName)
-            //        {
-            //            GTIDebug.Log("Remove Resource: " + resource.resourceName, iDebugLevel.High);
-            //            removethis = true;
-            //            break;
-            //        }
-            //    }
-            //    //If the resource belongs to the intake, then remove it
-            //    //Debug.Log("MultiModeIntake: currentPart.Resources.Remove - " + removethis);
-            //    if (removethis == true) { currentPart.Resources.Remove(resource); }
-            //    removethis = false;
-            //}
-
             #region Create new Resource node
-            //List<ConfigNode> IntakeResources = new List<ConfigNode>();
-            ConfigNode IntakeResource = new ConfigNode("RESOURCE");
-            float resMaxAmount = 2f;             //(float)ModuleIntakes[modes[selectedMode].moduleIndex].res.maxAmount;
-            float resIniAmount = HighLogic.LoadedSceneIsFlight ? 0f : resMaxAmount;
+            //Only handle resources if preservation is not activated
+            if (!preserveResourceNodes)
+            {
+                //List<ConfigNode> IntakeResources = new List<ConfigNode>();
+                ConfigNode IntakeResource = new ConfigNode("RESOURCE");
+                float resMaxAmount = (float)ModuleIntakes[modes[selectedMode].moduleIndex].res.maxAmount;
+                float resIniAmount = HighLogic.LoadedSceneIsFlight ? 0f : resMaxAmount;
 
-            //Create Resource node
-            //IntakeResource.AddNode("RESOURCE");
-            IntakeResource.AddValue("name", modes[selectedMode].resourceName);
-            IntakeResource.AddValue("amount", resIniAmount);
-            IntakeResource.AddValue("maxAmount", resMaxAmount);
+                //Create Resource node
+                IntakeResource.AddValue("name", modes[selectedMode].resourceName);
+                IntakeResource.AddValue("amount", resIniAmount);
+                IntakeResource.AddValue("maxAmount", resMaxAmount);
 
-            //Add the resources
-            GTIDebug.Log("MultiModeIntake: Add Resource\n" + IntakeResource.ToString(), iDebugLevel.DebugInfo);
-            //Clear all resources since I get null ref error when I do not do this
-            currentPart.Resources.Clear();
-            currentPart.AddResource(IntakeResource);
-            //IntakeResource.ClearNodes();
-            //IntakeResource.ClearValues();
+                //All resource properties
+                //partResource.amount = amount;
+                //partResource.maxAmount = maxAmount;
+                //partResource.flowState = flowState;
+                //partResource.isTweakable = isTweakable;
+                //partResource.hideFlow = hideFlow;
+                //partResource.isVisible = isVisible;
+                //partResource.flowMode = flow;
+
+
+                //Clear all resources since I get null ref error when I do not do this
+                //currentPart.Resources.Clear();
+                bool preserveResource;
+                // remove all target resources
+                List<PartResource> resourcesDeleteList = new List<PartResource>();
+                foreach (PartResource resource in currentPart.Resources)
+                {
+                    preserveResource = true;
+                    GTIDebug.Log("Check for resource removal: " + resource.resourceName, iDebugLevel.DebugInfo);
+                    for (int j = 0; j < modes.Count; j++)
+                    {
+                        if (modes[j].resourceName == resource.resourceName)
+                        {
+                            //Remove resources managed by this mod
+                            preserveResource = false;
+                            break;
+                        }
+                    }
+                    if (!preserveResource)
+                    {
+                        GTIDebug.Log("Removing Resource: " + resource.resourceName, iDebugLevel.DebugInfo);
+                        //if (currentPart.Resources.Remove(resource)) GTIDebug.Log("Resource removed: " + GetResourceID(resource.resourceName), iDebugLevel.DebugInfo);
+                        resourcesDeleteList.Add(resource);
+                    }
+                }
+                foreach (var resource in resourcesDeleteList)
+                {
+                    if (currentPart.Resources.Remove(resource)) GTIDebug.Log("Resource removed: " + GetResourceID(resource.resourceName), iDebugLevel.DebugInfo);
+                }
+                resourcesDeleteList = null;
+
+                //Add the resources
+                GTIDebug.Log("MultiModeIntake: Add Resource\n" + IntakeResource.ToString(), iDebugLevel.DebugInfo);
+                currentPart.AddResource(IntakeResource);
+                //IntakeResource.ClearNodes();
+                //IntakeResource.ClearValues();
+
+                GTIDebug.Log("Listing resources defined in part", iDebugLevel.DebugInfo);
+                if(DebugLevel == iDebugLevel.DebugInfo)
+                {
+                    for (int i = 0; i < currentPart.Resources.Count; i++)
+                    {
+                        GTIDebug.Log("currentPart.Resources[" + i + "].resourceName: " + currentPart.Resources[i].resourceName + " \t" + currentPart.Resources[i].maxAmount, iDebugLevel.DebugInfo);
+                    }
+                }
+            }
             #endregion
 
             try
@@ -204,6 +225,19 @@ namespace GTI
 
         protected override void ModuleAnimationGroupEvent_DisableModules() { throw new NotImplementedException(); }
 
+        public List<GTI_MultiModeIntake> GetCounterPartModules(Part thispart)
+        {
+            List<Part> CounterParts = thispart.symmetryCounterparts;
+            List<GTI_MultiModeIntake> modules = new List<GTI_MultiModeIntake>(CounterParts.Count);
+
+            foreach (Part part in CounterParts)
+            {
+                modules.Add(part.FindModuleImplementing<GTI_MultiModeIntake>());
+            }
+
+            return modules;
+        }
+
         [KSPEvent(name = "IntakeActivate", guiName = "Open Intake (GTI)", active = true, externalToEVAOnly = true, guiActiveUnfocused = false, unfocusedRange = 5f, guiActive = true, guiActiveEditor = true)]
         public void IntakeActivate()
         {
@@ -213,6 +247,21 @@ namespace GTI
             this.Events["IntakeDeactivate"].active = true;
 
             InvokeOnUpdateMultiMode(true);
+
+            ////Sync up all counterparts modules
+            if (affectSymCounterpartsInFlight)
+            {
+                List<GTI_MultiModeIntake> CounterModules = GetCounterPartModules(this.part);
+                foreach (GTI_MultiModeIntake module in CounterModules)
+                {
+                    module.selectedModeStatus = true;
+
+                    module.Events["IntakeActivate"].active = false;
+                    module.Events["IntakeDeactivate"].active = true;
+
+                    module.InvokeOnUpdateMultiMode(true);
+                }
+            }
         }
         [KSPEvent(name = "IntakeDeactivate", guiName = "Close Intake (GTI)", active = true, externalToEVAOnly = true, guiActiveUnfocused = false, unfocusedRange = 5f, guiActive = true, guiActiveEditor = true)]
         public void IntakeDeactivate()
@@ -223,6 +272,21 @@ namespace GTI
             this.Events["IntakeDeactivate"].active = false;
 
             InvokeOnUpdateMultiMode(true);
+
+            ////Sync up all counterparts modules
+            if (affectSymCounterpartsInFlight)
+            {
+                List<GTI_MultiModeIntake> CounterModules = GetCounterPartModules(this.part);
+                foreach (GTI_MultiModeIntake module in CounterModules)
+                {
+                    module.selectedModeStatus = false;
+
+                    module.Events["IntakeActivate"].active = true;
+                    module.Events["IntakeDeactivate"].active = false;
+
+                    module.InvokeOnUpdateMultiMode(true);
+                }
+            }
         }
 
         [KSPAction("Toggle Intake")]

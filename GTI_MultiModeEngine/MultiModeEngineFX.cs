@@ -1,8 +1,8 @@
-﻿using GTI.Config;
-using static GTI.Config.GTIConfig;
-using static GTI.GenericFunctions.Utilities;
+﻿using static GTI.GTIConfig;
+using static GTI.Utilities;
 using System.Collections.Generic;
 using System;
+using System.Text;
 
 //using System;
 
@@ -96,7 +96,7 @@ namespace GTI
                     ModuleEngines[i].Actions["ShutdownAction"].active = false;
                     ModuleEngines[i].Actions["ActivateAction"].active = false;
 
-                    GTIDebug.Log(ModuleEngines[i].engineID + " - Collect module engines index's", iDebugLevel.DebugInfo);
+                    GTIDebug.Log(ModuleEngines[i].engineID + " - Collect module engines index's", this.GetType().Name, iDebugLevel.DebugInfo);
                     foreach (MultiMode m in modes)
                     {
                         //Update index's of the engine modules
@@ -110,6 +110,7 @@ namespace GTI
                 #endregion
             }
         }
+
 
         /// <summary>
         /// Update propulsion
@@ -181,6 +182,38 @@ namespace GTI
                 );
         }
 
+        [KSPAction("Activate Engine")]
+        public void ActionActivate(KSPActionParam param)
+        {
+            if (!currentModuleEngine.getIgnitionState) { currentModuleEngine.Activate(); }
+
+            currentEngineState = currentModuleEngine.getIgnitionState;
+            //Debug.Log("Action currentModuleEngine.Activate(): " + ChooseOption + " new state is: " + currentEngineState);
+        }
+        [KSPAction("Shutdown Engine")]
+        public void ActionShutdown(KSPActionParam param)
+        {
+            if (currentModuleEngine.getIgnitionState) { currentModuleEngine.Shutdown(); }
+
+            currentEngineState = currentModuleEngine.getIgnitionState;
+            //Debug.Log("Action currentModuleEngine.Shutdown(): " + ChooseOption + " new state is: " + currentEngineState);
+        }
+        public void ActionToggle(KSPActionParam param)
+        {
+
+            if (currentModuleEngine.getIgnitionState)
+            {
+                currentModuleEngine.Shutdown();
+            }
+            else
+            {
+                currentModuleEngine.Activate();
+            }
+
+            currentEngineState = currentModuleEngine.getIgnitionState;
+            //Debug.Log("Action currentModuleEngine.Shutdown(): " + ChooseOption + " new state is: " + currentEngineState);
+        }
+
         protected override void ModuleAnimationGroupEvent_DisableModules()
         {
             throw new NotImplementedException();
@@ -189,9 +222,42 @@ namespace GTI
         #region VAB Information
         public override string GetInfo()
         {
+            StringBuilder Info = new StringBuilder();
+            GTIDebug.Log("GTI_MultiModeEngineFX GetInfo");
             try
             {
-                return "GTI MultiMode Engine FX";
+                if (!_settingsInitialized)
+                {
+                    initializeSettings();
+                    //ModuleEngines = part.FindModulesImplementing<ModuleEnginesFX>();
+                }
+
+
+                //Info.AppendLine("GTI MultiMode Engine FX");
+                Info.AppendLine("<color=yellow>Engine Modes Available:</color>");
+                Info.AppendLine(GUIengineID);
+                Info.AppendLine("\nIn Flight switching is <color=yellow>" + (availableInFlight ? "available" : "not available") + "</color>");
+                //foreach (ModuleEnginesFX e in ModuleEngines)
+                //foreach (MultiMode m in modes)
+                //{
+
+                //    //ModuleEngines[m.moduleIndex].GetMaxThrust();
+
+                //    Info.AppendLine("Max Trust " + ModuleEngines[m.moduleIndex].GetMaxThrust());
+                //}
+
+
+                //str.AppendFormat("Maximal force: {0:0.0}iN\n", maxGeneratorForce);
+                //str.AppendFormat("Maximal charge time: {0:0.0}s\n\n", maxChargeTime);
+                //str.AppendFormat("Requires\n");
+                //str.AppendFormat("- Electric charge: {0:0.00}/s\n\n", requiredElectricalCharge);
+                //str.Append("Navigational computer\n");
+                //str.Append("- Required force\n");
+                //str.Append("- Success probability\n");
+
+
+                //return "GTI MultiMode Engine FX";
+                return Info.ToString();
             }
             catch (Exception e)
             {

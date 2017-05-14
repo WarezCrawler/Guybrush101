@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 //using System.Collections.Generic;
 using UnityEngine;
+using static GTI.GTIConfig;
 
-namespace GTI.GenericFunctions
+namespace GTI
 {
     public static class PhysicsUtilities
     {
@@ -208,6 +211,27 @@ namespace GTI.GenericFunctions
 
     public static partial class Utilities
     {
+
+        /// <summary>
+        /// Retrieves the resource Definition from the PartResourceLibrary.Instance.GetDefinition using the name of the resource
+        /// </summary>
+        /// <param name="ResourceName"></param>
+        /// <returns>Resource Definition</returns>
+        public static PartResourceDefinition GetResourceDefinition(string ResourceName)
+        {
+            return PartResourceLibrary.Instance.GetDefinition(ResourceName);
+        }
+
+        /// <summary>
+        /// Retrieves the resource ID from the PartResourceLibrary.Instance.GetDefinition using the name of the resource
+        /// </summary>
+        /// <param name="ResourceName"></param>
+        /// <returns>Resource ID (integer)</returns>
+        public static int GetResourceID(string ResourceName)
+        {
+            return PartResourceLibrary.Instance.GetDefinition(ResourceName).id;
+        }
+
         /// <summary>
         /// Function for creating correctly formatted KeyFrames from specifically formatted strings. Format of inKey is "0 0 0 0;1 1 1 1;2 2 2 2" -- (float time, float value, float inTangent, float outTangent)
         /// </summary>
@@ -241,7 +265,7 @@ namespace GTI.GenericFunctions
                 //Debug.Log("keyCurvePoint.Length: " + keyCurvePoint.Length);
                 //Debug.Log("keyArray[i]: " + keyArray[i]);
 
-                if (keyCurvePoints.Length == 2)
+                if (keyCurvePoints.Length != 4)
                 { outKeys[i] = new Keyframe(Single.Parse(keyCurvePoints[0]), Single.Parse(keyCurvePoints[1])); }
                 else if (keyCurvePoints.Length == 4)
                 { outKeys[i] = new Keyframe(Single.Parse(keyCurvePoints[0]), Single.Parse(keyCurvePoints[1]), Single.Parse(keyCurvePoints[2]), Single.Parse(keyCurvePoints[3])); }
@@ -376,5 +400,64 @@ namespace GTI.GenericFunctions
                     return EngineType.LiquidFuel;
             }
         }
+
+        public static void HookModule(string targetModule, string attachModule)
+        {
+            for (int iPart = 0; iPart < PartLoader.LoadedPartsList.Count; iPart++)
+            {
+                AvailablePart currentAP = PartLoader.LoadedPartsList[iPart];
+                Part currentPart = currentAP.partPrefab;
+
+                for (int iModule = 0; iModule < currentPart.Modules.Count; iModule++)
+                {
+                    if (targetModule == currentPart.Modules[iModule].moduleName)
+                    {
+                        if (!ModuleAttached(currentPart, attachModule))
+                        {
+                            GTIDebug.Log(targetModule + " found - Attaching " + attachModule, iDebugLevel.Medium);
+                            PartModule newModule = currentPart.AddModule(attachModule);
+                            if (null == newModule)
+                            {
+                                Debug.LogError(attachModule + " attachment failed.");
+                            }
+                            newModule.moduleName = attachModule;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        private static bool ModuleAttached(Part part, string moduleName)
+        {
+            for (int iModules = 0; iModules < part.Modules.Count; iModules++)
+            {
+                if (moduleName == part.Modules[iModules].moduleName)
+                {
+                    return (true);
+                }
+            }
+            return (false);
+        }
     }
+
+    public static class Extentions
+    {
+        /// <summary>
+        /// Convert an array of ConfigNodes to a string, as opposed to stock just writing "ConfigNode[]".
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public static string ToStringExt(this ConfigNode[] nodes)
+        {
+            StringBuilder strConfigNodes = new StringBuilder();
+            foreach (ConfigNode node in nodes)
+            {
+                strConfigNodes.AppendLine(node.ToString());
+            }
+
+            return strConfigNodes.ToString();
+        }
+    }
+
 }

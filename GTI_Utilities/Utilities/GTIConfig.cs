@@ -2,10 +2,10 @@
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-//using static GTI.Config.GTIConfig;
-//using static GTI.Config.GTISettings;
+//using static GTI.GTIConfig;
+//using static GTI.GTISettings;
 
-namespace GTI.Config
+namespace GTI
 {
     public static class GTIConfig
     {
@@ -244,3 +244,8 @@ namespace GTI.Config
         */
     }
 }
+
+        //if (node.HasValue("flowMode"))
+        //{
+        //    this._resourceFlowMode = (int)Enum.Parse(typeof(ResourceFlowMode), node.GetValue("flowMode"));
+        //}

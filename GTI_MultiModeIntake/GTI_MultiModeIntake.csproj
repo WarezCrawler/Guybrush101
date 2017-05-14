@@ -55,10 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DEBUG.cs" />
+    <None Include="DEBUG.cs" />
     <Compile Include="GTI_MultiModeIntake.cs" />
-    <Compile Include="MultiModeIntakeOLD.cs" />
-    <Compile Include="MultiModeIntake_UI_OLD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

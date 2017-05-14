@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using GTI.GenericFunctions;
-using GTI.Config;
 
 namespace GTI
 {
@@ -193,10 +191,10 @@ namespace GTI
     //    #endregion
     //}
 
-    partial class GTI_MultiModeEngine : PartModule
+    partial class GTI_MultiModeEngineOLD : PartModule
     {
         #region --------------------------------Debugging---------------------------------------
-        [KSPEvent(active = true, guiActive = true, guiActiveEditor = true, guiName = "[GTI] DEBUG")]
+        [KSPEvent(active = false, guiActive = false, guiActiveEditor = false, guiName = "[GTI] DEBUG")]
         public void DEBUG_ENGINESSWITCH()
         {
             initializeSettings();

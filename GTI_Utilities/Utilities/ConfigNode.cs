@@ -3,7 +3,7 @@
 using UnityEngine;
 
 
-namespace GTI.GenericFunctions
+namespace GTI
 {
     public static partial class Utilities
     {
@@ -12,7 +12,7 @@ namespace GTI.GenericFunctions
         /// </summary>
         /// <param name="part"></param>
         /// <returns></returns>
-        public static ConfigNode GetPartConfig(Part part)
+        public static ConfigNode GetPartConfig(this Part part)
         {
             AvailablePart thispart = GetSourcePart(part);
 
@@ -51,7 +51,7 @@ namespace GTI.GenericFunctions
         /// <param name="part"></param>
         /// <param name="partName"></param>
         /// <returns></returns>
-        public static ConfigNode GetPartConfig(Part part, out string partName)
+        public static ConfigNode GetPartConfig(this Part part, out string partName)
         {
             partName = string.Empty;
             AvailablePart thispart = GetSourcePart(part);
@@ -75,7 +75,7 @@ namespace GTI.GenericFunctions
         /// <param name="partName"></param>
         /// <param name="partTitle"></param>
         /// <returns></returns>
-        public static ConfigNode GetPartConfig(Part part, out string partName, out string partTitle)
+        public static ConfigNode GetPartConfig(this Part part, out string partName, out string partTitle)
         {
             partName = string.Empty;
             partTitle = string.Empty;
@@ -104,7 +104,7 @@ namespace GTI.GenericFunctions
         /// <param name="valueName"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static ConfigNode[] GetPartModuleConfigs(Part part, string nodeName, string valueName, string value)
+        public static ConfigNode[] GetPartModuleConfigs(this Part part, string nodeName, string valueName, string value)
         {
             AvailablePart thispart = GetSourcePart(part);
 
@@ -125,7 +125,7 @@ namespace GTI.GenericFunctions
         /// <param name="part"></param>
         /// <param name="nodeName"></param>
         /// <returns></returns>
-        public static ConfigNode[] GetPartModuleConfigs(Part part, string nodeName)
+        public static ConfigNode[] GetPartModuleConfigs(this Part part, string nodeName)
         {
             AvailablePart thispart = GetSourcePart(part);
 
@@ -148,7 +148,7 @@ namespace GTI.GenericFunctions
         /// <param name="valueName"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static ConfigNode GetPartModuleConfig(Part part, string nodeName, string valueName, string value)
+        public static ConfigNode GetPartModuleConfig(this Part part, string nodeName, string valueName, string value)
         {
             AvailablePart thispart = GetSourcePart(part);
 
@@ -169,7 +169,7 @@ namespace GTI.GenericFunctions
         /// </summary>
         /// <param name="part"></param>
         /// <returns></returns>
-        public static string GetPartUrl(Part part)
+        public static string GetPartUrl(this Part part)
         {
             AvailablePart thispart = GetSourcePart(part);
             string output = string.Empty;
@@ -189,7 +189,7 @@ namespace GTI.GenericFunctions
         /// </summary>
         /// <param name="part"></param>
         /// <returns></returns>
-        private static AvailablePart GetSourcePart(Part part)
+        private static AvailablePart GetSourcePart(this Part part)
         {
             return GetSourcePart(part.name);
         }

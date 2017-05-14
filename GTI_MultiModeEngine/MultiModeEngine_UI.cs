@@ -2,8 +2,7 @@
 //using UnityEngine;
 //using GTI.GenericFunctions;
 using System.Text;
-using GTI.Config;
-using static GTI.Config.GTIConfig;
+using static GTI.GTIConfig;
 
 /*
 This module targets "ModuleEngines" modules for engine switching
@@ -11,7 +10,7 @@ This module targets "ModuleEngines" modules for engine switching
 
 namespace GTI
 {
-    partial class GTI_MultiModeEngine : PartModule
+    partial class GTI_MultiModeEngineOLD : PartModule
     {
         //Availability of the functionality
         [KSPField]
@@ -51,12 +50,13 @@ namespace GTI
             {
                 Options[i] = i.ToString();
                 OptionsDisplay[i] = GUIengineModeNamesEmpty ? engineModeList[i].Propellants : engineModeList[i].GUIengineModeNames;
+                GTIDebug.Log("OptionsDisplay[" + i + "]: " + OptionsDisplay[i], iDebugLevel.DebugInfo);
             }
             //if (ChooseOption == string.Empty) { ChooseOption == Options[0]; }
             
 
             //If there is only one engine available, then hide the selector menu --> It yields null ref errors if used in flight!!!
-            //Debug.Log("engineList.Count: " + engineList.Count);
+            GTIDebug.Log("engineList.Count: " + engineModeList.Count, iDebugLevel.DebugInfo);
             if (engineModeList.Count < 2)
             {
                 chooseField.guiActive = false;
@@ -125,7 +125,7 @@ namespace GTI
             strOutInfo.AppendLine("Propellants:");
             strOutInfo.AppendLine(engineModeList[selectedMode].Propellants);
             
-            //Debug.Log("\nGTI_MultiModeEngine:\n" + strOutInfo.ToString());
+            GTIDebug.Log("\nGTI_MultiModeEngine:\n" + strOutInfo.ToString(), iDebugLevel.DebugInfo);
 
             //Default position and switch to user defined position
             ScreenMessageStyle position = ScreenMessageStyle.UPPER_CENTER;

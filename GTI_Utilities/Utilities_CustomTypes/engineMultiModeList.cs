@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using UnityEngine;
-using GTI.GenericFunctions;
-using GTI.Config;
-using static GTI.Config.GTIConfig;
+using static GTI.GTIConfig;
 
 namespace GTI.CustomTypes
 {

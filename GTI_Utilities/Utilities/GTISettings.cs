@@ -1,8 +1,6 @@
-﻿//using GTI.Config;
-using static GTI.Config.GTIConfig;
-using UnityEngine;
+﻿using static GTI.GTIConfig;
 
-namespace GTI.Config
+namespace GTI
 {
     public abstract class GTISettingsBase : GameParameters.CustomParameterNode
     {

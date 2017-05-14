@@ -1,10 +1,8 @@
-﻿//using System.Collections;
+﻿using System;
 using System.Threading;
-//using System.IO;
-//using System.Reflection;
 using UnityEngine;
-using GTI.Config;
-using static GTI.Config.GTIConfig;
+using static GTI.GTIConfig;
+
 
 namespace GTI.Events
 {
@@ -74,7 +72,7 @@ namespace GTI.Events
             
         }
 
-        private void startThread()
+        internal void startThread()
         {
             if (GTIConfig.initEvent)
             {
@@ -119,7 +117,7 @@ namespace GTI.Events
                     //}
                     //run code on throttle change here.
                     savedThrottle = FlightInputHandler.state.mainThrottle;
-                    GTIDebug.Log("Throttle Changed to " + savedThrottle, iDebugLevel.High);
+                    GTIDebug.Log("Throttle Changed to " + savedThrottle, iDebugLevel.DebugInfo);
                     onThrottleChangeEvent.Fire();
                     wait = GTIConfig.EventCheckFreqActive;
                 }
@@ -130,7 +128,7 @@ namespace GTI.Events
             }
 
             stopwatch.Stop();
-            var ts = stopwatch.Elapsed;
+            TimeSpan ts = stopwatch.Elapsed;
             string elapsedTime = string.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             GTIDebug.Log("GTI_inFlightEventDetector Stopped.\tRuntime = " + elapsedTime, iDebugLevel.Medium);
         }

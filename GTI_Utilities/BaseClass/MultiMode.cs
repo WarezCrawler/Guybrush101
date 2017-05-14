@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GTI.Config;
-using static GTI.Config.GTIConfig;
+using static GTI.GTIConfig;
 
 
 namespace GTI
@@ -11,6 +10,11 @@ namespace GTI
         public int moduleIndex { get; set; }
         public string ID;
         public string Name;
+
+        public override string ToString()
+        {
+            return moduleIndex + "\t" + ID + "\t" + Name;
+        }
         //public bool modeDisabled = false;
     }
     //public class MultiMode2
@@ -77,6 +81,8 @@ namespace GTI
             OnUpdateMultiMode += updateMultiMode;
             
             initialize();
+
+            this.Events["EVAChangeMode"].active = externalToEVAOnly;
         }
 
         /// <summary>
@@ -232,6 +238,20 @@ namespace GTI
             OnUpdateMultiMode.Invoke();
         }
 
+
+        //public virtual List<T> GetCounterPartModules(Part thispart)
+        //{
+        //    List<Part> CounterParts = thispart.symmetryCounterparts;
+        //    List<T> modules = new List<T>(CounterParts.Count);
+
+        //    foreach (Part part in CounterParts)
+        //    {
+        //        modules.Add(part.FindModuleImplementing<T>());
+        //    }
+
+        //    return modules;
+        //}
+
         /// <summary>
         /// Derives the selected converter as integer from the ChooseOption value
         /// </summary>
@@ -244,6 +264,17 @@ namespace GTI
                     selectedMode = i;
                     //this.Fields["EVAChangeMode"].guiName = "Change mode: " + mode[selectedMode].Name;
                     this.Events[nameof(EVAChangeMode)].guiName = "Change mode: " + modes[selectedMode].Name;
+
+                    ////Sync up all counterparts modules
+                    //if (affectSymCounterpartsInFlight)
+                    //{
+                    //    List<GTI_MultiMode<T>> CounterModules = CounterPartModules(this.part);
+                    //    foreach (GTI_MultiMode<T> module in CounterModules)
+                    //    {
+                    //        module.ChooseOption = ChooseOption;
+                    //    }
+                    //}
+
                     return;
                 }
             }
@@ -619,7 +650,7 @@ namespace GTI
             GTIDebug.Log("isEVA: " + toVessel.isEVA, iDebugLevel.DebugInfo);
         }
 
-        public virtual void OnDestroy()
+        protected virtual void OnDestroy()
         {
             try
             {

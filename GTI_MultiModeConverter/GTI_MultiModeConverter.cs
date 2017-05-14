@@ -1,6 +1,5 @@
 ﻿using System;
-using GTI.Config;
-using static GTI.Config.GTIConfig;
+using static GTI.GTIConfig;
 using System.Collections.Generic;
 using System.Text;
 

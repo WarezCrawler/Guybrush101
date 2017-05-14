@@ -56,12 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MultiModeEngineFX.cs" />
-    <Compile Include="MultiModeEngine_UI.cs" />
     <Compile Include="MultiModeEngine.cs" />
+    <Compile Include="MultiModeEngine_UI.cs" />
+    <Compile Include="MultiModeEngine1.cs" />
     <Compile Include="VABInfo.cs" />
     <Compile Include="DEBUG.cs" />
-    <None Include="MultiModeEngineFX_UI_OLD.cs" />
-    <None Include="MultiModeEngineFX_OLD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
