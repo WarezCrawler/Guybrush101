@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 using static GTI.GTIConfig;
@@ -42,6 +43,7 @@ namespace GTI.Events
             //EventConfig = GetConfigurationsCFG();
             //if (!bool.TryParse(EventConfig.GetValue("initEvent"), out initEvent)) initEvent = true;
 
+            #region Events
             GTIDebug.Log("GTI_Events find onthrottleChangeEvent on Awake()", iDebugLevel.DebugInfo);
             onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
 
@@ -66,10 +68,26 @@ namespace GTI.Events
 
             //Starting the thread which will continuously check and raise the Throttle Event if interaction was detected
             startThread();
+            #endregion
+          
+            StartCoroutine(SceneLoadFixer());
+        }
 
-            //vessel.ctrlStat.mainThrottle;
+        //Scene Load Fixer ensures that things does not blow up right after scene load
+        internal IEnumerator SceneLoadFixer()
+        {
+            bool NoCrashDamage = CheatOptions.NoCrashDamage;
+            bool UnbreakableJoints = CheatOptions.UnbreakableJoints;
 
-            
+            Debug.Log("[GTI Scene LoadFixer] Enabled cheat options");
+            CheatOptions.NoCrashDamage = true;
+            CheatOptions.UnbreakableJoints = true;
+
+            //wait 5 seconds
+            yield return new WaitForSeconds(5f);
+
+            CheatOptions.NoCrashDamage = NoCrashDamage;
+            CheatOptions.UnbreakableJoints = UnbreakableJoints;
         }
 
         internal void startThread()

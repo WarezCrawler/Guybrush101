@@ -1,4 +1,5 @@
-﻿using static GTI.GTIConfig;
+﻿using System;
+using static GTI.GTIConfig;
 
 namespace GTI
 {
@@ -6,6 +7,7 @@ namespace GTI
     {
         #region CustomParameterNode
         public override string Section { get { return "GTIndustries"; } }
+        public override string DisplaySection { get { return Section; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override bool HasPresets { get { return false; } }
         #endregion
@@ -43,6 +45,19 @@ namespace GTI
             set { GTIConfig.EventCheckFreqActive = value; }
         }
         #endregion
+
+
+        //** NEW 17-06-2017
+        #region Other Settings
+        [GameParameters.CustomIntParameterUI("Activate Load Fixer", toolTip = "Temporarily enable cheats on scene load.", autoPersistance = true)]
+        public bool LoadFixerEnabled
+        {
+            get { return GTIConfig.LoadFixerEnabled; }
+            set { GTIConfig.LoadFixerEnabled = value; }
+        }
+        #endregion
+
+
         public override void OnLoad(ConfigNode node)
         {
             GTIDebug.Log("GTISettings --> OnLoad() --> GameParameters.CustomParameterNode", iDebugLevel.DebugInfo);

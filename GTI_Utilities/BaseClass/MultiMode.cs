@@ -5,11 +5,20 @@ using static GTI.GTIConfig;
 
 namespace GTI
 {
-    public class MultiMode
+    public interface IMultiMode
+    {
+        int moduleIndex { get; set; }
+        string ID { get; set; }
+        string Name { get; set; }
+
+        string ToString();
+    }
+
+    public class MultiMode : IMultiMode
     {
         public int moduleIndex { get; set; }
-        public string ID;
-        public string Name;
+        public string ID { get; set; }
+        public string Name { get; set; }
 
         public override string ToString()
         {
@@ -33,7 +42,7 @@ namespace GTI
     //    }      
     //}
 
-    public abstract class GTI_MultiMode<T> : PartModule where T : MultiMode
+    public abstract class GTI_MultiMode<T> : PartModule where T : IMultiMode
     {
         protected bool _settingsInitialized = false;
         protected bool _GUIsettingsInitialized = false;

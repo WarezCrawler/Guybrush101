@@ -12,12 +12,12 @@ using UnityEngine;
 namespace GTI
 {
     //Engine Type
-    public class MultiModeEngine : MultiMode
+    public class MultiModeEngine : IMultiMode
     {
-        //public int moduleIndex { get; set; }
-        //public string ID;
-        //public string Name;
-
+        public int moduleIndex { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; }
+        
         //public string propellants { get; set; }
         private string _propellants;
         private string[] _propellantsArray;
@@ -302,7 +302,7 @@ namespace GTI
     }
 
     //partModule
-    partial class GTI_MultiModeEngine : GTI_MultiMode<MultiModeEngine>
+    public class GTI_MultiModeEngine : GTI_MultiMode<MultiModeEngine>
     {
 
         private ConfigNode MultiModeConfigNode = null;
@@ -407,6 +407,11 @@ namespace GTI
                 if (MultiModeConfigNode == null) { MultiModeConfigNode = part.GetPartModuleConfig("MODULE", "name", this.GetType().Name); GTIDebug.Log("\n" + MultiModeConfigNode.ToString(), iDebugLevel.DebugInfo); } else { GTIDebug.Log("Allready loaded\n" + MultiModeConfigNode.ToString(), iDebugLevel.Medium); }
                 GTIDebug.Log(this.GetType().Name + " - ConfigNode Loaded", iDebugLevel.DebugInfo);
 
+                #region Identify ModuleEngines in Scope
+                //Find module which is to be manipulated - NOTE: Only the first one is being handled. There should not be multiple when using this module
+                ModuleEngines = part.FindModuleImplementing<ModuleEngines>();
+                #endregion
+
                 #region Parse settings
                 //bool boolParseResult;
 
@@ -508,12 +513,6 @@ namespace GTI
                     propDrawGauge + "\t" + PropDrawGaugeEmpty
                     , iDebugLevel.DebugInfo);
 
-                #region Identify ModuleEngines in Scope
-                //Find module which is to be manipulated - NOTE: Only the first one is being handled. There should not be multiple when using this module
-                //GTIDebug.Log("part.FindModuleImplementing<ModuleEngines>()", iDebugLevel.DebugInfo);
-                ModuleEngines = part.FindModuleImplementing<ModuleEngines>();
-                //GTIDebug.Log("part.FindModuleImplementing<ModuleEngines>() DONE", iDebugLevel.DebugInfo);
-                #endregion
                 GTIDebug.Log("GTI_MultiModeEngine : initializeSettings() DONE", iDebugLevel.VeryHigh);
             }
         }
@@ -581,7 +580,7 @@ namespace GTI
             //Update the engine with new propellant configuration
             //NOTICE: The original propellant nodes are overwritten, so we do not need to delete them
             //Debug.Log("Before ConfigNode Load\n" + newPropNode.ToString());
-            ModuleEngines.Load(newPropNode);
+            if (modes.Count > 1) ModuleEngines.Load(newPropNode);
             #endregion
 
             #region Curves

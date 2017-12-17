@@ -23,7 +23,7 @@ namespace GTI
 
     //}
 
-    partial class GTI_MultiModeEngineFX : GTI_MultiMode<MultiMode>        //, IPartCostModifier
+    public class GTI_MultiModeEngineFX : GTI_MultiMode<MultiMode>        //, IPartCostModifier
     {
         //private string _thismoduleName = "GTI_MultiModeEngineFX";
 

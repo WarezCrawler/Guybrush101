@@ -5,7 +5,7 @@ using System.Text;
 using static GTI.GTIConfig;
 
 /*
-This module targets "ModuleEngines" modules for engine switching
+This module targets "ModuleEngines" modules for engine switching 
 */
 
 namespace GTI

@@ -28,6 +28,11 @@ namespace GTI
         public enum iDebugLevel { None, Low, Medium, High, VeryHigh, DebugInfo };
         #endregion
 
+        //** NEW 17-06-2017
+        #region Other Settings
+        public static bool LoadFixerEnabled { get; internal set; } = false;
+        #endregion
+
         static GTIConfig()
         {
             int myinteger;
