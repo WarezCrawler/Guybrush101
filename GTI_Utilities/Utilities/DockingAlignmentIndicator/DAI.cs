@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using KSP.UI.Screens.Flight;
 using KSP.IO;
+using static GTI.Utilities;
 
 namespace GTI
 {
@@ -15,8 +16,14 @@ namespace GTI
 
         void Start()
         {
-            if (!GTIConfig.ActivateDAI)
+            GTIDebug.Log("NavBallDockingAlignmentIndicatorCE Detected -- Disabling GTI Alignment indicator");
+            if (!GTIConfig.ActivateDAI || PluginExists("NavBallDockingAlignmentIndicatorCE"))
+            {
+                if(PluginExists("NavBallDockingAlignmentIndicatorCE") && GTIConfig.ActivateDAI)
+                    GTIDebug.Log("NavBallDockingAlignmentIndicatorCE Detected -- Disabling GTI Alignment indicator", GTIConfig.iDebugLevel.DebugInfo);
                 Destroy(this.gameObject);
+            }
+                
 
             GTIDebug.Log(" ======== AWAKE  ======== ", GTIConfig.iDebugLevel.Low);
             this.cfg = KSP.IO.PluginConfiguration.CreateForType<GTI_NavBallDockingAlignmentIndicator>();

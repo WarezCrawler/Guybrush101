@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 //using System.Collections.Generic;
 using UnityEngine;
@@ -211,6 +212,19 @@ namespace GTI
 
     public static partial class Utilities
     {
+        /// <summary>
+        /// Checks if a specific mod/plugin is loaded and return true/false
+        /// </summary>
+        /// <param name="ModName"></param>
+        /// <returns></returns>
+        public static bool PluginExists(string ModName)
+        {
+            return AssemblyLoader.loadedAssemblies.Any(a => a.name == ModName);
+        }
+        public static AssemblyLoader.LoadedAssembyList PluginsListOf()
+        {
+            return AssemblyLoader.loadedAssemblies;
+        }
 
         /// <summary>
         /// Retrieves the resource Definition from the PartResourceLibrary.Instance.GetDefinition using the name of the resource

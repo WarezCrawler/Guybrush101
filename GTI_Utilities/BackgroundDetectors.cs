@@ -16,11 +16,14 @@ namespace GTI
 
         private void Awake()
         {
-            GTIDebug.Log("BackgroundDetector_Flight Awake", GTIConfig.iDebugLevel.High);
-            Thread InFlightThread = new Thread(DetectInFlight);
-            InFlightThread.IsBackground = true;
-            InFlightThread.Priority = System.Threading.ThreadPriority.BelowNormal;
-            InFlightThread.Start();
+            if (GTIConfig.ActivateDAI)
+            {
+                GTIDebug.Log("BackgroundDetector_Flight Awake", GTIConfig.iDebugLevel.High);
+                Thread InFlightThread = new Thread(DetectInFlight);
+                InFlightThread.IsBackground = true;
+                InFlightThread.Priority = System.Threading.ThreadPriority.BelowNormal;
+                InFlightThread.Start();
+            }
         }
 
         private void DetectInFlight()
