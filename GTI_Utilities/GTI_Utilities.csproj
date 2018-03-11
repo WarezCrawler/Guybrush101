@@ -7,7 +7,7 @@
     <ProjectGuid>{204CE34A-D836-4C53-A3EC-5D74DB3F8CB9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GTI.GenericFunctions</RootNamespace>
+    <RootNamespace>GTI</RootNamespace>
     <AssemblyName>GTI_Utilities</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -56,9 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseClass\MultiMode.cs" />
+    <Compile Include="BackgroundDetectors.cs" />
     <Compile Include="GTI_Events.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ConfigNode.cs" />
+    <Compile Include="Utilities\DockingAlignmentIndicator\DAI.cs" />
     <Compile Include="Utilities\GenericFunctions.cs" />
     <Compile Include="Utilities\GTIConfig.cs" />
     <Compile Include="Utilities\GTIDebug.cs" />
@@ -75,7 +77,11 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\KSP 1.3.1_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
+copy /Y "$(TargetDir)\GTI_Config.cfg" "S:\Kerbal Space Program\KSP 1.3.1_Cur\GameData\GTI_Utilities\Plugins\GTI_Config.cfg"
 copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTI_Utilities\Plugins\$(TargetName).dll"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>::Comment</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -55,6 +55,13 @@ namespace GTI
             get { return GTIConfig.LoadFixerEnabled; }
             set { GTIConfig.LoadFixerEnabled = value; }
         }
+
+        [GameParameters.CustomIntParameterUI("Activate Docking Alignment Indicator", toolTip = "Docking Alignment Indicator.", autoPersistance = true)]
+        public bool GTI_NavBallDockingAlignmentIndicator
+        {
+            get { return GTIConfig.ActivateDAI; }
+            set { GTIConfig.ActivateDAI = value; }
+        }
         #endregion
 
 
@@ -64,6 +71,8 @@ namespace GTI
             GTIDebug.Log("initEvent: " + initEvent, iDebugLevel.Medium);
             GTIDebug.Log("EventCheckFreqIdle: " + EventCheckFreqIdle, iDebugLevel.Medium);
             GTIDebug.Log("EventCheckFreqActive: " + EventCheckFreqActive, iDebugLevel.Medium);
+            GTIDebug.Log("LoadFixerEnabled: " + LoadFixerEnabled, iDebugLevel.Medium);
+            GTIDebug.Log("ActivateDAI: " + ActivateDAI, iDebugLevel.Medium);
         }
     }
     public class GTISettingsDebug : GTISettingsBase

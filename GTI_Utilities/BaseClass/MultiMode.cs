@@ -177,6 +177,7 @@ namespace GTI
                 chooseField.guiActiveEditor = availableInEditor;
                 chooseField.guiActive = availableInFlight;
 
+                //Detect state of ModuleAnimationGroup and set UI accordingly
                 if (useModuleAnimationGroup && _MAGsettingsInitialized)
                 {
                     GTIDebug.Log("Detect ModuleAnimationGroup state, and adjust UI accordingly", iDebugLevel.DebugInfo);
@@ -491,6 +492,9 @@ namespace GTI
                     GTIDebug.Log("Subscribing to OnAnimationGroupStateChanged", iDebugLevel.DebugInfo);
                     GameEvents.OnAnimationGroupStateChanged.Add(OnModuleAnimationGroupStateChanged);
                 }
+
+                //?? Add check if the MAG isDeployed? Adjust UI accordingly?
+
                 _MAGsettingsInitialized = true;
             }
         }

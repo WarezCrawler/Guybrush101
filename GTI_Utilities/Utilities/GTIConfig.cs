@@ -9,8 +9,9 @@ namespace GTI
 {
     public static class GTIConfig
     {
+        private static object syncThread = new object();
         public static ConfigNode GTIConfigurationNode;
-
+        
         //private static EventVoid onGameSettingsApplied;
 
         #region Event Settings properties
@@ -31,6 +32,23 @@ namespace GTI
         //** NEW 17-06-2017
         #region Other Settings
         public static bool LoadFixerEnabled { get; internal set; } = false;
+        #region DockingAlignmentIndicator
+        public static bool ActivateDAI { get; internal set; } = false;      //Is DockingAlignmentIndicator activated
+        private static bool _DAI_NavBallDockingActive = false;              //Is DockingAlignmentIndicator active
+        public static bool DAI_NavBallDockingActive                         //Expose DockingAlignmentIndicator avtive information
+        {
+            get
+            {
+                return _DAI_NavBallDockingActive;
+            }
+
+            internal set
+            {
+                lock (syncThread)
+                    _DAI_NavBallDockingActive = value;
+            }
+        }
+        #endregion
         #endregion
 
         static GTIConfig()
@@ -88,6 +106,12 @@ namespace GTI
             if (!int.TryParse(myConfigNode.GetValue("EventCheckFreqActive"), out myinteger)) EventCheckFreqActive = 100; else EventCheckFreqActive = myinteger;
             #endregion
 
+            #region MISCELLANEOUS
+            myConfigNode = GTIConfigurationNode.GetNode("MISCELLANEOUS");
+            if (!bool.TryParse(myConfigNode.GetValue("LoadFixerEnabled"), out mybool)) LoadFixerEnabled = false; else LoadFixerEnabled = mybool;
+            if (!bool.TryParse(myConfigNode.GetValue("ActivateDAI"), out mybool)) ActivateDAI = false; else ActivateDAI = mybool;
+            #endregion
+
             //DebugLevel = (iDebugLevel)Enum.Parse(typeof(iDebugLevel), myConfigNode.GetValue("DebugLevel"), false);
 
             GTIDebug.Log(
@@ -95,6 +119,9 @@ namespace GTI
                 "\n- initEvent: " + initEvent +
                 "\n- EventCheckFreqIdle: " + EventCheckFreqIdle + " ms" +
                 "\n- EventCheckFreqActive: " + EventCheckFreqActive + " ms" +
+                "\nMISCELLANEOUS" +
+                "\n- LoadFixerEnabled: " + LoadFixerEnabled +
+                "\n- ActivateDAI: " + ActivateDAI +
                 "\nDebug Settings" +
                 "\n- DebugActive: " + DebugActive +
                 "\n- DebugLevel: " + DebugLevel.ToString()

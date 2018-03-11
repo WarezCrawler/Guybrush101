@@ -69,8 +69,10 @@ namespace GTI.Events
             //Starting the thread which will continuously check and raise the Throttle Event if interaction was detected
             startThread();
             #endregion
-          
-            StartCoroutine(SceneLoadFixer());
+            
+            // Activate the load fixer, where cheats are temporarily activated to counteract spontaneous explotions on load of scenes.
+            if (GTIConfig.LoadFixerEnabled)
+                StartCoroutine(SceneLoadFixer());
         }
 
         //Scene Load Fixer ensures that things does not blow up right after scene load
@@ -79,7 +81,7 @@ namespace GTI.Events
             bool NoCrashDamage = CheatOptions.NoCrashDamage;
             bool UnbreakableJoints = CheatOptions.UnbreakableJoints;
 
-            Debug.Log("[GTI Scene LoadFixer] Enabled cheat options");
+            GTIDebug.Log("Enabled cheat options", "GTI Scene LoadFixer", iDebugLevel.Medium);
             CheatOptions.NoCrashDamage = true;
             CheatOptions.UnbreakableJoints = true;
 
@@ -105,6 +107,7 @@ namespace GTI.Events
                     GTIDebug.Log("Starting GTI Event thread", iDebugLevel.High);
                     EventThread.Priority = System.Threading.ThreadPriority.BelowNormal;     //new 16/2-2017
                     GTIDebug.Log("GTI_inFlightEventDetector Started in new thread", iDebugLevel.DebugInfo);
+                    EventThread.IsBackground = true;
                     EventThread.Start();
                     return;
                 }

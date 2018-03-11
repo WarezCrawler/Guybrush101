@@ -333,6 +333,13 @@ namespace GTI
         public string useAtmCurves = string.Empty;
         #endregion
 
+        #region infoFields (only for GetInfo())
+        [KSPField]
+        public string infoatmosphereCurve_Vac = string.Empty;
+        [KSPField]
+        public string infoatmosphereCurve_Atm = string.Empty;
+        #endregion
+
         #region Propellant parameters
         [KSPField]
         public string GUIengineModeNames = string.Empty;
@@ -751,142 +758,105 @@ namespace GTI
         public override string GetInfo()
         {
             StringBuilder Info = new StringBuilder();
-            try
+
+            string[] arrGUIengineModeNames;
+            string[] arrPropellantNames, arrPropellantRatios;
+            string[] arrSubPropellantNames, arrSubPropellantRatios;
+            string[] arrPropDrawGauge, arrPropIgnoreForISP, arrResourceFlowMode;
+            string[] arrMaxThrust, arrHeatProd, arrEngineTypes;
+            string[] arratmChangeFlows;
+            string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
+            string[] arrinfoatmosphereCurve_Vac, arrinfoatmosphereCurve_Atm;
+            bool infoatmosphereCurve_VacEmpty, infoatmosphereCurve_AtmEmpty;
+
+            string[] arruseVelCurves, arruseAtmCurves;
+            string[] arrusethrottleISPCurves;
+
+            //Propellant level
+            GUIengineModeNamesEmpty = ArraySplitEvaluate(GUIengineModeNames, out arrGUIengineModeNames, ';');
+            PropellantNamesEmpty = ArraySplitEvaluate(propellantNames, out arrPropellantNames, ';');
+            PropellantRatiosEmpty = ArraySplitEvaluate(propellantRatios, out arrPropellantRatios, ';');
+
+            PropIgnoreForISPEmpty = ArraySplitEvaluate(propIgnoreForISP, out arrPropIgnoreForISP, ';');
+            PropDrawGaugeEmpty = ArraySplitEvaluate(propDrawGauge, out arrPropDrawGauge, ';');
+            ResourceFlowModeEmpty = ArraySplitEvaluate(resourceFlowMode, out arrResourceFlowMode, ';');
+
+            MaxThrustEmpty = ArraySplitEvaluate(maxThrust, out arrMaxThrust, ';');
+
+            HeatProdEmpty = ArraySplitEvaluate(heatProduction, out arrHeatProd, ';');
+            atmChangeFlowsEmpty = ArraySplitEvaluate(atmChangeFlows, out arratmChangeFlows, ';');
+
+            UseEngineResponseTimeEmpty = ArraySplitEvaluate(useEngineResponseTime, out arrUseEngineResponseTime, ';');
+            EngineAccelerationSpeedEmpty = ArraySplitEvaluate(engineAccelerationSpeed, out arrEngineAccelerationSpeed, ';');
+            EngineDecelerationSpeedEmpty = ArraySplitEvaluate(engineDecelerationSpeed, out arrEngineDecelerationSpeed, ';');
+
+            EngineTypesEmpty = ArraySplitEvaluate(EngineTypes, out arrEngineTypes, ';');
+
+            useVelCurvesEmpty = ArraySplitEvaluate(useVelCurves, out arruseVelCurves, ';');
+            useAtmCurvesEmpty = ArraySplitEvaluate(useAtmCurves, out arruseAtmCurves, ';');
+
+            useGTIthrottleISPCurvesEmpty = ArraySplitEvaluate(useGTIthrottleISPCurves, out arrusethrottleISPCurves, ';');
+
+            infoatmosphereCurve_VacEmpty = ArraySplitEvaluate(infoatmosphereCurve_Vac, out arrinfoatmosphereCurve_Vac, ';');
+            infoatmosphereCurve_AtmEmpty = ArraySplitEvaluate(infoatmosphereCurve_Atm, out arrinfoatmosphereCurve_Atm, ';');
+
+            //Build string
+            Info.AppendLine("<color=yellow># Engine Modes Available: " + arrPropellantNames.Length + "</color>");
+            for (int i = 0; i < arrPropellantNames.Length; i++)
             {
-                string[] arrGUIengineModeNames;
-                string[] arrPropellantNames, arrPropellantRatios;
-                string[] arrSubPropellantNames, arrSubPropellantRatios;
-                string[] arrPropDrawGauge, arrPropIgnoreForISP, arrResourceFlowMode;
-                string[] arrMaxThrust, arrHeatProd, arrEngineTypes;
-                string[] arratmChangeFlows;
-                string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
+                Info.Append("<b><color=yellow>Engine Mode: </color></b>");
+                //if (!GUIengineModeNamesEmpty) Info.Append("<b><color=yellow>Name: </color></b>" + arrGUIengineModeNames[i]);
+                Info.Append(GUIengineModeNamesEmpty ? i.ToString() : arrGUIengineModeNames[i]);
+                Info.AppendLine(); Info.AppendLine();
 
-                string[] arruseVelCurves, arruseAtmCurves;
-                string[] arrusethrottleISPCurves;
+                //Propellants
+                arrSubPropellantNames = arrPropellantNames[i].Split(',');
+                arrSubPropellantRatios = arrPropellantRatios[i].Split(',');
 
-                //Propellant level
-                GUIengineModeNamesEmpty = ArraySplitEvaluate(GUIengineModeNames, out arrGUIengineModeNames, ';');
-                PropellantNamesEmpty = ArraySplitEvaluate(propellantNames, out arrPropellantNames, ';');
-                PropellantRatiosEmpty = ArraySplitEvaluate(propellantRatios, out arrPropellantRatios, ';');
-
-                PropIgnoreForISPEmpty = ArraySplitEvaluate(propIgnoreForISP, out arrPropIgnoreForISP, ';');
-                PropDrawGaugeEmpty = ArraySplitEvaluate(propDrawGauge, out arrPropDrawGauge, ';');
-                ResourceFlowModeEmpty = ArraySplitEvaluate(resourceFlowMode, out arrResourceFlowMode, ';');
-
-                MaxThrustEmpty = ArraySplitEvaluate(maxThrust, out arrMaxThrust, ';');
-
-                HeatProdEmpty = ArraySplitEvaluate(heatProduction, out arrHeatProd, ';');
-                atmChangeFlowsEmpty = ArraySplitEvaluate(atmChangeFlows, out arratmChangeFlows, ';');
-
-                UseEngineResponseTimeEmpty = ArraySplitEvaluate(useEngineResponseTime, out arrUseEngineResponseTime, ';');
-                EngineAccelerationSpeedEmpty = ArraySplitEvaluate(engineAccelerationSpeed, out arrEngineAccelerationSpeed, ';');
-                EngineDecelerationSpeedEmpty = ArraySplitEvaluate(engineDecelerationSpeed, out arrEngineDecelerationSpeed, ';');
-
-                EngineTypesEmpty = ArraySplitEvaluate(EngineTypes, out arrEngineTypes, ';');
-
-                useVelCurvesEmpty = ArraySplitEvaluate(useVelCurves, out arruseVelCurves, ';');
-                useAtmCurvesEmpty = ArraySplitEvaluate(useAtmCurves, out arruseAtmCurves, ';');
-
-                useGTIthrottleISPCurvesEmpty = ArraySplitEvaluate(useGTIthrottleISPCurves, out arrusethrottleISPCurves, ';');
-
-                //Build string
-                Info.AppendLine("<color=yellow># Engine Modes Available: " + arrPropellantNames.Length + "</color>");
-                for (int i = 0; i < arrPropellantNames.Length; i++)
+                Info.AppendLine("<color=yellow>Propellants: </color>");
+                for (int j = 0; j < arrSubPropellantNames.Length; j++)
                 {
-                    Info.Append("<b><color=yellow>Engine Mode: </color></b>");
-                    //if (!GUIengineModeNamesEmpty) Info.Append("<b><color=yellow>Name: </color></b>" + arrGUIengineModeNames[i]);
-                    Info.Append(GUIengineModeNamesEmpty ? i.ToString() : arrGUIengineModeNames[i]);
-                    Info.AppendLine(); Info.AppendLine();
+                    Info.Append(arrSubPropellantNames[j]);
+                    Info.Append(" (");
+                    Info.Append(arrSubPropellantRatios[j]);
+                    Info.Append(") ");
+                    if (j < arrSubPropellantNames.Length - 1) Info.AppendLine();
+                }
+                Info.AppendLine();
 
-                    arrSubPropellantNames = arrPropellantNames[i].Split(',');
-                    arrSubPropellantRatios = arrPropellantRatios[i].Split(',');
+                Info.Append("Max thrust: ");
+                Info.Append(arrMaxThrust[i]);
+                Info.AppendLine();
 
-                    Info.AppendLine("<color=yellow>Propellants: </color>");
-                    for (int j = 0; j < arrSubPropellantNames.Length; j++)
-                    {
-                        Info.Append(arrSubPropellantNames[j]);
-                        Info.Append(" (");
-                        Info.Append(arrSubPropellantRatios[j]);
-                        Info.Append(") ");
-                        if (j < arrSubPropellantNames.Length - 1) Info.AppendLine();
-                    }
+                //Write ISP informations based on passive fields in the module
+                if (!infoatmosphereCurve_VacEmpty)
+                {
+                    Info.Append("Engine ISP (Vac.): ");
+                    Info.Append(arrinfoatmosphereCurve_Vac[i]);
                     Info.AppendLine();
-
-                    //Info.Append("<color=yellow>Propellants: </color>");
-                    //Info.Append(arrPropellantNames[i]);
-                    //Info.AppendLine();
-
-                    //Info.Append("<color=yellow>Propellant ratios: </color>");
-                    //Info.Append(arrPropellantRatios[i]);
-                    //Info.AppendLine();
-
-                    Info.Append("Max thrust: ");
-                    Info.Append(arrMaxThrust[i]);
-                    Info.AppendLine();
-
-                    Info.Append("Engine ISP: ");
-                    Info.Append(arrMaxThrust[i]);
-                    Info.AppendLine();
-
-
-
+                }
+                if (!infoatmosphereCurve_AtmEmpty)
+                {
+                    Info.Append("Engine ISP (Atm.): ");
+                    Info.Append(arrinfoatmosphereCurve_Atm[i]);
                     Info.AppendLine();
                 }
 
-
-
-
-
-
-
-
-
-
-
-                /*
-                //we need to run the InitializeSettings here, because the OnStart does not run before this.
-                //initializeSettings(false);
-
-                Info.AppendLine("<color=yellow>Engine Modes Available:</color>");
-
-                //for (int i = 0; i < engineModeList.Count; i++)
-                //{
-                Info.Append("<b><color=yellow>Engine Modes: </color></b>");
-                Info.Append(GUIengineModeNames);
                 Info.AppendLine();
-
-                Info.Append("<b><color=yellow>Propellants: </color></b>");
-                Info.Append(propellantNames);
-                Info.AppendLine();
-
-                Info.Append("<b><color=yellow>Propellant ratios: </color></b>");
-                Info.Append(propellantRatios);
-                Info.AppendLine();
-
-                Info.Append("<b><color=yellow>Max thrust: </color></b>");
-                Info.Append(maxThrust);
-                Info.AppendLine();
-                //}
-                */
-
-                Info.AppendLine("\nIn Flight switching is <color=yellow>" + (availableInFlight ? "available" : "not available") + "</color>");
-
-                //str.AppendFormat("Maximal force: {0:0.0}iN\n", maxGeneratorForce);
-                //str.AppendFormat("Maximal charge time: {0:0.0}s\n\n", maxChargeTime);
-                //str.AppendFormat("Requires\n");
-                //str.AppendFormat("- Electric charge: {0:0.00}/s\n\n", requiredElectricalCharge);
-                //str.Append("Navigational computer\n");
-                //str.Append("- Required force\n");
-                //str.Append("- Success probability\n");
-
-                //return "GTI Multi Mode Engine";
-                return Info.ToString();
             }
-            catch (Exception e)
-            {
-                Debug.LogError("GTI_MultiModeEngine GetInfo Error " + e.Message);
-                throw;
-            }
+
+            Info.AppendLine("\nIn Flight switching is <color=yellow>" + (availableInFlight ? "available" : "not available") + "</color>");
+
+            //str.AppendFormat("Maximal force: {0:0.0}iN\n", maxGeneratorForce);
+            //str.AppendFormat("Maximal charge time: {0:0.0}s\n\n", maxChargeTime);
+            //str.AppendFormat("Requires\n");
+            //str.AppendFormat("- Electric charge: {0:0.00}/s\n\n", requiredElectricalCharge);
+            //str.Append("Navigational computer\n");
+            //str.Append("- Required force\n");
+            //str.Append("- Success probability\n");
+
+            //return "GTI Multi Mode Engine";
+            return Info.ToString();
         }
     }
 }
