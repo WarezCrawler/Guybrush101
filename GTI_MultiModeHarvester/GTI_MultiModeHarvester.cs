@@ -103,6 +103,7 @@ namespace GTI
             {
                 GTIDebug.Log("GTI_MultiModeHarvester: Deactivate Converter Module [" + modes[i].moduleIndex + "] --> " + MRH[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                 //Deactivate the converter
+                MRH[modes[i].moduleIndex].DirtyFlag = false;    //Fix for KSP1.3.1
                 MRH[modes[i].moduleIndex].DisableModule();
                 //Stop the converter
                 MRH[modes[i].moduleIndex].StopResourceConverter();

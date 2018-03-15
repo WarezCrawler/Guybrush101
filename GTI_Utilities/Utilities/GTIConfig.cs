@@ -35,11 +35,15 @@ namespace GTI
         #region DockingAlignmentIndicator
         public static bool ActivateDAI { get; internal set; } = false;      //Is DockingAlignmentIndicator activated
         private static bool _DAI_NavBallDockingActive = false;              //Is DockingAlignmentIndicator active
+        /// <summary>
+        /// Threading safe
+        /// </summary>
         public static bool DAI_NavBallDockingActive                         //Expose DockingAlignmentIndicator avtive information
         {
             get
             {
-                return _DAI_NavBallDockingActive;
+                lock (syncThread)
+                    return _DAI_NavBallDockingActive;
             }
 
             internal set

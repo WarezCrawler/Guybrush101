@@ -77,6 +77,7 @@ namespace GTI
             {
                 GTIDebug.Log("GTI_MultiModeConverter: Deactivate Converter Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                 //Deactivate the converter
+                MRC[modes[i].moduleIndex].DirtyFlag = false;    //Fix for KSP1.3.1
                 MRC[modes[i].moduleIndex].DisableModule();
                 //Stop the converter
                 MRC[modes[i].moduleIndex].StopResourceConverter();

@@ -16,11 +16,11 @@ namespace GTI
 
         void Start()
         {
-            GTIDebug.Log("NavBallDockingAlignmentIndicatorCE Detected -- Disabling GTI Alignment indicator");
+            GTIDebug.Log("GTI_NavBallDockingAlignmentIndicator Starting", "GTI - DAI", GTIConfig.iDebugLevel.DebugInfo);
             if (!GTIConfig.ActivateDAI || PluginExists("NavBallDockingAlignmentIndicatorCE"))
             {
                 if(PluginExists("NavBallDockingAlignmentIndicatorCE") && GTIConfig.ActivateDAI)
-                    GTIDebug.Log("NavBallDockingAlignmentIndicatorCE Detected -- Disabling GTI Alignment indicator", GTIConfig.iDebugLevel.DebugInfo);
+                    GTIDebug.Log("NavBallDockingAlignmentIndicatorCE Detected -- Disabling GTI Alignment indicator", "GTI - DAI", GTIConfig.iDebugLevel.DebugInfo);
                 Destroy(this.gameObject);
             }
                 
@@ -31,6 +31,11 @@ namespace GTI
             Vector3 tmp = cfg.GetValue<Vector3>("alignmentmarkercolor", new Vector3(1f, 0f, 0f)); // default: red
             this.color = new Color(tmp.x, tmp.y, tmp.z);
             this.cfg.save();
+        }
+
+        private void OnDestroy()
+        {
+            GTIDebug.Log("OnDestroy", "GTI - DAI", GTIConfig.iDebugLevel.DebugInfo);
         }
 
         void LateUpdate()

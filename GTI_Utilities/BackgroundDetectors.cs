@@ -57,6 +57,7 @@ namespace GTI
 
         private void OnDestroy()
         {
+            GTIDebug.Log("BackgroundDetector_Flight -- OnDestroy()", GTIConfig.iDebugLevel.DebugInfo);
             Active = false;
         }
     }

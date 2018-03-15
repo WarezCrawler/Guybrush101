@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiModeRCS.cs" />
     <Compile Include="MultiModeEngineFX.cs" />
     <Compile Include="MultiModeEngine.cs" />
     <None Include="MultiModeEngine_UI.cs" />

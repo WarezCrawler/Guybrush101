@@ -485,7 +485,10 @@ namespace GTI
                 //this.Events["ModuleAnimationGroupEvent"].active = true;
                 //this.Events["ModuleAnimationGroupEvent"].guiActive = true;
                 //this.Events["ModuleAnimationGroupEvent"].guiActiveEditor = true;
-                
+                //Patch 2018-03-14 to fix the button showing even when module is not deployed.
+                if (!MAG.isDeployed)
+                    ModuleAnimationGroupEvent_DisableModules();
+
                 //Register the event of Animation Groups
                 if (GameEvents.OnAnimationGroupStateChanged != null && MAG != null)
                 {
