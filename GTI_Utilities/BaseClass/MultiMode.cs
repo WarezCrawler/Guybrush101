@@ -465,7 +465,7 @@ namespace GTI
                 //ModuleAnimationGroup MAG = new ModuleAnimationGroup();
 
                 MAG = part.FindModuleImplementing<ModuleAnimationGroup>();
-                
+
                 //Anim = part.FindModelAnimator(MAG.deployAnimationName);
 
                 //foreach (BaseEvent e in MAG.Events)
@@ -486,9 +486,12 @@ namespace GTI
                 //this.Events["ModuleAnimationGroupEvent"].guiActive = true;
                 //this.Events["ModuleAnimationGroupEvent"].guiActiveEditor = true;
                 //Patch 2018-03-14 to fix the button showing even when module is not deployed.
+                GTIDebug.Log("initializeModuleAnimationGroup: !MAG.isDeployed " + !MAG.isDeployed, iDebugLevel.DebugInfo);
                 if (!MAG.isDeployed)
+                {
                     ModuleAnimationGroupEvent_DisableModules();
-
+                }
+                    
                 //Register the event of Animation Groups
                 if (GameEvents.OnAnimationGroupStateChanged != null && MAG != null)
                 {

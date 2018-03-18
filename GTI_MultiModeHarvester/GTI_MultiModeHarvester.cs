@@ -51,9 +51,13 @@ namespace GTI
             //FindSelectedMode();
             if (silentUpdate == false) writeScreenMessage();
 
+            bool MAG_isDeployed = true;
+            if (MAG != null && useModuleAnimationGroup == true)
+                MAG_isDeployed = MAG.isDeployed;
+
             for (int i = 0; i < modes.Count; i++)
             {
-                if (i == selectedMode)
+                if (i == selectedMode && MAG_isDeployed)
                 {
                     GTIDebug.Log("GTI_MultiModeConverter (" + (silentUpdate ? "silent" : "non-silent") + "): Activate Converter Module [" + modes[i].moduleIndex + "] --> " + MRH[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                     MRH[modes[i].moduleIndex].EnableModule();

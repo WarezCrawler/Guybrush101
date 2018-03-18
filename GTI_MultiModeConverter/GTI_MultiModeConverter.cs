@@ -49,9 +49,13 @@ namespace GTI
             //FindSelectedMode();
             if (silentUpdate == false) writeScreenMessage();
 
+            bool MAG_isDeployed = true;
+            if (MAG != null && useModuleAnimationGroup == true)
+                MAG_isDeployed = MAG.isDeployed;
+
             for (int i = 0; i < modes.Count; i++)
             {
-                if (i == selectedMode)
+                if (i == selectedMode && MAG_isDeployed)
                 {
                     GTIDebug.Log("GTI_MultiMode (" + (silentUpdate ? "silent" : "non-silent") + "): Activate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                     MRC[modes[i].moduleIndex].EnableModule();
@@ -77,7 +81,7 @@ namespace GTI
             {
                 GTIDebug.Log("GTI_MultiModeConverter: Deactivate Converter Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                 //Deactivate the converter
-                MRC[modes[i].moduleIndex].DirtyFlag = false;    //Fix for KSP1.3.1
+                //MRC[modes[i].moduleIndex].DirtyFlag = false;    //Fix for KSP1.3.1
                 MRC[modes[i].moduleIndex].DisableModule();
                 //Stop the converter
                 MRC[modes[i].moduleIndex].StopResourceConverter();

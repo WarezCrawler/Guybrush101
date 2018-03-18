@@ -540,7 +540,8 @@ namespace GTI
             //Get the Ignition state, i.e. is the engine shutdown or activated
             currentEngineState = ModuleEngines.getIgnitionState;
             //Shutdown the engine --> Removes the gauges, and make sense to do before changing propellant
-            if (currentEngineState) { ModuleEngines.EngineIgnited = false; }
+            if (HighLogic.LoadedSceneIsFlight)
+                if (currentEngineState) { ModuleEngines.EngineIgnited = false; }
             ModuleEngines.Shutdown();
 
             #region ConfigNode Replace previous propellant node
@@ -657,7 +658,7 @@ namespace GTI
             if (!silentUpdate) writeScreenMessage();
 
             //Restart engine if it was on before switching
-            if (currentEngineState) { ModuleEngines.Activate(); ModuleEngines.EngineIgnited = true; }
+            if (currentEngineState) { ModuleEngines.Activate(); if (HighLogic.LoadedSceneIsFlight) { ModuleEngines.EngineIgnited = true; } }
         }
 
         protected override void writeScreenMessage()
