@@ -13,12 +13,16 @@ namespace GTI.Events
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class GTI_EventCreator : MonoBehaviour
     {
-        public static EventVoid onThrottleChange;
+        //public static EventVoid onThrottleChange;
+        public static EventData<float, float> onThrottleChange;  //onThrottleChange<"Current Throttle", "Previous Throttle">
 
         private void Awake()
         {
-            GTIDebug.Log("Event 'onThrottleChange' Created", iDebugLevel.Low);
-            if (onThrottleChange == null) onThrottleChange = new EventVoid("onThrottleChange");
+            if (onThrottleChange == null)
+            {
+                GTIDebug.Log("Event 'onThrottleChange' Created", iDebugLevel.Low);
+                onThrottleChange = new EventData<float, float>("onThrottleChange");
+            } else { GTIDebug.Log("Event 'onThrottleChange' already exists", iDebugLevel.DebugInfo); }
         }
     }
 
@@ -30,7 +34,8 @@ namespace GTI.Events
     {
         //public static EventVoid onThrottleChange;
         private static float savedThrottle;
-        private EventVoid onThrottleChangeEvent;
+        //private EventVoid onThrottleChangeEvent;
+        private EventData<float, float> onThrottleChangeEvent;
         //private EventData<GameScenes> onSceneChange;
         public static bool EventDetectorRunning = false;
         //private bool initEvent;
@@ -45,7 +50,7 @@ namespace GTI.Events
 
             #region Events
             GTIDebug.Log("GTI_Events find onthrottleChangeEvent on Awake()", iDebugLevel.DebugInfo);
-            onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
+            onThrottleChangeEvent = GameEvents.FindEvent<EventData<float, float>>("onThrottleChange");
 
             #region previous subscription to event and debugging
             //if (onThrottleChangeEvent != null)
@@ -69,7 +74,7 @@ namespace GTI.Events
             //Starting the thread which will continuously check and raise the Throttle Event if interaction was detected
             startThread();
             #endregion
-            
+
             // Activate the load fixer, where cheats are temporarily activated to counteract spontaneous explotions on load of scenes.
             if (GTIConfig.LoadFixerEnabled)
                 StartCoroutine(SceneLoadFixer());
@@ -94,7 +99,7 @@ namespace GTI.Events
 
         internal void startThread()
         {
-            if (GTIConfig.initEvent)
+            if (GTIConfig.Event.initialize)
             {
                 if (!EventDetectorRunning)
                 {
@@ -121,13 +126,14 @@ namespace GTI.Events
         }
         private void GTI_inFlightEventDetector()        //For threaded execution --> Detects the basis for event
         {
-            int wait = GTIConfig.EventCheckFreqIdle;
+            int wait = GTIConfig.Event.CheckFreqIdle;
 
             //Stopwatch for timing how long the event checking is running
             System.Diagnostics.Stopwatch stopwatch;
             stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            GTIDebug.Log("Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: " + GTIConfig.EventCheckFreqIdle + "\n\tEventCheckFreqActive: " + GTIConfig.EventCheckFreqActive, iDebugLevel.Medium);
+            //GTIDebug.Log("Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: " + GTIConfig.Event.CheckFreqIdle + "\n\tEventCheckFreqActive: " + GTIConfig.Event.CheckFreqActive, iDebugLevel.Medium);
+            GTIDebug.LogAppend(iDebugLevel.Medium, "Event thread GTI_inFlightEventDetector started\n\tEventCheckFreqIdle: ", GTIConfig.Event.CheckFreqIdle.ToString(), "\n\tEventCheckFreqActive: ", GTIConfig.Event.CheckFreqActive.ToString());
             while (EventDetectorRunning)
             {
                 if (savedThrottle != FlightInputHandler.state.mainThrottle)
@@ -137,12 +143,13 @@ namespace GTI.Events
                     //    //CurrentVessel = FlightGlobals.ActiveVessel;
                     //}
                     //run code on throttle change here.
+                    onThrottleChangeEvent.Fire(FlightInputHandler.state.mainThrottle, savedThrottle);
                     savedThrottle = FlightInputHandler.state.mainThrottle;
-                    GTIDebug.Log("Throttle Changed to " + savedThrottle, iDebugLevel.DebugInfo);
-                    onThrottleChangeEvent.Fire();
-                    wait = GTIConfig.EventCheckFreqActive;
+                    //##GTIDebug.Log("Throttle Changed to " + savedThrottle, iDebugLevel.DebugInfo);
+                    //onThrottleChangeEvent.Fire();
+                    wait = GTIConfig.Event.CheckFreqActive;
                 }
-                else { wait = GTIConfig.EventCheckFreqIdle; }
+                else { wait = GTIConfig.Event.CheckFreqIdle; }
 
                 //if (!HighLogic.LoadedSceneIsFlight) EventDetectorRunning = false;
                 Thread.Sleep(wait);
@@ -223,12 +230,12 @@ namespace GTI.Events
         //    else EventDetectorRunning = false;
         //}
 
-        private void EventDebugger()
+        private void EventDebugger(float newThrottle, float OrigThrottle)
         {
             GTIDebug.Log("onThrottle Event Raised", iDebugLevel.DebugInfo);
         }
         #endregion
-        
+
         private void OnDestroy()
         {
             GTIDebug.Log("GTI_Events destroyed", iDebugLevel.Medium);

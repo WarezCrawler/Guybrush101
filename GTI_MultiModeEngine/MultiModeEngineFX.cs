@@ -47,7 +47,7 @@ namespace GTI
         private bool currentEngineState;
 
         //public new List<EngineMultiMode> mode;
-
+        //private int i = 0;
         #endregion
 
         /// <summary>
@@ -59,11 +59,11 @@ namespace GTI
             {
                 GTIDebug.Log("GTI_MultiModeEngineFX() --> initializeSettings()", iDebugLevel.DebugInfo);
                 //Utilities Util = new Utilities();
-                string[] arrEngineID, arrGUIengineID;
+                //string[] arrEngineID;    //, arrGUIengineID;
 
                 #region Split into Arrays
-                arrEngineID = engineID.Trim().Split(';');
-                GUIengineIDEmpty = ArraySplitEvaluate(GUIengineID, out arrGUIengineID, ';');
+                string[] arrEngineID = engineID.Trim().Split(';');
+                GUIengineIDEmpty = ArraySplitEvaluate(GUIengineID, out string[] arrGUIengineID, ';');
                 #endregion
 
                 #region Identify ModuleEngines in Scope
@@ -97,10 +97,15 @@ namespace GTI
                     ModuleEngines[i].Actions["ActivateAction"].active = false;
 
                     GTIDebug.Log(ModuleEngines[i].engineID + " - Collect module engines index's", this.GetType().Name, iDebugLevel.DebugInfo);
-                    foreach (MultiMode m in modes)
+                    //foreach (MultiMode m in modes)
+                    for (int j = 0; j < modes.Count; j++)
                     {
                         //Update index's of the engine modules
-                        if (ModuleEngines[i].engineID == m.ID) m.moduleIndex = i;
+                        if (ModuleEngines[i].engineID == modes[j].ID)
+                        {
+                            GTIDebug.Log("Engine index found: " + i, this.GetType().Name, iDebugLevel.DebugInfo);
+                            modes[j].moduleIndex = i;
+                        }
                     }
 
                     //Get currently activated engine module
@@ -120,10 +125,17 @@ namespace GTI
             //initializeSettings();
             GTIDebug.Log("GTI_MultiModeEngine: updatePropulsion() --> ChooseOption = " + ChooseOption, iDebugLevel.High);
 
-            currentEngineState = currentModuleEngine.getIgnitionState;
+            if (currentModuleEngine != null)
+            {
+                currentEngineState = currentModuleEngine.getIgnitionState;
+            } else GTIDebug.Log("updateMultiMode() --> currentModuleEngine is null", iDebugLevel.Low);
+
 
             //FindSelectedMode();       //irrelevant when inheritting from the base class
             writeScreenMessage();
+
+            if (ModuleEngines == null)
+                GTIDebug.Log("updateMultiMode() --> ModuleEngines is null", iDebugLevel.Low);
 
             foreach (ModuleEnginesFX moduleEngine in ModuleEngines)
             {

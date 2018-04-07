@@ -6,18 +6,18 @@ namespace GTI
     public abstract class GTISettingsBase : GameParameters.CustomParameterNode
     {
         #region CustomParameterNode
-        public override string Section { get { return "GTIndustries"; } }
-        public override string DisplaySection { get { return Section; } }
-        public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override bool HasPresets { get { return false; } }
+        public override string Section => "GTIndustries";
+        public override string DisplaySection => Section;
+        public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
+        public override bool HasPresets => false;
         #endregion
     }
     
     public class GTISettings : GTISettingsBase
     {
         #region CustomParameterNode
-        public override string Title { get { return "Settings"; } }
-        public override int SectionOrder { get { return 0; } }
+        public override string Title => "Settings";
+        public override int SectionOrder => 0;
         #endregion
 
         #region Events
@@ -27,22 +27,22 @@ namespace GTI
         [GameParameters.CustomParameterUI("Activate Events", toolTip = "Activate GTI custom events.", autoPersistance = true)]
         public bool initEvent
         {
-            get { return GTIConfig.initEvent; }
-            set { GTIConfig.initEvent = value; }
+            get => GTIConfig.Event.initialize;
+            set => GTIConfig.Event.initialize = value;
         }
 
         [GameParameters.CustomIntParameterUI("Check Frequence Idle", toolTip = "Set interval in ms in which the event is checked for when idle.", minValue = 50 , maxValue = 1250, stepSize = 50, autoPersistance = true)]
         public int EventCheckFreqIdle
         {
-            get { return GTIConfig.EventCheckFreqIdle; }
-            set { GTIConfig.EventCheckFreqIdle = value; }
+            get => GTIConfig.Event.CheckFreqIdle;
+            set => GTIConfig.Event.CheckFreqIdle = value;
         }
 
         [GameParameters.CustomIntParameterUI("Check Frequence Active", toolTip = "Set interval in ms in which the event is checked for when it has just fired.", minValue = 1, maxValue = 500, stepSize = 10, autoPersistance = true)]
         public int EventCheckFreqActive
         {
-            get { return GTIConfig.EventCheckFreqActive; }
-            set { GTIConfig.EventCheckFreqActive = value; }
+            get => GTIConfig.Event.CheckFreqActive;
+            set => GTIConfig.Event.CheckFreqActive = value;
         }
         #endregion
 
@@ -52,15 +52,21 @@ namespace GTI
         [GameParameters.CustomIntParameterUI("Activate Load Fixer", toolTip = "Temporarily enable cheats on scene load.", autoPersistance = true)]
         public bool LoadFixerEnabled
         {
-            get { return GTIConfig.LoadFixerEnabled; }
-            set { GTIConfig.LoadFixerEnabled = value; }
+            get => GTIConfig.LoadFixerEnabled;
+            set => GTIConfig.LoadFixerEnabled = value;
         }
 
         [GameParameters.CustomIntParameterUI("Activate Docking Alignment Indicator", toolTip = "Docking Alignment Indicator.", autoPersistance = true)]
         public bool GTI_NavBallDockingAlignmentIndicator
         {
-            get { return GTIConfig.ActivateDAI; }
-            set { GTIConfig.ActivateDAI = value; }
+            get => GTIConfig.NavBallDockingIndicator.Activate;
+            set => GTIConfig.NavBallDockingIndicator.Activate = value;
+        }
+        [GameParameters.CustomIntParameterUI("Activate double tabing for brake lock", toolTip = "Brake Lock.", autoPersistance = true)]
+        public bool GTI_doubleTabForBrakeLock
+        {
+            get => GTIConfig.BrakeLock.doubleTabActive;
+            set => GTIConfig.BrakeLock.doubleTabActive = value;
         }
         #endregion
 
@@ -72,14 +78,14 @@ namespace GTI
             GTIDebug.Log("EventCheckFreqIdle: " + EventCheckFreqIdle, iDebugLevel.Medium);
             GTIDebug.Log("EventCheckFreqActive: " + EventCheckFreqActive, iDebugLevel.Medium);
             GTIDebug.Log("LoadFixerEnabled: " + LoadFixerEnabled, iDebugLevel.Medium);
-            GTIDebug.Log("ActivateDAI: " + ActivateDAI, iDebugLevel.Medium);
+            GTIDebug.Log("ActivateDAI: " + NavBallDockingIndicator.Activate, iDebugLevel.Medium);
         }
     }
     public class GTISettingsDebug : GTISettingsBase
     {
         #region CustomParameterNode
-        public override string Title { get { return "Debugging"; } }
-        public override int SectionOrder { get { return 2; } }
+        public override string Title => "Debugging";     //{ get { return "Debugging"; } }
+        public override int SectionOrder => 2;           //{ get { return 2; } }
         #endregion
 
         #region Debugging
@@ -89,15 +95,15 @@ namespace GTI
         [GameParameters.CustomParameterUI("Activate Debugging", toolTip = "If enabled, debugging logs will be generated.", autoPersistance = true)]
         public bool DebugActive
         {
-            get { return GTIConfig.DebugActive; }
-            set { GTIConfig.DebugActive = value; }
+            get => GTIConfig.DebugActive;
+            set => GTIConfig.DebugActive = value;
         }
 
         [GameParameters.CustomParameterUI("Debug Level", toolTip = "Set level of debugging messages in the log file.", autoPersistance = true)]
         public iDebugLevel DebugLevel
         {
-            get { return GTIConfig.DebugLevel; }
-            set { GTIConfig.DebugLevel = value; }
+            get => GTIConfig.DebugLevel;
+            set => GTIConfig.DebugLevel = value;
         }
         #endregion
 

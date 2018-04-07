@@ -1,7 +1,7 @@
 ﻿using static GTI.GTIConfig;
 using static GTI.Utilities;
 using static GTI.PhysicsUtilities;
-using GTI.CustomTypes;
+//using GTI.CustomTypes;
 
 using System;
 using System.Collections.Generic;
@@ -17,36 +17,27 @@ namespace GTI
         public int moduleIndex { get; set; }
         public string ID { get; set; }
         public string Name { get; set; }
-        
+
         //public string propellants { get; set; }
         private string _propellants;
         private string[] _propellantsArray;
         public string propellants
         {
-            get
-            {
-                return _propellants;
-            }
+            get => _propellants;
             set
             {
                 _propellants = value;
                 _propellantsArray = value.Split(',');
             }
         }
-        public string[] GetPropellants
-        {
-            get
-            {
-                return _propellantsArray;
-            }
-        }
+        public string[] GetPropellants => _propellantsArray;    //property get:
 
         private string _propRatios;
         private string[] _propRatiosArray;
         //For storing and retrieving propellant ratios
         public string propRatios
         {
-            get { return _propRatios; }
+            get => _propRatios;
             set
             {
                 //string[] arrInString;
@@ -61,9 +52,8 @@ namespace GTI
                 {
                     foreach (string item in _propRatiosArray)
                     {
-                        float numvalue;
                         //booparse = Single.TryParse(item, out numvalue);
-                        if (!Single.TryParse(item, out numvalue))
+                        if (!Single.TryParse(item, out float numvalue))
                             GTIDebug.LogWarning("CustomTypes.PropellantList -> Could not parse propellant ratio " + item + " into integer.", iDebugLevel.Low);
                     }
                 }
@@ -85,7 +75,7 @@ namespace GTI
         private string _resourceFlowMode;
         public string resourceFlowMode
         {
-            get { return _resourceFlowMode; }
+            get => _resourceFlowMode;
             set
             {
                 switch (value)
@@ -128,8 +118,7 @@ namespace GTI
         {
             set
             {
-                float outMaxThrust = 0;
-                Single.TryParse(value, out outMaxThrust);
+                Single.TryParse(value, out float outMaxThrust);       //float outMaxThrust = 0;
                 maxThrust = outMaxThrust;
             }
         }
@@ -144,7 +133,7 @@ namespace GTI
         public FloatCurve atmosphereFloatCurve { get; private set; } = new FloatCurve();
         public ConfigNode atmosphereCurve
         {
-            get { return _atmosphereCurve; }
+            get => _atmosphereCurve;
             set
             {
                 _atmosphereCurve = value;
@@ -166,7 +155,7 @@ namespace GTI
         public FloatCurve GTIthrottleISPFloatCurve { get; private set; } = new FloatCurve();
         public ConfigNode GTIthrottleISPCurve
         {
-            get { return _GTIthrottleISPCurve; }
+            get => _GTIthrottleISPCurve;
             set
             {
                 _GTIthrottleISPCurve = value;
@@ -210,7 +199,7 @@ namespace GTI
         //            {
         //                return 0;
         //            }
-                    
+
         //        }
         //        else
         //        {
@@ -369,15 +358,17 @@ namespace GTI
         private bool useGTIthrottleISPCurvesEmpty;
         private bool GTIthrottleISPCurvesEmpty;        //Custom Curve
 
+        bool initialUpdate = true;
+
         [KSPField]
         public string useGTIthrottleISPCurves = string.Empty;
         #endregion
 
         //Exposes private information
-        public ConfigNode GetMultiModeConfigNode { get { return MultiModeConfigNode; } }
-        public List<MultiModeEngine> GetengineModeList { get { return modes; } }
+        public ConfigNode GetMultiModeConfigNode => MultiModeConfigNode;
+        public List<MultiModeEngine> GetengineModeList => modes;
 
-        private EventVoid onThrottleChangeEvent;
+        private EventData<float, float> onThrottleChangeEvent;
 
 
         public override void OnLoad(ConfigNode node)
@@ -387,7 +378,7 @@ namespace GTI
                 GTIDebug.Log("GTI_MultiModeEngine : OnLoad() : " + GTIDebug.GetVesselName(part), iDebugLevel.DebugInfo);
 
                 GTIDebug.Log("Before adding GTI_MultiModeEngine to onThrottleChange Event : " + GTIDebug.GetVesselName(part), iDebugLevel.DebugInfo);
-                onThrottleChangeEvent = GameEvents.FindEvent<EventVoid>("onThrottleChange");
+                onThrottleChangeEvent = GameEvents.FindEvent<EventData<float, float>>("onThrottleChange");
                 if (onThrottleChangeEvent != null)
                 {
                     GTIDebug.Log("Adding GTI_MultiModeEngine to onThrottleChange Event : " + GTIDebug.GetVesselName(part), iDebugLevel.High);
@@ -422,39 +413,39 @@ namespace GTI
                 #region Parse settings
                 //bool boolParseResult;
 
-                string[] arrGUIengineModeNames, arrPropellantNames, arrPropellantRatios;
-                string[] arrPropDrawGauge, arrPropIgnoreForISP, arrResourceFlowMode;
-                string[] arrMaxThrust, arrHeatProd, arrEngineTypes;
-                string[] arratmChangeFlows;
-                string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
+                //string[] arrGUIengineModeNames, arrPropellantNames, arrPropellantRatios;
+                //string[] arrPropDrawGauge, arrPropIgnoreForISP, arrResourceFlowMode;
+                //string[] arrMaxThrust, arrHeatProd, arrEngineTypes;
+                //string[] arratmChangeFlows;
+                //string[] arrUseEngineResponseTime, arrEngineAccelerationSpeed, arrEngineDecelerationSpeed;
 
-                string[] arruseVelCurves, arruseAtmCurves;
-                string[] arrusethrottleISPCurves;
+                //string[] arruseVelCurves, arruseAtmCurves;
+                //string[] arrusethrottleISPCurves;
 
                 //Propellant level
-                GUIengineModeNamesEmpty = ArraySplitEvaluate(GUIengineModeNames, out arrGUIengineModeNames, ';');
-                PropellantNamesEmpty = ArraySplitEvaluate(propellantNames, out arrPropellantNames, ';');
-                PropellantRatiosEmpty = ArraySplitEvaluate(propellantRatios, out arrPropellantRatios, ';');
+                GUIengineModeNamesEmpty = ArraySplitEvaluate(GUIengineModeNames, out string[] arrGUIengineModeNames, ';');
+                PropellantNamesEmpty = ArraySplitEvaluate(propellantNames, out string[] arrPropellantNames, ';');
+                PropellantRatiosEmpty = ArraySplitEvaluate(propellantRatios, out string[] arrPropellantRatios, ';');
 
-                PropIgnoreForISPEmpty = ArraySplitEvaluate(propIgnoreForISP, out arrPropIgnoreForISP, ';');
-                PropDrawGaugeEmpty = ArraySplitEvaluate(propDrawGauge, out arrPropDrawGauge, ';');
-                ResourceFlowModeEmpty = ArraySplitEvaluate(resourceFlowMode, out arrResourceFlowMode, ';');
+                PropIgnoreForISPEmpty = ArraySplitEvaluate(propIgnoreForISP, out string[] arrPropIgnoreForISP, ';');
+                PropDrawGaugeEmpty = ArraySplitEvaluate(propDrawGauge, out string[] arrPropDrawGauge, ';');
+                ResourceFlowModeEmpty = ArraySplitEvaluate(resourceFlowMode, out string[] arrResourceFlowMode, ';');
 
-                MaxThrustEmpty = ArraySplitEvaluate(maxThrust, out arrMaxThrust, ';');
+                MaxThrustEmpty = ArraySplitEvaluate(maxThrust, out string[] arrMaxThrust, ';');
 
-                HeatProdEmpty = ArraySplitEvaluate(heatProduction, out arrHeatProd, ';');
-                atmChangeFlowsEmpty = ArraySplitEvaluate(atmChangeFlows, out arratmChangeFlows, ';');
+                HeatProdEmpty = ArraySplitEvaluate(heatProduction, out string[] arrHeatProd, ';');
+                atmChangeFlowsEmpty = ArraySplitEvaluate(atmChangeFlows, out string[] arratmChangeFlows, ';');
 
-                UseEngineResponseTimeEmpty = ArraySplitEvaluate(useEngineResponseTime, out arrUseEngineResponseTime, ';');
-                EngineAccelerationSpeedEmpty = ArraySplitEvaluate(engineAccelerationSpeed, out arrEngineAccelerationSpeed, ';');
-                EngineDecelerationSpeedEmpty = ArraySplitEvaluate(engineDecelerationSpeed, out arrEngineDecelerationSpeed, ';');
+                UseEngineResponseTimeEmpty = ArraySplitEvaluate(useEngineResponseTime, out string[] arrUseEngineResponseTime, ';');
+                EngineAccelerationSpeedEmpty = ArraySplitEvaluate(engineAccelerationSpeed, out string[] arrEngineAccelerationSpeed, ';');
+                EngineDecelerationSpeedEmpty = ArraySplitEvaluate(engineDecelerationSpeed, out string[] arrEngineDecelerationSpeed, ';');
 
-                EngineTypesEmpty = ArraySplitEvaluate(EngineTypes, out arrEngineTypes, ';');
+                EngineTypesEmpty = ArraySplitEvaluate(EngineTypes, out string[] arrEngineTypes, ';');
 
-                useVelCurvesEmpty = ArraySplitEvaluate(useVelCurves, out arruseVelCurves, ';');
-                useAtmCurvesEmpty = ArraySplitEvaluate(useAtmCurves, out arruseAtmCurves, ';');
+                useVelCurvesEmpty = ArraySplitEvaluate(useVelCurves, out string[] arruseVelCurves, ';');
+                useAtmCurvesEmpty = ArraySplitEvaluate(useAtmCurves, out string[] arruseAtmCurves, ';');
 
-                useGTIthrottleISPCurvesEmpty = ArraySplitEvaluate(useGTIthrottleISPCurves, out arrusethrottleISPCurves, ';');
+                useGTIthrottleISPCurvesEmpty = ArraySplitEvaluate(useGTIthrottleISPCurves, out string[] arrusethrottleISPCurves, ';');
 
                 //Get FloatCurves from the part
                 ConfigNode[] atmosphereCurves = MultiModeConfigNode.GetNodes("atmosphereCurve");
@@ -462,16 +453,19 @@ namespace GTI
                 ConfigNode[] atmCurves = MultiModeConfigNode.GetNodes("atmCurve");
                 ConfigNode[] throttleISPCurves = MultiModeConfigNode.GetNodes("throttleISPCurve");
 
-                if (atmosphereCurves != null && atmosphereCurves.Length > 0) GTIDebug.Log(atmosphereCurves.ToStringExt(), iDebugLevel.DebugInfo);
-                if (velCurves != null && velCurves.Length > 0) GTIDebug.Log(velCurves.ToStringExt(), iDebugLevel.DebugInfo);
-                if (atmCurves != null && atmCurves.Length > 0) GTIDebug.Log(atmCurves.ToStringExt(), iDebugLevel.DebugInfo);
-                if (throttleISPCurves != null && throttleISPCurves.Length > 0) GTIDebug.Log(throttleISPCurves.ToStringExt(), iDebugLevel.DebugInfo);
+                if (GTIConfig.DebugLevel == iDebugLevel.DebugInfo)
+                {
+                    if (atmosphereCurves != null && atmosphereCurves.Length > 0) GTIDebug.Log(atmosphereCurves.ToStringExt(), iDebugLevel.DebugInfo);
+                    if (velCurves != null && velCurves.Length > 0) GTIDebug.Log(velCurves.ToStringExt(), iDebugLevel.DebugInfo);
+                    if (atmCurves != null && atmCurves.Length > 0) GTIDebug.Log(atmCurves.ToStringExt(), iDebugLevel.DebugInfo);
+                    if (throttleISPCurves != null && throttleISPCurves.Length > 0) GTIDebug.Log(throttleISPCurves.ToStringExt(), iDebugLevel.DebugInfo);
+                }
 
                 //Test Curves for validity
-                if (atmosphereCurves.Length == arrPropellantNames.Length) { AtmosphereCurveEmpty = false; } else { AtmosphereCurveEmpty = true; }
-                if (velCurves.Length == arrPropellantNames.Length) { VelCurveEmpty = false; } else { VelCurveEmpty = true; }
-                if (atmCurves.Length == arrPropellantNames.Length) { AtmCurveEmpty = false; } else { AtmCurveEmpty = true; }
-                if (throttleISPCurves.Length == arrPropellantNames.Length) { GTIthrottleISPCurvesEmpty = false; } else { GTIthrottleISPCurvesEmpty = true; }
+                if (atmosphereCurves.Length == arrPropellantNames.Length)   { AtmosphereCurveEmpty = false; } else { AtmosphereCurveEmpty = true; }
+                if (velCurves.Length == arrPropellantNames.Length)          { VelCurveEmpty = false; } else { VelCurveEmpty = true; }
+                if (atmCurves.Length == arrPropellantNames.Length)          { AtmCurveEmpty = false; } else { AtmCurveEmpty = true; }
+                if (throttleISPCurves.Length == arrPropellantNames.Length)  { GTIthrottleISPCurvesEmpty = false; } else { GTIthrottleISPCurvesEmpty = true; }
                 #endregion
 
                 #region Populate list with settings
@@ -540,9 +534,16 @@ namespace GTI
             //Get the Ignition state, i.e. is the engine shutdown or activated
             currentEngineState = ModuleEngines.getIgnitionState;
             //Shutdown the engine --> Removes the gauges, and make sense to do before changing propellant
+            if (currentEngineState)
+            {
+                ModuleEngines.EngineIgnited = false;
+            }
             if (HighLogic.LoadedSceneIsFlight)
-                if (currentEngineState) { ModuleEngines.EngineIgnited = false; }
-            ModuleEngines.Shutdown();
+            {
+                if (!initialUpdate)
+                    ModuleEngines.Shutdown();
+            }
+
 
             #region ConfigNode Replace previous propellant node
             //Split cfg subsettings into arrays
@@ -621,7 +622,7 @@ namespace GTI
             {
                 //Update ISP curve based in the GTI throttleISPCurve
                 //!throttleISPCurvesEmpty && !usethrottleISPCurvesEmpty && bool.Parse(engineModeList[selectedMode].usethrottleISPCurve) && !ModuleEngines.useThrottleIspCurve
-                onThrottleChange();
+                onThrottleChange(FlightInputHandler.state.mainThrottle, FlightInputHandler.state.mainThrottle);
             }
             else
             {
@@ -658,7 +659,15 @@ namespace GTI
             if (!silentUpdate) writeScreenMessage();
 
             //Restart engine if it was on before switching
-            if (currentEngineState) { ModuleEngines.Activate(); if (HighLogic.LoadedSceneIsFlight) { ModuleEngines.EngineIgnited = true; } }
+            //???? if (!initialUpdate)
+            if (currentEngineState)
+            {
+                if (!initialUpdate)
+                    ModuleEngines.Activate();
+                if (HighLogic.LoadedSceneIsFlight)
+                    ModuleEngines.EngineIgnited = true;
+            }
+            initialUpdate = false;
         }
 
         protected override void writeScreenMessage()
@@ -684,7 +693,7 @@ namespace GTI
             throw new NotImplementedException();
         }
 
-        private void onThrottleChange()
+        private void onThrottleChange(float newThrottle, float origThrottle)
         {
             //!throttleISPCurvesEmpty && !usethrottleISPCurvesEmpty && bool.Parse(engineModeList[selectedMode].usethrottleISPCurve) && !ModuleEngines.useThrottleIspCurve
 
@@ -700,6 +709,8 @@ namespace GTI
                 GTIDebug.Log("part is in ActiveVessel - event accepted : " + GTIDebug.GetVesselName(this.part) + " : " + this.part.name, iDebugLevel.DebugInfo);
                 GTIDebug.Log("FlightInputHandler.state.mainThrottle: " + FlightInputHandler.state.mainThrottle, iDebugLevel.DebugInfo);
                 GTIDebug.Log("ModuleEngines.requestedThrottle: " + ModuleEngines.requestedThrottle, iDebugLevel.DebugInfo);
+                GTIDebug.Log("newThrottle: " + newThrottle, iDebugLevel.DebugInfo);
+                GTIDebug.Log("origThrottle: " + origThrottle, iDebugLevel.DebugInfo);
                 GTIDebug.Log("ModuleEngines.realIsp: " + ModuleEngines.realIsp, iDebugLevel.DebugInfo);
 
                 GTIDebug.Log("modes[selectedMode].GetGTIthrottleISPFloatCurve: " + modes[selectedMode].GTIthrottleISPFloatCurve.Evaluate(ModuleEngines.requestedThrottle), iDebugLevel.DebugInfo);
@@ -739,7 +750,7 @@ namespace GTI
             else
             {
                 //Write reason for not executing onThrottleChange()
-                if (this.part.vessel == FlightGlobals.ActiveVessel) GTIDebug.Log("part not in ActiveVessel - event is ignored : " + GTIDebug.GetVesselName(this.part) + " : " + this.part.name, iDebugLevel.DebugInfo);
+                if (!this.part.vessel == FlightGlobals.ActiveVessel) GTIDebug.Log("part not in ActiveVessel - event is ignored : " + GTIDebug.GetVesselName(this.part) + " : " + this.part.name, iDebugLevel.DebugInfo);
                 if (!GTIthrottleISPCurvesEmpty) GTIDebug.Log("!GTIthrottleISPCurvesEmpty: " + !GTIthrottleISPCurvesEmpty, iDebugLevel.DebugInfo);
                 if (modes[selectedMode].useGTIthrottleISPCurve) GTIDebug.Log("engineModeList[selectedMode].useGTIthrottleISPCurve: " + modes[selectedMode].useGTIthrottleISPCurve, iDebugLevel.DebugInfo);
                 if (!ModuleEngines.useThrottleIspCurve) GTIDebug.Log("!ModuleEngines.useThrottleIspCurve: " + !ModuleEngines.useThrottleIspCurve, iDebugLevel.DebugInfo);

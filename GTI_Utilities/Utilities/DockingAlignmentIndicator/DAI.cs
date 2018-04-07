@@ -14,12 +14,12 @@ namespace GTI
         PluginConfiguration cfg;
         Color color;
 
-        void Start()
+        private void Start()
         {
             GTIDebug.Log("GTI_NavBallDockingAlignmentIndicator Starting", "GTI - DAI", GTIConfig.iDebugLevel.DebugInfo);
-            if (!GTIConfig.ActivateDAI || PluginExists("NavBallDockingAlignmentIndicatorCE"))
+            if (!GTIConfig.NavBallDockingIndicator.Activate || PluginExists("NavBallDockingAlignmentIndicatorCE"))
             {
-                if(PluginExists("NavBallDockingAlignmentIndicatorCE") && GTIConfig.ActivateDAI)
+                if(PluginExists("NavBallDockingAlignmentIndicatorCE") && GTIConfig.NavBallDockingIndicator.Activate)
                     GTIDebug.Log("NavBallDockingAlignmentIndicatorCE Detected -- Disabling GTI Alignment indicator", "GTI - DAI", GTIConfig.iDebugLevel.DebugInfo);
                 Destroy(this.gameObject);
             }
@@ -38,9 +38,9 @@ namespace GTI
             GTIDebug.Log("OnDestroy", "GTI - DAI", GTIConfig.iDebugLevel.DebugInfo);
         }
 
-        void LateUpdate()
+        private void LateUpdate()
         {
-            if (!GTIConfig.DAI_NavBallDockingActive)
+            if (!GTIConfig.NavBallDockingIndicator.Active)
                 goto EndLateUpdate;
 
             if (this.navBall == null)
@@ -86,7 +86,7 @@ namespace GTI
             }
             else
             {
-                GTIConfig.DAI_NavBallDockingActive = false;
+                GTIConfig.NavBallDockingIndicator.Active = false;
             }
 
             EndLateUpdate:
@@ -94,7 +94,7 @@ namespace GTI
                 this.indicator.SetActive(false);
         }
 
-        void SetupIndicator()
+        private void SetupIndicator()
         {
             this.indicator = GameObject.Instantiate(navBall.progradeVector.gameObject);
             this.indicator.transform.parent = navBall.progradeVector.parent;

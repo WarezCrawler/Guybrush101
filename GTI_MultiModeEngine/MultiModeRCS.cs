@@ -18,6 +18,7 @@ namespace GTI
         protected List<ModuleRCS> ModuleRCSs;
 
         protected ModuleRCS currentModuleRCS;
+        protected int currentModuleRCSindex;
 
         protected override void initializeSettings()
         {
@@ -68,11 +69,20 @@ namespace GTI
         public override void updateMultiMode(bool silentUpdate = false)
         {
             GTIDebug.Log("GTI_MultiModeRCS: updateMultiMode() --> Begin", iDebugLevel.High);
-            if (silentUpdate == false) writeScreenMessage();
+            if (!silentUpdate) writeScreenMessage();
 
             for (int i = 0; i < modes.Count; i++)
             {
+                if (i == modes[currentModuleRCSindex].moduleIndex)
+                {
+                    currentModuleRCS = ModuleRCSs[i];
+                    currentModuleRCSindex = i;
+                    ModuleRCSs[i].rcsEnabled = true;
+                }
+                else
+                {
 
+                }
             }
 
 

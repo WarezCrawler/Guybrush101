@@ -219,7 +219,23 @@ namespace GTI
         /// <returns></returns>
         public static bool PluginExists(string ModName)
         {
-            return AssemblyLoader.loadedAssemblies.Any(a => a.name == ModName);
+            //return AssemblyLoader.loadedAssemblies.Any(a => a.name == ModName);
+            //foreach (var assembly in AssemblyLoader.loadedAssemblies)
+
+            for (int i = 0; i < AssemblyLoader.loadedAssemblies.Count; i++)
+            {
+                //var name = assembly.assembly.ToString().Split(',')[0];
+                //if (AssemblyLoader.loadedAssemblies[i].name == ModName)
+                //GTIDebug.Log("ModName (split)" + AssemblyLoader.loadedAssemblies[i].assembly.ToString(),iDebugLevel.DebugInfo);
+                //GTIDebug.Log("ModName " + AssemblyLoader.loadedAssemblies[i].name, iDebugLevel.DebugInfo);
+                if (AssemblyLoader.loadedAssemblies[i].name == ModName)
+                {
+                    GTIDebug.Log("ModName '" + AssemblyLoader.loadedAssemblies[i].name + "' found", iDebugLevel.DebugInfo);
+                    return true;
+                }
+                    
+            }
+            return false;
         }
         public static AssemblyLoader.LoadedAssembyList PluginsListOf()
         {

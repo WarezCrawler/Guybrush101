@@ -10,39 +10,53 @@ namespace GTI
 
         private static bool DAI_NavBallDockingActive
         {
-            get { return GTIConfig.DAI_NavBallDockingActive; }
-            set { GTIConfig.DAI_NavBallDockingActive = value; }
+            get => GTIConfig.NavBallDockingIndicator.Active;
+            set => GTIConfig.NavBallDockingIndicator.Active = value;
         }
+
+        //KeyBinding brakeKey;
 
         private void Awake()
         {
-            if (GTIConfig.ActivateDAI)
+            if (GTIConfig.NavBallDockingIndicator.Activate)
             {
                 GTIDebug.Log("BackgroundDetector_Flight Awake", GTIConfig.iDebugLevel.High);
-                Thread InFlightThread = new Thread(DetectInFlight);
+                Thread InFlightThread = new Thread(DetectInFlight_250ms);
                 InFlightThread.IsBackground = true;
                 InFlightThread.Priority = System.Threading.ThreadPriority.BelowNormal;
                 InFlightThread.Start();
             }
         }
 
-        private void DetectInFlight()
+        //private void Start()
+        //{
+        //    //brakeKey = GameSettings.BRAKES;
+        //}
+
+        private void Update()
+        {
+            //Double tab for locking brakes
+            if (GTIConfig.BrakeLock.doubleTabActive)
+                if (GameSettings.BRAKES.GetDoubleTapUp(false)) FlightGlobals.ActiveVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+        }
+
+        private void DetectInFlight_250ms()
         {
             //If already running, then stop it before restarting
             if (Active) { Active = false; Thread.Sleep(100); }
-            if (!GTIConfig.ActivateDAI)
+            if (!GTIConfig.NavBallDockingIndicator.Activate)
                 return;
 
             GTIDebug.Log("DetectInFlight() Started -- " + HighLogic.LoadedScene.ToString(), GTIConfig.iDebugLevel.High);
             Active = true;
-            while (Active)
+            while (Active == true)
             {
                 if (!HighLogic.LoadedSceneIsFlight)
                 {
                     Active = false;
                     break;
                 }
-                    
+
                 //Detect if active vessel is in docking procedure mode
                 DAI_NavBallDockingActive =
                        FlightGlobals.fetch != null

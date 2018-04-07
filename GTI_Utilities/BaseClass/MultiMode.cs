@@ -14,6 +14,7 @@ namespace GTI
         string ToString();
     }
 
+    //Default MultiMode object
     public class MultiMode : IMultiMode
     {
         public int moduleIndex { get; set; }
@@ -242,8 +243,7 @@ namespace GTI
 
             foreach (Delegate d in OnUpdateMultiMode.GetInvocationList())
             {
-                GTIDebug.Log(d.Method);
-                
+                GTIDebug.Log(d.Method.ToString());
             }
             OnUpdateMultiMode.Invoke();
         }
@@ -288,6 +288,7 @@ namespace GTI
                     return;
                 }
             }
+            GTIDebug.Log("FindSelectedMode() was unsuccessful in locating current mode: " + ChooseOption, iDebugLevel.DebugInfo);
         }
         private void FindSelectedMode(bool boo = false) { FindSelectedMode(); }
 

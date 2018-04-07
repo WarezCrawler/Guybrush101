@@ -7,10 +7,16 @@ using static GTI.Utilities;
 
 namespace GTI
 {
-    public class IntakeModes : MultiMode
+    public class IntakeModes : IMultiMode
     {
+
+        public int moduleIndex { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; }
+
         //public bool modeDisabled = false;
         public string resourceName;
+
 
         public override string ToString()
         {
@@ -144,6 +150,7 @@ namespace GTI
                 //List<ConfigNode> IntakeResources = new List<ConfigNode>();
                 ConfigNode IntakeResource = new ConfigNode("RESOURCE");
                 float resMaxAmount = (float)ModuleIntakes[modes[selectedMode].moduleIndex].res.maxAmount;
+                if (resMaxAmount <= 0) resMaxAmount = 1f;
                 float resIniAmount = HighLogic.LoadedSceneIsFlight ? 0f : resMaxAmount;
 
                 //Create Resource node
