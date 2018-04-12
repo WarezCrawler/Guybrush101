@@ -63,6 +63,7 @@
     <Compile Include="BackgroundDetectors.cs" />
     <Compile Include="GTI_Events.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\CameraFocusChanger\CFC.cs" />
     <Compile Include="Utilities\CrowdSourcedScienceFixer.cs" />
     <Compile Include="Utilities\ConfigNode.cs" />
     <Compile Include="Utilities\DockingAlignmentIndicator\DAI.cs" />

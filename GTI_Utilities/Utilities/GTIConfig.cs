@@ -123,6 +123,10 @@ namespace GTI
         //    }
         //}
         #endregion
+        public struct CameraFocusChanger
+        {
+            public static bool Activate { get; internal set; } = false;
+        }
 
         static GTIConfig()
         {
@@ -191,6 +195,7 @@ namespace GTI
             if (!bool.TryParse(myConfigNode.GetValue("LoadFixerEnabled"), out mybool)) LoadFixerEnabled = false; else LoadFixerEnabled = mybool;
             if (!bool.TryParse(myConfigNode.GetValue("ActivateDAI"), out mybool)) NavBallDockingIndicator.Activate = false; else NavBallDockingIndicator.Activate = mybool;
             if (!bool.TryParse(myConfigNode.GetValue("ActivateDoubleTabForBrakeLock"), out mybool)) BrakeLock.doubleTabActive = false; else BrakeLock.doubleTabActive = mybool;
+            if (!bool.TryParse(myConfigNode.GetValue("ActivateCameraFocusChanger"), out mybool)) CameraFocusChanger.Activate = false; else CameraFocusChanger.Activate = mybool;
             #endregion
 
             //DebugLevel = (iDebugLevel)Enum.Parse(typeof(iDebugLevel), myConfigNode.GetValue("DebugLevel"), false);

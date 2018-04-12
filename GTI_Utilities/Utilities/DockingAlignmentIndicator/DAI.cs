@@ -11,8 +11,8 @@ namespace GTI
         private NavBall navBall;
 
         private GameObject indicator;
-        PluginConfiguration cfg;
-        Color color;
+        private PluginConfiguration cfg;
+        private Color color;
 
         private void Start()
         {
@@ -35,7 +35,7 @@ namespace GTI
 
         private void OnDestroy()
         {
-            GTIDebug.Log("OnDestroy", "GTI - DAI", GTIConfig.iDebugLevel.DebugInfo);
+            GTIDebug.Log("OnDestroy", "GTI-DAI", GTIConfig.iDebugLevel.DebugInfo);
         }
 
         private void LateUpdate()
