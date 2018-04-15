@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿/*GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007*/
+/*All credit goes to mic-e and linuxgurugamer*/
+using UnityEngine;
 using KSP.UI.Screens.Flight;
 using KSP.IO;
 using static GTI.Utilities;

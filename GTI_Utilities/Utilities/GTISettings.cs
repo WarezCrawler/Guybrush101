@@ -1,4 +1,6 @@
-﻿using System;
+﻿/*Licence https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode*/
+/*Credit goes to: codepants (Creator of Crowd-Sourced Science Logs), DuoDex.*/
+
 using static GTI.GTIConfig;
 
 namespace GTI

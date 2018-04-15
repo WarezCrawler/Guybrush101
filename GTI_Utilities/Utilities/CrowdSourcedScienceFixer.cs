@@ -3,14 +3,12 @@ using static GTI.Utilities;
 
 namespace GTI
 {
-    using UnityEngine;
-
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class CrowdSourcedScienceFixer : MonoBehaviour
     {
         public void Start()
         {
-            //Check if ScienceFixer from CrowdSourcedScience is present --> if it is, then abort
+            //Check if ScienceFixer from CrowdSourcedScience is present --> if it does, then abort
             if (PluginExists("ScienceFixer"))
                 Destroy(this.gameObject);
 
@@ -39,5 +37,4 @@ namespace GTI
             GTIDebug.Log("CrowdSourcedScienceFixer disabled", GTIConfig.iDebugLevel.DebugInfo);
         }
     }
-
 }
