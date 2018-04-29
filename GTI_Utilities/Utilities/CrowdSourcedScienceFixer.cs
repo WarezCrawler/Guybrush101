@@ -11,6 +11,8 @@ namespace GTI
             //Check if ScienceFixer from CrowdSourcedScience is present --> if it does, then abort
             if (PluginExists("ScienceFixer"))
                 Destroy(this.gameObject);
+            if (!GTIConfig.CrowdSourcedScienceFixer.Activate)
+                Destroy(this.gameObject);
 
             foreach (ConfigNode config in GameDatabase.Instance.GetConfigNodes("EXPERIMENT_DEFINITION"))
             {

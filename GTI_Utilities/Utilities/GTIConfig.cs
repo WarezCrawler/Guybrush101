@@ -23,9 +23,6 @@ namespace GTI
         //private static EventVoid onGameSettingsApplied;
 
         #region Event Settings properties
-        //public static bool initEvent { get; internal set; }
-        //public static int EventCheckFreqIdle { get; internal set; }
-        //public static int EventCheckFreqActive { get; internal set; }
         public struct Event
         {
             public static bool initialize { get; internal set; }
@@ -35,37 +32,14 @@ namespace GTI
         #endregion
 
         #region Debug Settings
-        //private static bool _DebugActive;
         public static bool DebugActive { get; internal set; } = false;
-        //private static iDebugLevel _DebugLevel;
         public static iDebugLevel DebugLevel { get; internal set; } = iDebugLevel.DebugInfo;
 
         public enum iDebugLevel { None, Low, Medium, High, VeryHigh, DebugInfo };
         #endregion
 
-        //** NEW 17-06-2017
-        #region Other Settings
-        public static bool LoadFixerEnabled { get; internal set; } = false;
-        #region DockingAlignmentIndicator
-        //public static bool ActivateDAI { get; internal set; } = false;      //Is DockingAlignmentIndicator activated
-        //private static bool _DAI_NavBallDockingActive = false;              //Is DockingAlignmentIndicator active
-        ///// <summary>
-        ///// Threading safe
-        ///// </summary>
-        //public static bool DAI_NavBallDockingActive                         //Expose DockingAlignmentIndicator avtive information
-        //{
-        //    get
-        //    {
-        //        lock (_syncLock)
-        //            return _DAI_NavBallDockingActive;
-        //    }
-
-        //    internal set
-        //    {
-        //        lock (_syncLock)
-        //            _DAI_NavBallDockingActive = value;
-        //    }
-        //}
+        #region MISCELLANEOUS Settings
+        public static bool ActivateLoadFixer { get; internal set; } = false;
         public struct NavBallDockingIndicator
         {
             public static bool Activate { get; internal set; } = false;      //Is DockingAlignmentIndicator activated
@@ -88,7 +62,6 @@ namespace GTI
                 }
             }
         }
-        #endregion
         public struct BrakeLock
         {
             private static bool _doubleTabActive = false;
@@ -106,27 +79,16 @@ namespace GTI
                         _doubleTabActive = value;
                 }
             }
-        }
-        //private static bool _doubleTabForBrakeLock = false;
-        //public static bool doubleTabForBrakeLock
-        //{
-        //    get
-        //    {
-        //        lock (_syncLock)
-        //            return _doubleTabForBrakeLock;
-        //    }
-
-        //    internal set
-        //    {
-        //        lock (_syncLock)
-        //            _doubleTabForBrakeLock = value;
-        //    }
-        //}
-        #endregion
+        }       
         public struct CameraFocusChanger
         {
             public static bool Activate { get; internal set; } = false;
         }
+        public struct CrowdSourcedScienceFixer
+        {
+            public static bool Activate { get; internal set; } = false;
+        }
+        #endregion
 
         static GTIConfig()
         {
@@ -192,10 +154,13 @@ namespace GTI
 
             #region MISCELLANEOUS
             myConfigNode = GTIConfigurationNode.GetNode("MISCELLANEOUS");
-            if (!bool.TryParse(myConfigNode.GetValue("LoadFixerEnabled"), out mybool)) LoadFixerEnabled = false; else LoadFixerEnabled = mybool;
+            if (!bool.TryParse(myConfigNode.GetValue("ActivateLoadFixer"), out mybool)) ActivateLoadFixer = false; else ActivateLoadFixer = mybool;
             if (!bool.TryParse(myConfigNode.GetValue("ActivateDAI"), out mybool)) NavBallDockingIndicator.Activate = false; else NavBallDockingIndicator.Activate = mybool;
             if (!bool.TryParse(myConfigNode.GetValue("ActivateDoubleTabForBrakeLock"), out mybool)) BrakeLock.doubleTabActive = false; else BrakeLock.doubleTabActive = mybool;
             if (!bool.TryParse(myConfigNode.GetValue("ActivateCameraFocusChanger"), out mybool)) CameraFocusChanger.Activate = false; else CameraFocusChanger.Activate = mybool;
+            if (!bool.TryParse(myConfigNode.GetValue("ActivateCrowdSourcedScienceFixer"), out mybool)) CrowdSourcedScienceFixer.Activate = false; else CrowdSourcedScienceFixer.Activate = mybool;
+
+            
             #endregion
 
             //DebugLevel = (iDebugLevel)Enum.Parse(typeof(iDebugLevel), myConfigNode.GetValue("DebugLevel"), false);
@@ -209,7 +174,7 @@ namespace GTI
                 "\n- EventSettings.CheckFreqIdle: " + Event.CheckFreqIdle + " ms" +
                 "\n- EventSettings.CheckFreqActive: " + Event.CheckFreqActive + " ms" +
                 "\nMISCELLANEOUS" +
-                "\n- LoadFixerEnabled: " + LoadFixerEnabled +
+                "\n- LoadFixerEnabled: " + ActivateLoadFixer +
                 "\n- ActivateDAI: " + NavBallDockingIndicator.Activate +
                 "\n- ActivateDoubleTabForBrakeLock: " + BrakeLock.doubleTabActive +
                 "\nDebug Settings" +
@@ -217,157 +182,6 @@ namespace GTI
                 "\n- DebugLevel: " + DebugLevel.ToString()
                 , iDebugLevel.DebugInfo);
 
-            //Activate loading of settings from the in game settings menu
-            //SetOnGameSettingsApplied();
         }
-
-        //public static bool DebugActive
-        //{
-        //    get
-        //    {
-        //        try
-        //        {
-        //            //if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.EDITOR)
-        //            if (HighLogic.LoadedSceneIsGame)
-        //            {
-        //                GTISettings settings = HighLogic.CurrentGame.Parameters.CustomParams<GTISettings>();
-        //                return settings.DebugActive;
-        //            }
-        //            else
-        //            {
-        //                return _DebugActive;
-        //            }
-
-        //        }
-        //        catch
-        //        {
-        //            Debug.Log("[GTI] CustomParams<GTISettings>().DebugActive NOT FOUND - Returning Default");
-        //            return _DebugActive;
-        //        }
-        //    }
-        //    set { _DebugActive = value;  }
-        //}
-        //public static iDebugLevel DebugLevel { get; private set; } = iDebugLevel.DebugInfo;
-        //public static iDebugLevel DebugLevel
-        //{
-        //    get
-        //    {
-        //        try
-        //        {
-        //            //if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.EDITOR)
-        //            if (HighLogic.LoadedSceneIsGame)
-        //            {
-        //                GTISettings settings = HighLogic.CurrentGame.Parameters.CustomParams<GTISettings>();
-        //                return settings.DebugLevel;
-        //            }
-        //            else
-        //            {
-        //                return _DebugLevel;
-        //            }
-                    
-        //        }
-        //        catch
-        //        {
-        //            Debug.Log("[GTI] CustomParams<GTISettings>().DebugLevel NOT FOUND - Returning Default");
-        //            return _DebugLevel;
-        //        }
-        //    }
-        //    private set { _DebugLevel = value; }
-        //}
-
-        ///*
-        //private static void SetOnGameSettingsApplied()
-        //{
-        //    ////EventVoid onGameSettingsApplied;
-
-        //    //GTIDebug.Log("Before adding GTI_MultiModeEngine to onThrottleChange Event", iDebugLevel.None);
-        //    ////onGameSettingsApplied = GameEvents.OnGameSettingsApplied;
-        //    //onGameSettingsApplied = GameEvents.FindEvent<EventVoid>("OnGameSettingsApplied");
-        //    //GTIDebug.Log("Before adding GTI_MultiModeEngine to onThrottleChange Event", iDebugLevel.None);
-        //    //if (onGameSettingsApplied != null)
-        //    //{
-        //    //    GTIDebug.Log("Adding GTIConfig to GameEvents.OnGameSettingsApplied Event", iDebugLevel.None);
-        //    //    onGameSettingsApplied.Add(OnGameSettingsApplied);
-        //    //    GTIDebug.Log("GTIConfig to GameEvents.OnGameSettingsApplied Event added", iDebugLevel.None);
-        //    //}
-        //    //else
-        //    //{
-        //    //    GTIDebug.Log("GTIConfig failed to be added to GameEvents.OnGameSettingsApplied Event : Event was null", iDebugLevel.Low);
-        //    //}
-        //}
-        //*/
-        //private static void OnDestroy()
-        //{
-        //    GTIDebug.Log("GTIConfig destroyed", iDebugLevel.Medium);
-        //    if (GameEvents.OnGameSettingsApplied != null)
-        //    {
-        //        GTIDebug.Log("[GTI] Removing GTIConfig from OnGameSettingsApplied Event", iDebugLevel.Medium);
-        //        GameEvents.OnGameSettingsApplied.Remove(OnGameSettingsApplied);
-        //    }
-        //}
-        //private static void OnGameSettingsApplied()
-        //{
-        //    GTIDebug.Log("New GTI Game Settings Applied. Updating the config module.", iDebugLevel.None);
-        //    SetDebugActive();
-        //    SetDebugLevel();
-        //}
-
-        /*
-        public static bool SetDebugActive()
-        {
-            try
-            {
-                GTISettings settings = HighLogic.CurrentGame.Parameters.CustomParams<GTISettings>();
-                DebugActive = settings.DebugActive;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public static bool SetDebugActive(bool newValue)
-        {
-            try
-            {
-                DebugActive = newValue;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public static bool SetDebugLevel()
-        {
-            try
-            {
-                GTISettings settings = HighLogic.CurrentGame.Parameters.CustomParams<GTISettings>();
-                DebugLevel = settings.DebugLevel;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public static bool SetDebugLevel(iDebugLevel newValue)
-        {
-            try
-            {
-                DebugLevel = newValue;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        */
     }
 }
-
-        //if (node.HasValue("flowMode"))
-        //{
-        //    this._resourceFlowMode = (int)Enum.Parse(typeof(ResourceFlowMode), node.GetValue("flowMode"));
-        //}

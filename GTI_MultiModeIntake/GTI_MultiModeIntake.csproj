@@ -42,7 +42,7 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Ref_Modules\KSP_1.4\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\_Ref_Modules\KSP_Current_DLL\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="GTI_Utilities">
       <HintPath>..\GTI_Utilities\bin\Release\GTI_Utilities.dll</HintPath>
@@ -51,7 +51,7 @@
     <Reference Include="System" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Ref_Modules\KSP_1.4\UnityEngine.dll</HintPath>
+      <HintPath>..\..\_Ref_Modules\KSP_Current_DLL\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +61,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\KSP 1.4.2_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\KSP 1.4.3_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
 ::copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTI_Utilities\Plugins\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

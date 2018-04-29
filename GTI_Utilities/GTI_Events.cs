@@ -76,7 +76,7 @@ namespace GTI.Events
             #endregion
 
             // Activate the load fixer, where cheats are temporarily activated to counteract spontaneous explotions on load of scenes.
-            if (GTIConfig.LoadFixerEnabled)
+            if (GTIConfig.ActivateLoadFixer)
                 StartCoroutine(SceneLoadFixer());
         }
 

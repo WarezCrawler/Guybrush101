@@ -54,10 +54,21 @@ namespace GTI
         [GameParameters.CustomIntParameterUI("Activate Load Fixer", toolTip = "Temporarily enable cheats on scene load.", autoPersistance = true)]
         public bool LoadFixerEnabled
         {
-            get => GTIConfig.LoadFixerEnabled;
-            set => GTIConfig.LoadFixerEnabled = value;
+            get => GTIConfig.ActivateLoadFixer;
+            set => GTIConfig.ActivateLoadFixer = value;
         }
-
+        [GameParameters.CustomIntParameterUI("Activate CrowdSourcedScienceFixer", toolTip = "CrowdSourcedScienceFixer.", autoPersistance = true)]
+        public bool GTI_ActivateCrowdSourcedScienceFixer
+        {
+            get => GTIConfig.CrowdSourcedScienceFixer.Activate;
+            set => GTIConfig.CrowdSourcedScienceFixer.Activate = value;
+        }
+        [GameParameters.CustomIntParameterUI("Activate CameraFocusChanger", toolTip = "CameraFocusChanger.", autoPersistance = true)]
+        public bool GTI_CameraFocusChanger
+        {
+            get => GTIConfig.CameraFocusChanger.Activate;
+            set => GTIConfig.CameraFocusChanger.Activate = value;
+        }
         [GameParameters.CustomIntParameterUI("Activate Docking Alignment Indicator", toolTip = "Docking Alignment Indicator.", autoPersistance = true)]
         public bool GTI_NavBallDockingAlignmentIndicator
         {
