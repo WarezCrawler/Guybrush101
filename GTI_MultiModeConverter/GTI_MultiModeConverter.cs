@@ -8,6 +8,7 @@ namespace GTI
     class GTI_MultiModeConverter : GTI_MultiMode<MultiMode>
     {
         protected List<ModuleResourceConverter> MRC;
+        private ModuleResourceConverter currentConverter;
 
         protected override void initializeSettings()
         {
@@ -59,6 +60,7 @@ namespace GTI
                 {
                     GTIDebug.Log("GTI_MultiMode (" + (silentUpdate ? "silent" : "non-silent") + "): Activate Module [" + modes[i].moduleIndex + "] --> " + MRC[modes[i].moduleIndex].ConverterName, iDebugLevel.High);
                     MRC[modes[i].moduleIndex].EnableModule();
+                    currentConverter = MRC[modes[i].moduleIndex];
                 }
                 else
                 {
@@ -112,6 +114,25 @@ namespace GTI
                 messagePosition: messagePosition,
                 duration: 3f
                 );
+        }
+
+        [KSPAction("Activate Converter")]
+        public void ActionActivate(KSPActionParam param)
+        {
+            //Call Build-in action
+            currentConverter.StartResourceConverterAction(param);
+        }
+        [KSPAction("Shutdown Converter")]
+        public void ActionShutdown(KSPActionParam param)
+        {
+            //Call Build-in action
+            currentConverter.StopResourceConverterAction(param);
+        }
+        [KSPAction("Toogle Converter")]
+        public void ActionToggle(KSPActionParam param)
+        {
+            //Call Build-in action
+            currentConverter.ToggleResourceConverterAction(param);
         }
 
         #region VAB Information
