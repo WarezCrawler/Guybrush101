@@ -61,7 +61,7 @@
     <None Include="Utilities\GenericFunctions.cs" />
     <None Include="Utilities_CustomTypes\PropellantList.cs" />
     <None Include="Core\EngineClassSwitch.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Other_NoCompile\G101.cs" />

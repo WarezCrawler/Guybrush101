@@ -62,6 +62,29 @@ namespace GTI
                 }
             }
         }
+        //ProjectManager
+        public struct ProjectManager
+        {
+            public static bool Activate { get; internal set; } = false;      //Is DockingAlignmentIndicator activated
+            private static bool _Active = false;                             //Is DockingAlignmentIndicator active
+            /// <summary>
+            /// Threading safe
+            /// </summary>
+            public static bool Active                                        //Expose DockingAlignmentIndicator avtive information
+            {
+                get
+                {
+                    lock (_syncLock)
+                        return _Active;
+                }
+
+                internal set
+                {
+                    lock (_syncLock)
+                        _Active = value;
+                }
+            }
+        }
         public struct BrakeLock
         {
             private static bool _doubleTabActive = false;
@@ -159,8 +182,9 @@ namespace GTI
             if (!bool.TryParse(myConfigNode.GetValue("ActivateDoubleTabForBrakeLock"), out mybool)) BrakeLock.doubleTabActive = false; else BrakeLock.doubleTabActive = mybool;
             if (!bool.TryParse(myConfigNode.GetValue("ActivateCameraFocusChanger"), out mybool)) CameraFocusChanger.Activate = false; else CameraFocusChanger.Activate = mybool;
             if (!bool.TryParse(myConfigNode.GetValue("ActivateCrowdSourcedScienceFixer"), out mybool)) CrowdSourcedScienceFixer.Activate = false; else CrowdSourcedScienceFixer.Activate = mybool;
+            if (!bool.TryParse(myConfigNode.GetValue("ActivateProjectManager"), out mybool)) ProjectManager.Activate = false; else ProjectManager.Activate = mybool;
 
-            
+
             #endregion
 
             //DebugLevel = (iDebugLevel)Enum.Parse(typeof(iDebugLevel), myConfigNode.GetValue("DebugLevel"), false);

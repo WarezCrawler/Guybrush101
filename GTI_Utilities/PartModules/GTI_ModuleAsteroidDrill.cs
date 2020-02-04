@@ -226,7 +226,7 @@ namespace GTI
             {
                 return;
             }
-            double num = this._info.currentMassVal - this._drilledMass;
+            double num = this._info.currentMassVal;          // - this._drilledMass;            //Take no mass of the asteroid
             this._info.currentMassVal = num;
             this.status = this._status;
         }

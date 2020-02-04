@@ -24,6 +24,7 @@ SOFTWARE.
 */
 
 using System;
+using System.Windows;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -169,6 +170,7 @@ namespace GTI
             bool inputFieldIsFocused = InputLockManager.IsAllLocked(ControlTypes.KEYBOARDINPUT) || (CurrentGameObj != null && CurrentGameObj.GetComponent<InputField>() != null && CurrentGameObj.GetComponent<InputField>().isFocused);
             if (!inputFieldIsFocused && Input.GetKeyDown(actionKey))
             {
+                
                 //DebugPrint("updating camera focus");
 
                 if ((Time.time - startFocusTime) < 0.25f)

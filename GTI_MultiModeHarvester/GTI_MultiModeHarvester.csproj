@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GTI_MultiModeHarvester</RootNamespace>
     <AssemblyName>GTI_MultiModeHarvester</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -43,6 +45,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\_Ref_Modules\KSP_Current_DLL\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\_Ref_Modules\KSP_Current_DLL\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GTI_MultiModeHarvester.cs" />
@@ -50,7 +55,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\KSP 1.4.5_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\KSP 1.8.1_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
 ::copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTI_Utilities\Plugins\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

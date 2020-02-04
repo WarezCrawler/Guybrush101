@@ -75,6 +75,12 @@ namespace GTI
             get => GTIConfig.NavBallDockingIndicator.Activate;
             set => GTIConfig.NavBallDockingIndicator.Activate = value;
         }
+        [GameParameters.CustomIntParameterUI("Activate Project Manager", toolTip = "Project Manager.", autoPersistance = true)]
+        public bool GTI_ProjectManagerScenario
+        {
+            get => GTIConfig.ProjectManager.Activate;
+            set => GTIConfig.ProjectManager.Activate = value;
+        }
         [GameParameters.CustomIntParameterUI("Activate double tabing for brake lock", toolTip = "Brake Lock.", autoPersistance = true)]
         public bool GTI_doubleTabForBrakeLock
         {
@@ -92,6 +98,7 @@ namespace GTI
             GTIDebug.Log("EventCheckFreqActive: " + EventCheckFreqActive, iDebugLevel.Medium);
             GTIDebug.Log("LoadFixerEnabled: " + LoadFixerEnabled, iDebugLevel.Medium);
             GTIDebug.Log("ActivateDAI: " + NavBallDockingIndicator.Activate, iDebugLevel.Medium);
+            GTIDebug.Log("ActivateProjectManager: " + ProjectManager.Activate, iDebugLevel.Medium);
         }
     }
     public class GTISettingsDebug : GTISettingsBase
