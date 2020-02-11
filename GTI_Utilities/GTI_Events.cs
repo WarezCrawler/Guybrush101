@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using static GTI.GTIConfig;
 
@@ -10,6 +12,8 @@ namespace GTI.Events
     /// <summary>
     /// Creates the GTI Events
     /// </summary>
+    
+
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class GTI_EventCreator : MonoBehaviour
     {
@@ -32,6 +36,8 @@ namespace GTI.Events
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class GTI_Events : MonoBehaviour
     {
+        //Threaded Tasks list
+        public List<Task> ThreadTasks = new List<Task>();
         //public static EventVoid onThrottleChange;
         private static float savedThrottle;
         //private EventVoid onThrottleChangeEvent;
@@ -103,6 +109,9 @@ namespace GTI.Events
             {
                 if (!EventDetectorRunning)
                 {
+                    //ThreadTasks.Add()
+                    //ThreadTasks[0].
+
                     Thread EventThread = new Thread(() =>
                     {
                         //StartCoroutine(UpdateEvent());
@@ -113,7 +122,7 @@ namespace GTI.Events
                     EventThread.Priority = System.Threading.ThreadPriority.BelowNormal;     //new 16/2-2017
                     GTIDebug.Log("GTI_inFlightEventDetector Started in new thread", iDebugLevel.DebugInfo);
                     EventThread.IsBackground = true;
-                    EventThread.Start();
+                    EventThread.Start(); 
                     return;
                 }
                 else GTIDebug.Log("GTI onThrottle event detector allready runnning. New Activation Cancelled.", iDebugLevel.Low);
