@@ -76,6 +76,7 @@
     <Compile Include="PartModules\GTI_ModuleAsteroidDrill.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\CameraFocusChanger\CFC.cs" />
+    <Compile Include="Utilities\ProjectManager_v2.cs" />
     <Compile Include="Utilities\ProjectManager.cs" />
     <Compile Include="Utilities\CrowdSourcedScienceFixer.cs" />
     <Compile Include="Utilities\ConfigNode.cs" />
@@ -95,8 +96,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\KSP 1.8.1_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
-copy /Y "$(TargetDir)\GTI_Config.cfg" "S:\Kerbal Space Program\KSP 1.8.1_Cur\GameData\GTI_Utilities\Plugins\GTI_Config.cfg"
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "S:\Kerbal Space Program\KSP 1.9.1_Cur\GameData\GTI_Utilities\Plugins\$(TargetName).dll"
+copy /Y "$(TargetDir)\GTI_Config.cfg" "S:\Kerbal Space Program\KSP 1.9.1_Cur\GameData\GTI_Utilities\Plugins\GTI_Config.cfg"
 ::copy /Y "$(TargetDir)$(TargetName).dll" "S:\Steam\SteamApps\common\Kerbal Space Program\GameData\GTI_Utilities\Plugins\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

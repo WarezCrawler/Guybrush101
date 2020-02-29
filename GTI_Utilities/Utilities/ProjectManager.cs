@@ -36,10 +36,10 @@ namespace GTI
 
             //Check if original mod is present. If so, then disable this.
             GTIDebug.Log("GTI_ProjectManagerScenario Starting", "GTI - PM", GTIConfig.iDebugLevel.DebugInfo);
-            if (!GTIConfig.NavBallDockingIndicator.Activate || PluginExists("NavBallDockingAlignmentIndicatorCE"))
+            if (!GTIConfig.ProjectManager.Activate || PluginExists("ProjectManager"))
             {
-                if (PluginExists("ProjectManagerScenario") && GTIConfig.NavBallDockingIndicator.Activate)
-                    GTIDebug.Log("ProjectManagerScenario Detected -- Disabling GTI Project Manager", "GTI - PM", GTIConfig.iDebugLevel.DebugInfo);
+                if (PluginExists("ProjectManager") && GTIConfig.ProjectManager.Activate)
+                    GTIDebug.Log("ProjectManager Detected -- Disabling GTI Project Manager", "GTI - PM", GTIConfig.iDebugLevel.DebugInfo);
                 Destroy(this.gameObject);
             }
 

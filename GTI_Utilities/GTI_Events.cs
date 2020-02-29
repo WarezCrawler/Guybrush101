@@ -27,6 +27,7 @@ namespace GTI.Events
                 GTIDebug.Log("Event 'onThrottleChange' Created", iDebugLevel.Low);
                 onThrottleChange = new EventData<float, float>("onThrottleChange");
             } else { GTIDebug.Log("Event 'onThrottleChange' already exists", iDebugLevel.DebugInfo); }
+
         }
     }
 
@@ -109,9 +110,6 @@ namespace GTI.Events
             {
                 if (!EventDetectorRunning)
                 {
-                    //ThreadTasks.Add()
-                    //ThreadTasks[0].
-
                     Thread EventThread = new Thread(() =>
                     {
                         //StartCoroutine(UpdateEvent());
@@ -123,6 +121,46 @@ namespace GTI.Events
                     GTIDebug.Log("GTI_inFlightEventDetector Started in new thread", iDebugLevel.DebugInfo);
                     EventThread.IsBackground = true;
                     EventThread.Start(); 
+                    return;
+                }
+                else GTIDebug.Log("GTI onThrottle event detector allready runnning. New Activation Cancelled.", iDebugLevel.Low);
+            }
+            else
+            {
+                GTIDebug.Log("The GTI Event 'onThrottleChange' deactivated. initEvent was set to 'false'", iDebugLevel.Low);
+                Destroy(this.gameObject);
+            }
+        }
+
+        public static Task EventTask;
+        internal void startThread_v2()
+        {
+            if (GTIConfig.Event.initialize)
+            {
+                GTIDebug.Log("GTI Event thread status " + EventTask.Status, iDebugLevel.High);
+
+                //Check if the task has stopped
+                if (EventTask.Status != TaskStatus.Running || EventTask.Status != TaskStatus.WaitingForActivation || EventTask.Status != TaskStatus.WaitingForChildrenToComplete || EventTask.Status != TaskStatus.WaitingToRun)
+                {
+                    EventDetectorRunning = false;
+                    Thread.Sleep(1000); //Wait 1 sec to allow the thread to stop before reactivating
+                }
+
+                //force the tread to stop????!!!
+
+                if (!EventDetectorRunning)
+                {
+                    EventTask =
+                    (
+                        Task.Factory.StartNew(() =>
+                        {
+                            //StartCoroutine(UpdateEvent());
+                            EventDetectorRunning = true;
+                            GTI_inFlightEventDetector();
+                        })
+                    );
+                    GTIDebug.Log("Starting GTI Event thread", iDebugLevel.High);
+                    GTIDebug.Log("GTI_inFlightEventDetector Started in new thread", iDebugLevel.DebugInfo);
                     return;
                 }
                 else GTIDebug.Log("GTI onThrottle event detector allready runnning. New Activation Cancelled.", iDebugLevel.Low);
@@ -249,7 +287,8 @@ namespace GTI.Events
         {
             GTIDebug.Log("GTI_Events destroyed", iDebugLevel.Medium);
             EventDetectorRunning = false;
-            if (onThrottleChangeEvent != null) onThrottleChangeEvent.Remove(EventDebugger);
+            if (onThrottleChangeEvent != null)
+                onThrottleChangeEvent.Remove(EventDebugger);
             //onSceneChange.Remove(onEventSceneChange);
         }
 

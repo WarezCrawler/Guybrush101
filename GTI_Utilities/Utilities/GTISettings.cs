@@ -79,7 +79,21 @@ namespace GTI
         public bool GTI_ProjectManagerScenario
         {
             get => GTIConfig.ProjectManager.Activate;
-            set => GTIConfig.ProjectManager.Activate = value;
+            set
+            {
+                GTIConfig.ProjectManager.Activate = value;
+                GTIConfig.ProjectManager_v2.Activate = !GTIConfig.ProjectManager.Activate;
+            }
+        }
+        [GameParameters.CustomIntParameterUI("Activate Project Manager v2", toolTip = "Project Manager.", autoPersistance = true)]
+        public bool GTI_ProjectManagerScenario_v2
+        {
+            get => GTIConfig.ProjectManager_v2.Activate;
+            set
+            {
+                GTIConfig.ProjectManager_v2.Activate = value;
+                GTIConfig.ProjectManager.Activate = !GTIConfig.ProjectManager_v2.Activate;
+            }
         }
         [GameParameters.CustomIntParameterUI("Activate double tabing for brake lock", toolTip = "Brake Lock.", autoPersistance = true)]
         public bool GTI_doubleTabForBrakeLock

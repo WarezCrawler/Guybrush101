@@ -77,7 +77,27 @@ namespace GTI
                     lock (_syncLock)
                         return _Active;
                 }
-
+                internal set
+                {
+                    lock (_syncLock)
+                        _Active = value;
+                }
+            }
+        }
+        public struct ProjectManager_v2
+        {
+            public static bool Activate { get; internal set; } = false;      //Is DockingAlignmentIndicator activated
+            private static bool _Active = false;                             //Is DockingAlignmentIndicator active
+            /// <summary>
+            /// Threading safe
+            /// </summary>
+            public static bool Active                                        //Expose DockingAlignmentIndicator avtive information
+            {
+                get
+                {
+                    lock (_syncLock)
+                        return _Active;
+                }
                 internal set
                 {
                     lock (_syncLock)
